@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IPE 407 — Ergonomics & Safety Management</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#181b24;--bg3:#1e2130;
+  --acc:#e8832a;--acc2:#f0a855;
+  --text:#e2e8f0;--muted:#8899aa;--border:#2d3450;
+  --green:#4ade80;--blue:#60a5fa;
+  --zar:#a78bfa;--ras:#34d399;--mfs:#fb923c
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:0 0 5rem}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,rgba(232,131,42,.15) 0%,rgba(15,17,23,1) 70%);
+  border-bottom:1px solid var(--border);
+  padding:3rem 2rem 2.5rem;
+  text-align:center
+}
+.course-tag{display:inline-flex;align-items:center;gap:.5rem;padding:.3rem 1rem;background:rgba(232,131,42,.12);border:1px solid rgba(232,131,42,.3);border-radius:20px;color:var(--acc);font-size:.78rem;font-weight:700;letter-spacing:.06em;margin-bottom:1rem}
+.hero h1{font-size:2.5rem;font-weight:900;line-height:1.1;margin-bottom:.5rem;background:linear-gradient(135deg,#fff 40%,var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .sub{color:var(--muted);font-size:.95rem;margin-bottom:2rem}
+
+/* overall bar */
+.overall-wrap{max-width:560px;margin:0 auto}
+.ov-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem}
+.ov-label{font-size:.85rem;color:var(--muted)}
+.ov-pct{font-size:2rem;font-weight:900;color:var(--acc);line-height:1}
+.ov-bar-bg{height:12px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+.ov-bar-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:999px;transition:width .6s ease}
+.ov-chapters{font-size:.75rem;color:var(--muted);margin-top:.5rem;text-align:right}
+
+/* ── TEACHER CARDS ── */
+.teachers{max-width:900px;margin:2.5rem auto 0;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.t-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;text-decoration:none;display:block;transition:border-color .2s,transform .15s}
+.t-card:hover{transform:translateY(-3px)}
+.t-card.zar:hover{border-color:var(--zar)}
+.t-card.ras:hover{border-color:var(--ras)}
+.t-card.mfs:hover{border-color:var(--mfs)}
+.t-header{padding:1.3rem 1.4rem 1rem;border-bottom:1px solid var(--border)}
+.t-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .75rem;border-radius:12px;font-size:.72rem;font-weight:800;letter-spacing:.05em;margin-bottom:.6rem}
+.zar .t-badge{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:var(--zar)}
+.ras .t-badge{background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);color:var(--ras)}
+.mfs .t-badge{background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.3);color:var(--mfs)}
+.t-name{font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:.2rem}
+.t-desc{font-size:.78rem;color:var(--muted)}
+.t-progress{padding:1rem 1.4rem 1.2rem}
+.t-pct-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem}
+.t-pct-row .lbl{font-size:.72rem;color:var(--muted)}
+.t-pct-val{font-size:1rem;font-weight:800}
+.zar .t-pct-val{color:var(--zar)}
+.ras .t-pct-val{color:var(--ras)}
+.mfs .t-pct-val{color:var(--mfs)}
+.t-bar-bg{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;margin-bottom:.6rem}
+.t-bar-fill{height:100%;border-radius:999px;transition:width .5s ease}
+.zar .t-bar-fill{background:linear-gradient(90deg,var(--zar),#c4b5fd)}
+.ras .t-bar-fill{background:linear-gradient(90deg,var(--ras),#6ee7b7)}
+.mfs .t-bar-fill{background:linear-gradient(90deg,var(--mfs),#fdba74)}
+.t-chapters-row{display:flex;gap:.35rem;flex-wrap:wrap}
+.t-ch-dot{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;border:1px solid var(--border);color:var(--muted);background:var(--bg3);position:relative;overflow:hidden}
+.t-ch-dot .dot-fill{position:absolute;bottom:0;left:0;right:0;background:rgba(74,222,128,.2);transition:height .4s ease}
+.t-ch-dot.done{border-color:rgba(74,222,128,.5);color:var(--green);background:rgba(74,222,128,.1)}
+.t-ch-dot.started{border-color:rgba(96,165,250,.4);color:var(--blue)}
+
+/* ── STATS ── */
+.stats-row{max-width:900px;margin:2rem auto 0;padding:0 1.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;text-align:center}
+.stat-num{font-size:1.6rem;font-weight:900;color:var(--acc)}
+.stat-lbl{font-size:.72rem;color:var(--muted);margin-top:.2rem}
+
+/* ── GIT FOOTER ── */
+.git-hint{max-width:860px;margin:2rem auto 0;padding:0 1.5rem}
+.git-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1rem 1.3rem;font-size:.8rem;color:var(--muted)}
+.git-box code{color:var(--acc2);font-family:'Courier New',monospace;font-size:.78rem}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="course-tag">📚 IPE 407</div>
+  <h1>Ergonomics &amp;<br>Safety Management</h1>
+  <div class="sub">3 Teachers · 16 Chapters · Track your study progress</div>
+
+  <div class="overall-wrap">
+    <div class="ov-header">
+      <span class="ov-label">Overall Syllabus Completion</span>
+      <span class="ov-pct" id="overall-pct">0%</span>
+    </div>
+    <div class="ov-bar-bg"><div class="ov-bar-fill" id="overall-bar" style="width:0%"></div></div>
+    <div class="ov-chapters" id="overall-detail">0 / 16 chapters completed</div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-num" id="stat-chapters">0/16</div>
+    <div class="stat-lbl">Chapters completed</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num" id="stat-teachers">0/3</div>
+    <div class="stat-lbl">Teachers fully done</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num" id="stat-avg">0%</div>
+    <div class="stat-lbl">Average topic coverage</div>
+  </div>
+</div>
+
+<div class="teachers">
+
+  <!-- ZAR -->
+  <a class="t-card zar" href="ZAR_index.html">
+    <div class="t-header">
+      <div class="t-badge">ZAR · ERGONOMICS</div>
+      <div class="t-name">Dr. ZAR</div>
+      <div class="t-desc">Work Spaces · Posture · Environment · Tools</div>
+    </div>
+    <div class="t-progress">
+      <div class="t-pct-row">
+        <span class="lbl">Progress</span>
+        <span class="t-pct-val" id="zar-pct">0%</span>
+      </div>
+      <div class="t-bar-bg"><div class="t-bar-fill" id="zar-bar" style="width:0%"></div></div>
+      <div class="t-chapters-row" id="zar-dots"></div>
+    </div>
+  </a>
+
+  <!-- RAS -->
+  <a class="t-card ras" href="RAS_index.html">
+    <div class="t-header">
+      <div class="t-badge">RAS · PHYSIOLOGY</div>
+      <div class="t-name">Dr. RAS</div>
+      <div class="t-desc">Muscle · Work Physiology · MMH Design</div>
+    </div>
+    <div class="t-progress">
+      <div class="t-pct-row">
+        <span class="lbl">Progress</span>
+        <span class="t-pct-val" id="ras-pct">0%</span>
+      </div>
+      <div class="t-bar-bg"><div class="t-bar-fill" id="ras-bar" style="width:0%"></div></div>
+      <div class="t-chapters-row" id="ras-dots"></div>
+    </div>
+  </a>
+
+  <!-- MFS -->
+  <a class="t-card mfs" href="MFS_index.html">
+    <div class="t-header">
+      <div class="t-badge">MFS · SAFETY</div>
+      <div class="t-name">Dr. MFS</div>
+      <div class="t-desc">OSHA · Accidents · Hygiene · Fire Safety</div>
+    </div>
+    <div class="t-progress">
+      <div class="t-pct-row">
+        <span class="lbl">Progress</span>
+        <span class="t-pct-val" id="mfs-pct">0%</span>
+      </div>
+      <div class="t-bar-bg"><div class="t-bar-fill" id="mfs-bar" style="width:0%"></div></div>
+      <div class="t-chapters-row" id="mfs-dots"></div>
+    </div>
+  </a>
+
+</div>
+
+<div class="git-hint">
+  <div class="git-box">
+    💡 To push to GitHub: run <code>bash git_setup.sh</code> in the ESM folder, then<br>
+    <code>git remote add origin &lt;your-repo-url&gt;</code> · <code>git branch -M main</code> · <code>git push -u origin main</code>
+  </div>
+</div>
+
+<script>
+(function(){
+  var teachers = {
+    zar: { chapters: [1,2,3,4,5,6] },
+    ras: { chapters: [1,2,3,4] },
+    mfs: { chapters: [1,2,3,4,5,6] }
+  };
+
+  var grandTotal = 0, grandCount = 0, completedChapters = 0, completedTeachers = 0;
+
+  Object.keys(teachers).forEach(function(t){
+    var chs = teachers[t].chapters;
+    var tTotal = 0;
+    var dotsEl = document.getElementById(t+'-dots');
+
+    chs.forEach(function(n){
+      var pct = 0;
+      try{ pct = parseInt(localStorage.getItem('esm_'+t+'_ch'+n+'_pct')||'0',10)||0; }catch(e){}
+      tTotal += pct;
+      grandTotal += pct;
+      grandCount++;
+      if(pct === 100) completedChapters++;
+
+      // Chapter dot
+      if(dotsEl){
+        var dot = document.createElement('div');
+        dot.className = 't-ch-dot' + (pct===100?' done':(pct>0?' started':''));
+        dot.title = 'Ch '+n+': '+pct+'%';
+        // fill bar inside dot
+        var fill = document.createElement('div');
+        fill.className = 'dot-fill';
+        fill.style.height = pct+'%';
+        dot.appendChild(fill);
+        dot.appendChild(document.createTextNode(n));
+        dotsEl.appendChild(dot);
+      }
+    });
+
+    var tAvg = chs.length ? Math.round(tTotal / chs.length) : 0;
+    if(tAvg === 100) completedTeachers++;
+
+    var pctEl = document.getElementById(t+'-pct');
+    var barEl = document.getElementById(t+'-bar');
+    if(pctEl) pctEl.textContent = tAvg+'%';
+    if(barEl) barEl.style.width = tAvg+'%';
+  });
+
+  var overall = grandCount ? Math.round(grandTotal / grandCount) : 0;
+
+  var op = document.getElementById('overall-pct');
+  var ob = document.getElementById('overall-bar');
+  var od = document.getElementById('overall-detail');
+  if(op) op.textContent = overall+'%';
+  if(ob) ob.style.width = overall+'%';
+  if(od) od.textContent = completedChapters+' / 16 chapters completed';
+
+  var sc = document.getElementById('stat-chapters');
+  var st = document.getElementById('stat-teachers');
+  var sa = document.getElementById('stat-avg');
+  if(sc) sc.textContent = completedChapters+'/16';
+  if(st) st.textContent = completedTeachers+'/3';
+  if(sa) sa.textContent = overall+'%';
+})();
+</script>
+</body>
+</html>

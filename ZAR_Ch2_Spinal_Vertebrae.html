@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAR Ch2 – Spinal Vertebrae & Discs | ESM IPE 407</title>
+<style>
+  :root{--bg:#0f1117;--bg2:#181b24;--bg3:#1e2130;--acc:#e8832a;--acc2:#f0a855;--text:#e2e8f0;--muted:#8899aa;--border:#2d3450;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--purple:#c084fc;--star:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;font-size:15px}
+  #progress-bar{display:none}
+  #progress-label{display:none}
+  main{flex:1;padding:32px 40px 80px;overflow-y:auto;min-width:0}
+  h1{font-size:2em;color:var(--acc);margin-bottom:4px}
+  .chapter-meta{color:var(--muted);font-size:13px;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+  h2{font-size:1.3em;color:var(--acc2);margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  h3{font-size:1.05em;color:var(--blue);margin:20px 0 8px}
+  h4{font-size:.95em;color:var(--purple);margin:14px 0 6px}
+  p{margin-bottom:10px}
+  ul,ol{padding-left:22px;margin-bottom:10px}
+  li{margin-bottom:4px}
+  .importance{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
+  .i5{background:rgba(251,191,36,.15);color:var(--star);border:1px solid rgba(251,191,36,.3)}
+  .i4{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+  .i3{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+  .i2{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+  .box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+  .box.warn{border-left:3px solid var(--acc)}
+  .box.info{border-left:3px solid var(--blue)}
+  .box.success{border-left:3px solid var(--green)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:var(--bg3);color:var(--acc2);padding:8px 10px;text-align:left;border:1px solid var(--border)}
+  td{padding:7px 10px;border:1px solid var(--border)}
+  tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+  .pyq-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin:14px 0}
+  .pyq-header{background:rgba(232,131,42,.1);padding:10px 16px;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center}
+  .pyq-year{color:var(--acc2);font-weight:700;font-size:13px}
+  .pyq-marks{background:var(--acc);color:#000;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+  .pyq-q{padding:12px 16px;color:var(--text);font-weight:500;border-bottom:1px solid var(--border);font-size:14px}
+  .pyq-a{padding:14px 16px;color:var(--muted);font-size:14px;line-height:1.75}
+  .pyq-a strong{color:var(--text)}
+  .summary-box{background:linear-gradient(135deg,rgba(232,131,42,.08),rgba(96,165,250,.06));border:1px solid rgba(232,131,42,.2);border-radius:10px;padding:20px;margin:16px 0}
+  .qa-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .qa-row:last-child{border-bottom:none}
+  .stars{color:var(--star);font-size:14px}
+  .qa-topic{flex:1;font-size:13px}
+  .qa-count{color:var(--muted);font-size:12px;white-space:nowrap}
+  .diagram{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px;margin:14px 0;text-align:center;font-family:monospace;font-size:12px;line-height:1.9;color:var(--text)}
+  .disc-row{display:flex;gap:16px;margin:14px 0;flex-wrap:wrap}
+  .disc-card{flex:1;min-width:160px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
+  .disc-label{font-weight:700;color:var(--acc2);margin-bottom:6px;font-size:13px}
+  .disc-desc{font-size:12px;color:var(--muted);line-height:1.5}
+  /* ── Paginated sections ── */
+  /* paginated-sections */
+  section{display:none}
+  section.sec-active{display:block}
+  #tab-strip{display:flex;flex-direction:column;gap:3px;padding:4px 0;margin:0;border:none;overflow-x:visible;scrollbar-width:none}
+  #tab-strip::-webkit-scrollbar{display:none}
+  .sec-tab{flex-shrink:0;width:100%;text-align:left;padding:8px 12px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:12px;font-family:inherit;white-space:normal;line-height:1.4;background:transparent;color:var(--muted);transition:all .15s}
+  .sec-tab:hover{background:rgba(232,131,42,.1);color:var(--acc2);border-color:transparent}
+  .sec-tab.tab-active{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+  .sec-tab.tab-done{color:var(--green);border-color:rgba(74,222,128,.35)}
+  .sec-nav{display:flex;justify-content:space-between;align-items:center;margin-top:52px;padding-top:20px;border-top:1px solid var(--border)}
+  .sec-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 18px;border-radius:5px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s}
+  .sec-btn:hover{border-color:var(--acc);color:var(--text)}
+  .sec-ctr{font-size:11px;color:var(--muted)}
+  .mark-row{text-align:center;margin-top:20px}
+  .mark-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 24px;border-radius:20px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+  .mark-btn:hover{border-color:var(--green);color:var(--green)}
+  .mark-btn.is-done{color:var(--green);border-color:rgba(74,222,128,.4)}
+  .resume-banner{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.2);border-radius:5px;padding:7px 12px;font-size:11.5px;color:var(--blue);margin-bottom:16px;display:none}
+
+  /* ── Full-screen layout ── */
+  html{height:100%}
+  body{height:100%;display:flex;flex-direction:column}
+  #page-header{background:var(--bg2);border-bottom:2px solid var(--acc);padding:16px 32px;flex-shrink:0}
+  #page-header h1{font-size:1.5em;color:var(--acc);margin-bottom:2px}
+  #page-header .chapter-meta{margin-bottom:0;border-bottom:none;padding-bottom:0;font-size:12px}
+  #page-body{display:flex;flex:1;overflow:hidden}
+  #sidebar{width:224px;min-width:224px;background:var(--bg2);border-right:1px solid var(--border);padding:14px 10px;overflow-y:auto;flex-shrink:0}
+  #sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 8px 8px;border-bottom:1px solid var(--border);margin-bottom:8px;font-weight:600}
+  /* Mobile: stack vertically, tabs horizontal */
+  @media(max-width:800px){
+    html,body{height:auto}
+    #page-header{padding:12px 16px}
+    #page-body{flex-direction:column;overflow:visible}
+    #sidebar{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border);padding:8px 10px}
+    #tab-strip{flex-direction:row !important;overflow-x:auto;gap:5px;padding:4px 0}
+    #tab-strip::-webkit-scrollbar{display:none}
+    .sec-tab{flex-shrink:0 !important;width:auto !important;white-space:nowrap !important;padding:4px 10px !important;border-radius:14px !important;border:1px solid var(--border) !important;line-height:1.4 !important}
+    main{padding:20px 16px 60px;overflow-y:visible}
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="progress-label">0% read</div>
+
+
+<main>
+<div id="resume-banner" class="resume-banner"></div>
+<h1>Chapter 2: Spinal Vertebrae & Discs</h1>
+<div class="chapter-meta">IPE 407 — Ergonomics & Safety Management &nbsp;|&nbsp; ZAR (Rafi Madam) &nbsp;|&nbsp; Exam Importance: ★★★★★</div>
+
+<section id="intro">
+<h2>Overview</h2>
+<p>This chapter covers the anatomy of the spine, the structure of intervertebral discs, common disc pathologies, and the relationship between posture and disc health. Understanding spinal biomechanics is essential for designing workstations and equipment that protect workers from back disorders — the leading cause of occupational disability.</p>
+</section>
+
+<section id="column">
+<h2>The Vertebral Column</h2>
+<p>The vertebral (spinal) column is the central structural element of the axial skeleton. It provides structural support, protects the spinal cord, and enables movement in multiple planes.</p>
+
+<div class="diagram">
+  THE VERTEBRAL COLUMN — REGIONS
+  ════════════════════════════════════════════
+  Region          | Count | Function
+  ────────────────|-------|-----------------------
+  Cervical (C)    |  × 7  | Neck — high mobility
+  Thoracic (T)    | × 12  | Mid-back — rib cage attachment
+  Lumbar (L)      |  × 5  | Lower back — load bearing ★
+  Sacral (S)      |  × 5  | Fused — pelvis connection
+  Coccygeal (Co)  |  × 4  | Fused — vestigial tail
+  ────────────────────────────────────────────
+  TOTAL: 33 vertebrae (24 moveable + 9 fused)
+  ════════════════════════════════════════════
+</div>
+
+<div class="box info">
+<strong>Exam Memory Aid:</strong> C7 T12 L5 S5 Co4 → "Cervical 7, Thoracic 12, Lumbar 5, Sacral 5, Coccyx 4" = 33 total
+</div>
+
+<h3>Natural Spinal Curves</h3>
+<p>When viewed from the side, the spine has four natural curves:</p>
+<ul>
+  <li><strong>Cervical lordosis:</strong> Inward curve (concave posterior) — normal</li>
+  <li><strong>Thoracic kyphosis:</strong> Outward curve (convex posterior) — normal</li>
+  <li><strong>Lumbar lordosis:</strong> Inward curve (concave posterior) — normal ★ KEY</li>
+  <li><strong>Sacral kyphosis:</strong> Outward curve — fixed by fusion</li>
+</ul>
+<p>These curves distribute load and absorb shock. Deviation from these curves (e.g., lumbar kyphosis from slumped sitting) increases disc loading and injury risk.</p>
+</section>
+
+<section id="lumbar">
+<h2>Lumbar Vertebra Anatomy</h2>
+<p>The lumbar vertebrae (L1–L5) are the largest, bearing the most compressive load:</p>
+<ul>
+  <li><strong>Vertebral body:</strong> Large, cylindrical — primary load-bearing element</li>
+  <li><strong>Vertebral arch (neural arch):</strong> Encloses the spinal cord</li>
+  <li><strong>Pedicle:</strong> Short pillar connecting the arch to the body (×2)</li>
+  <li><strong>Lamina:</strong> Flat plate forming the posterior arch (×2)</li>
+  <li><strong>Spinous process:</strong> Posterior projection (felt through skin as the "bumps" on the spine)</li>
+  <li><strong>Transverse process:</strong> Lateral projections (×2) — muscle attachment points</li>
+  <li><strong>Superior/Inferior articular processes:</strong> Form facet joints with adjacent vertebrae</li>
+  <li><strong>Intervertebral foramen:</strong> Opening between pedicles for spinal nerve exit</li>
+</ul>
+</section>
+
+<section id="disc-structure">
+<h2>Intervertebral Disc Structure <span class="importance i5">★★★★★ Exam (3×)</span></h2>
+<p>Intervertebral discs sit between adjacent vertebral bodies (C2–S1 = 23 discs). They provide:</p>
+<ul>
+  <li><strong>Shock absorption</strong> under compressive load</li>
+  <li><strong>Flexibility</strong> — allow spinal flexion, extension, rotation</li>
+  <li><strong>Spacing</strong> — maintain proper foraminal height for nerve exits</li>
+</ul>
+
+<div class="diagram">
+  INTERVERTEBRAL DISC — CROSS SECTION
+  ══════════════════════════════════════════
+       Upper vertebral body
+  ─────────────────────────────────────────
+  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  Annulus Fibrosus
+  ▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓  (outer fibrous ring)
+  ▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓
+  ▓▓▓▓▒▒▒▒▒▒▒░░░░░░▒▒▒▒▒▒▒▓▓▓▓
+  ▓▓▓▓▒▒▒▒▒░░░○○○░░░▒▒▒▒▒▒▓▓▓▓  Nucleus Pulposus
+  ▓▓▓▓▒▒▒▒░░○○○○○○░░▒▒▒▒▒▒▓▓▓▓  (inner gel core)
+  ▓▓▓▓▒▒▒▒▒░░░○○○░░░▒▒▒▒▒▒▓▓▓▓
+  ▓▓▓▓▒▒▒▒▒▒▒░░░░░▒▒▒▒▒▒▒▒▓▓▓▓
+  ▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓
+  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+  ─────────────────────────────────────────
+       Lower vertebral body
+  ══════════════════════════════════════════
+</div>
+
+<h3>Annulus Fibrosus</h3>
+<p>The outer ring of the disc, composed of 15–25 layers of concentric fibrocartilaginous rings (lamellae). Fibers in adjacent layers run in opposite directions (~30°), providing strength in multiple directions. The annulus confines the nucleus pulposus under load.</p>
+<p><strong>Function:</strong> Contains the nucleus; resists torsion, shear, and compression forces.</p>
+
+<h3>Nucleus Pulposus</h3>
+<p>The inner gelatinous core (~80% water in young adults). Has very high osmotic pressure, drawing water in and providing hydraulic cushioning. Under compressive load, it redistributes pressure radially to the annulus fibers.</p>
+<p><strong>Function:</strong> Hydraulic shock absorber; distributes compressive load evenly.</p>
+
+<h3>Disc Nutrition</h3>
+<p>Intervertebral discs are <strong>avascular</strong> (no blood supply after adolescence). They receive nutrients via <strong>diffusion</strong> from vertebral endplates during cyclic loading/unloading (walking, changing posture). Prolonged static loading prevents nutrient diffusion → accelerates disc degeneration.</p>
+<div class="box warn">This is why prolonged sitting is so harmful — static compression halts the pumping mechanism that nourishes the disc.</div>
+</section>
+
+<section id="disc-conditions">
+<h2>Types of Spinal Disc Conditions <span class="importance i5">★★★★★ Exam (3×)</span></h2>
+<div class="box warn"><strong>Most Examined in Ch2 (3×):</strong> With neat sketches, differentiate between different types of spinal disc conditions.</div>
+
+<div class="disc-row">
+  <div class="disc-card">
+    <div class="disc-label">1. Normal</div>
+    <div class="disc-desc">Annulus intact; nucleus fully contained and hydrated; full disc height; no nerve impingement</div>
+  </div>
+  <div class="disc-card">
+    <div class="disc-label" style="color:var(--green)">2. Degenerative</div>
+    <div class="disc-desc">Nucleus loses water content; disc height reduces; annulus may crack/tear internally; reduced shock absorption</div>
+  </div>
+  <div class="disc-card">
+    <div class="disc-label" style="color:var(--acc2)">3. Bulging</div>
+    <div class="disc-desc">Annulus remains intact but weakens; nucleus pushes outward, creating a uniform bulge; may press on nerve roots</div>
+  </div>
+  <div class="disc-card">
+    <div class="disc-label" style="color:var(--red)">4. Herniated</div>
+    <div class="disc-desc">Nucleus pulposus breaks through the annulus; can severely compress spinal nerves causing sciatica, radiating pain</div>
+  </div>
+  <div class="disc-card">
+    <div class="disc-label" style="color:var(--purple)">5. Thinning</div>
+    <div class="disc-desc">Advanced degeneration; disc height severely reduced; bone-on-bone contact possible; osteophytes may form</div>
+  </div>
+</div>
+
+<div class="diagram">
+DISC CONDITION PROGRESSION (Side View)
+═══════════════════════════════════════════════════════
+ NORMAL    │ DEGENERATIVE │  BULGING   │ HERNIATED  │ THINNING
+           │              │            │            │
+  ▓▓▓▓▓▓  │  ▓▓▓▓▓▓▓▓▓  │  ▓▓▓▓▓▓▓  │  ▓▓▓▓▓▓▓  │  ▓▓▓▓▓▓
+  ▓○○○○▓  │  ▓·····▓▓▓  │  ▓○○○○○▓  │  ▓○○○○  ▓ │  ▓····▓
+  ▓○○○○▓  │  ▓·····▓▓▓  │ ▓▓○○○○○▓▓ │  ▓○○○○○──● │  ▓····▓
+  ▓▓▓▓▓▓  │  ▓▓▓▓▓▓▓▓▓  │  ▓▓▓▓▓▓▓  │  ▓▓▓▓▓▓▓  │  ▓▓▓▓▓▓
+           │  (thinner)   │  (uniform  │  (nucleus  │ (very thin)
+           │              │   bulge)   │  escapes)  │
+═══════════════════════════════════════════════════════
+○ = nucleus pulposus   ▓ = annulus fibrosus   ● = herniated material
+</div>
+
+<h3>Detailed Description of Each Condition</h3>
+
+<h4>Bulging Disc</h4>
+<p>The annulus fibrosus is weakened but intact. The nucleus pulposus pushes outward, creating a symmetrical bulge that extends beyond the normal disc perimeter. The nucleus has not broken through.</p>
+<ul>
+  <li><strong>Cause:</strong> Cumulative repetitive loading, age-related annular weakening</li>
+  <li><strong>Symptoms:</strong> May be asymptomatic; can cause local back pain if pressing on adjacent structures</li>
+  <li><strong>Ergonomic relevance:</strong> Avoid sustained forward bending loads; encourage neutral spine postures</li>
+</ul>
+
+<h4>Herniated Disc (Disc Herniation / Slipped Disc)</h4>
+<p>The nucleus pulposus ruptures through a tear in the annulus fibrosus. The extruded material can compress adjacent nerve roots, causing severe radiating pain (sciatica if L4–L5 or L5–S1 herniates).</p>
+<ul>
+  <li><strong>Cause:</strong> Acute high load in flexed/rotated spine position, or cumulative weakening</li>
+  <li><strong>Symptoms:</strong> Severe localized pain; radiating pain/numbness/weakness in the leg (sciatica)</li>
+  <li><strong>Treatment:</strong> Conservative (rest, physio, NSAIDs) → interventional (epidural) → surgical (discectomy)</li>
+</ul>
+
+<h4>Degenerative Disc Disease</h4>
+<p>Progressive loss of water content in the nucleus pulposus (from ~80% in young adult to ~70% by old age). Disc height decreases. Load-bearing transfers from nucleus to annulus → annular tears. Bone spurs (osteophytes) may form.</p>
+<ul>
+  <li><strong>Risk factors:</strong> Age, obesity, repetitive loading, poor posture, smoking (reduces nutrient supply)</li>
+  <li><strong>Ergonomic control:</strong> Encourage dynamic loading (movement, walking) rather than sustained static compression</li>
+</ul>
+
+<h4>Spondylolisthesis</h4>
+<p>Forward slip of one vertebra over the one below it. Can result from stress fracture of the pars interarticularis or degenerative facet joint disease. Causes spinal canal narrowing.</p>
+</section>
+
+<section id="degeneration">
+<h2>Disc Degeneration & Core Muscle Protection</h2>
+<p>Spinal discs are avascular — they depend on cyclic loading/unloading (the pumping action of movement) for nutrient supply. <strong>Core muscle strengthening</strong> protects against disc degeneration in several ways:</p>
+<ul>
+  <li><strong>Load distribution:</strong> Strong core muscles share compressive loads with the disc, reducing disc pressure.</li>
+  <li><strong>Spinal stability:</strong> Provide active stabilization of the spine, preventing shear forces that damage the annulus.</li>
+  <li><strong>Posture maintenance:</strong> Maintain lumbar lordosis, preventing the disc loading asymmetries of flexed postures.</li>
+  <li><strong>Movement promotion:</strong> Active core promotes dynamic rather than static loading patterns.</li>
+</ul>
+<div class="box success"><strong>How strengthening core muscle may save you from spinal disk degeneration (biomechanical view):</strong> Core muscles act as a hydraulic corset (the multifidus and transverse abdominis particularly). When activated, they increase intra-abdominal pressure and create a pressurized cylinder that offloads the disc by up to 40%. They also stiffen the spine, reducing intersegmental shear. Without adequate core, all compressive and shear load falls on the passive disc.</div>
+</section>
+
+<section id="posture-disc">
+<h2>Sitting Posture & Intervertebral Disc Pressure <span class="importance i5">★★★★★ Exam (3×)</span></h2>
+<div class="box warn"><strong>Most Examined (3×):</strong> Discuss the relationship between sitting posture and intervertebral disc pressure.</div>
+
+<p>Nachemson and Andersson's classic studies measured intradiscal pressure at L3 in various postures. Key findings:</p>
+
+<table>
+  <tr><th>Posture</th><th>Relative Disc Pressure</th></tr>
+  <tr><td>Lying supine</td><td>~25% (of standing baseline)</td></tr>
+  <tr><td>Relaxed standing</td><td>100% (baseline)</td></tr>
+  <tr><td>Erect sitting (no support)</td><td>~140% (+40% above standing)</td></tr>
+  <tr><td>Relaxed sitting (slight forward lean)</td><td>~150%</td></tr>
+  <tr><td>Forward slumped sitting</td><td>~190% (+90%) ← MAXIMUM</td></tr>
+  <tr><td>Sitting, backrest 90°</td><td>~140% (+40%)</td></tr>
+  <tr><td>Sitting, backrest 100°</td><td>~115% (+15%)</td></tr>
+  <tr><td>Sitting, backrest 110°</td><td>~105% (+5%) ← OPTIMAL</td></tr>
+  <tr><td>Sitting, backrest 80° (leaned forward)</td><td>~190% (+90%)</td></tr>
+</table>
+
+<h3>Why Sitting Increases Disc Pressure</h3>
+<p>When transitioning from standing to sitting:</p>
+<ol>
+  <li>The pelvis rotates posteriorly (backward tilt)</li>
+  <li>This flattens the lumbar lordosis → lumbar kyphosis</li>
+  <li>The nucleus pulposus migrates posteriorly</li>
+  <li>Posterior annular fibers are stretched and loaded asymmetrically</li>
+  <li>Total disc pressure increases by ~40% above standing</li>
+</ol>
+
+<h3>Backrest Angle Effect</h3>
+<p>Increasing the backrest recline angle from 90° to 110° progressively shifts load from the disc to the backrest. At 110°, the disc pressure is only +5% above standing — the backrest bears most of the torso weight. Beyond 110° becomes impractical for work tasks.</p>
+</section>
+
+<section id="neck">
+<h2>Neck / Cervical Spine Issues</h2>
+<h3>Neck Curve and Vertigo</h3>
+<p><strong>Stiff neck and vertigo:</strong> The cervical spine contains proprioceptive receptors that contribute to balance and spatial orientation. When the neck muscles are chronically tense (from forward head posture — common with VDT use), proprioceptive signals become distorted → symptoms include dizziness, vertigo.</p>
+<ul>
+  <li>Sleeping posture that aggravates stiff neck: lying face-down with head turned to one side (maximum cervical rotation and compression)</li>
+  <li>Poor neck curve (cervical kyphosis or straightened cervical lordosis) develops from: prolonged VDT use, reading with head bowed, driving</li>
+</ul>
+<h3>Four To-Dos for Stiff Neck</h3>
+<ol>
+  <li>Cervical retraction exercises (chin tucks) — restore natural lordosis</li>
+  <li>Monitor height adjustment — screen at or below eye level to reduce forward head posture</li>
+  <li>Regular stretching of neck extensors and trapezius</li>
+  <li>Ergonomic pillow (cervical support pillow) for sleep</li>
+</ol>
+</section>
+
+<section id="pelvis">
+<h2>Pelvis and Pelvic Tilt</h2>
+<p>The pelvis is the base of the spinal column. Its tilt directly affects lumbar curvature:</p>
+<table>
+  <tr><th>Pelvic Tilt Type</th><th>Effect on Lumbar Spine</th><th>Common Cause</th></tr>
+  <tr><td>Anterior tilt (hip flexors tight)</td><td>Increases lumbar lordosis (arched back)</td><td>Prolonged sitting, weak glutes</td></tr>
+  <tr><td>Posterior tilt (slumped sitting)</td><td>Flattens/reverses lumbar lordosis (kyphosis)</td><td>Weak core, bad chair</td></tr>
+  <tr><td>Lateral tilt</td><td>Scoliosis-like asymmetry</td><td>Carrying load one-sided</td></tr>
+</table>
+
+<h3>Anterior Pelvic Tilt (Scenario — Rafiq case, 2023-24)</h3>
+<p>Symptoms: overly curved lower back (hyperlordosis), abdomen protrudes, weak glute activation, tight hip flexors, lower back pain after sitting 8–10 hrs/day.</p>
+<ul>
+  <li><strong>Problem:</strong> Anterior pelvic tilt syndrome (lower crossed syndrome)</li>
+  <li><strong>Tight/overactive:</strong> Hip flexors (psoas, rectus femoris), lumbar erectors</li>
+  <li><strong>Weak/underactive:</strong> Gluteus maximus, abdominal muscles, hamstrings</li>
+  <li><strong>Corrective plan:</strong> Stretch hip flexors; strengthen glutes, hamstrings, deep abdominals; correct workstation height; scheduled breaks</li>
+</ul>
+
+<h3>Weight Gain from Poor Posture</h3>
+<p>Poor posture (slouched sitting) can contribute to weight gain indirectly: (1) Compressed abdominal organs reduce digestive efficiency; (2) Reduced metabolic rate from inactivity in poor posture; (3) Discomfort from poor posture discourages physical activity.</p>
+</section>
+
+<!-- SUMMARY -->
+<section id="summary">
+<h2>Chapter Summary</h2>
+<div class="summary-box">
+  <h3 style="color:var(--acc2);margin-bottom:12px">Key Takeaways</h3>
+  <ol style="padding-left:18px;line-height:2">
+    <li><strong>Vertebral column:</strong> C7 + T12 + L5 + S5 + Co4 = 33 vertebrae; Lumbar = most load-bearing</li>
+    <li><strong>Disc structure:</strong> Annulus fibrosus (outer ring) + Nucleus pulposus (inner gel, 80% water)</li>
+    <li><strong>Disc conditions:</strong> Normal → Degenerative (thins) → Bulging (intact annulus) → Herniated (nucleus escapes) → Thinning (bone-on-bone)</li>
+    <li><strong>Disc nutrition:</strong> Avascular; depends on diffusion during cyclic loading — static postures starve the disc</li>
+    <li><strong>Disc pressure:</strong> Standing=100%; Erect sitting=+40%; Forward slump=+90%; Backrest 110°=only +5%</li>
+    <li><strong>Core muscles:</strong> Protect disc by offloading up to 40%, maintaining lumbar lordosis, reducing shear</li>
+    <li><strong>Neck:</strong> Forward head posture disturbs cervical proprioception → vertigo; lying face-down worst sleeping posture</li>
+    <li><strong>Pelvic tilt:</strong> Anterior = hyperlordosis (hip flexors tight, glutes weak); Posterior = kyphosis (slumped sitting)</li>
+  </ol>
+</div>
+</section>
+
+<!-- QUESTION ANALYSIS -->
+<section id="qanalysis">
+<h2>Question Analysis — Exam Importance</h2>
+<div class="box">
+  <div class="qa-row"><span class="stars">★★★★★</span><span class="qa-topic">Differentiate types of spinal disc conditions with neat sketches</span><span class="qa-count">3× | 12–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★★★</span><span class="qa-topic">Relationship between sitting posture and intervertebral disc pressure</span><span class="qa-count">3× | 10–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★★</span><span class="qa-topic">Principles of seat design that alleviate complaint issues (5 principles)</span><span class="qa-count">1× | 15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Core muscle strengthening and disc degeneration prevention (biomechanics)</span><span class="qa-count">1× | 6 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Stiff neck + vertigo connection + sleeping posture + 4 to-dos</span><span class="qa-count">2× | 8–12 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Anterior pelvic tilt case study (Rafiq scenario)</span><span class="qa-count">1× | 15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Spondylolisthesis — lying down workstation design</span><span class="qa-count">1× | 17 marks</span></div>
+</div>
+</section>
+
+<!-- PYQ -->
+<section id="pyq">
+<h2>Previous Year Questions</h2>
+<p style="color:var(--muted);font-size:12px;margin-bottom:20px">Note: Human Body Joints &amp; Pelvis questions are included at the end of this section.</p>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2023-24</span><span class="pyq-marks">Q4a · 15 marks</span></div>
+  <div class="pyq-q">(a) Rafiq is a 24-year-old software engineering student. He works part-time as a remote web developer, sitting 8–10 hours/day without regular breaks. He has persistent lower back ache and hip tightness. When standing, his lower back appears overly curved and his abdomen protrudes. During workouts, his lower back lifts off the floor during leg raises; he struggles to engage his core during planks. A therapist notes a pelvic tilt during static posture assessment and observes poor glute activation. (i) What problem is Rafiq likely suffering from? (ii) Which muscles are tight/overactive and weak/underactive? (iii) Suggest a corrective plan.</div>
+  <div class="pyq-a"><strong>(i) Problem:</strong> <strong>Anterior Pelvic Tilt (APT)</strong> — the front of the pelvis drops and the back rises, increasing lumbar lordosis. Classic presentation: protruding abdomen, exaggerated lumbar curve, lower back lifts during hip extension exercises.<br><br>
+  <strong>(ii) Muscle imbalance pattern (Lower Crossed Syndrome — Janda):</strong><br>
+  <em>Tight/Overactive:</em> Hip flexors (iliopsoas, rectus femoris), lumbar erector spinae, TFL<br>
+  <em>Weak/Underactive:</em> Gluteus maximus, gluteus medius, deep abdominals (transverse abdominis), hamstrings<br><br>
+  <strong>(iii) Corrective plan:</strong><br>
+  • <strong>Ergonomic:</strong> Adjustable lumbar-support chair, forward-tilt seat pan, standing desk periods, break every 45 min.<br>
+  • <strong>Stretching:</strong> Hip flexor stretches (kneeling lunge), quadriceps stretch, lumbar erector stretch (child's pose).<br>
+  • <strong>Strengthening:</strong> Glute bridges, clamshells, dead bugs (transverse abdominis), bird-dogs, Romanian deadlifts.<br>
+  • <strong>Movement:</strong> Walking breaks, avoid >90 min continuous sitting.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2023-24 · 2022-23 · 2021-22</span><span class="pyq-marks">★★★ 3× · Q4c/Q6b/Q6b · 10–15 marks</span></div>
+  <div class="pyq-q">Discuss the relationship between sitting posture and intervertebral disc pressure.</div>
+  <div class="pyq-a"><strong>Nachemson & Andersson's intradiscal pressure measurements (reference = standing = 100%):</strong><br><br>
+  • <strong>Standing:</strong> 100% (baseline)<br>
+  • <strong>Walking:</strong> 115%<br>
+  • <strong>Standing bent forward 20°:</strong> 150%<br>
+  • <strong>Erect sitting (no backrest):</strong> 140% — posterior pelvic tilt flattens lordosis<br>
+  • <strong>Relaxed sitting (lumbar kyphosis):</strong> 185–190% — worst posture for discs<br>
+  • <strong>Sitting with lumbar support:</strong> 100–110% — lumbar support restores lordosis<br>
+  • <strong>Reclined sitting (120°):</strong> 60–70% — trunk weight transferred to backrest<br>
+  • <strong>Lying supine:</strong> 25%<br><br>
+  <strong>Mechanism:</strong> Posterior pelvic tilt during sitting → lumbar kyphosis → posterior disc height decreases → nucleus pulposus migrates posteriorly → posterior annulus under tension → herniation risk. Maintained lordosis redistributes load to vertebral bodies and facets.<br><br>
+  <strong>Design implication:</strong> Lumbar backrest support is essential. Reclined backrest (100–115°) + lumbar support = best combination for prolonged sitting.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23 · 2021-22 · Jan 2021</span><span class="pyq-marks">★★★ 3× · Q6c/Q5b/Q8b · 12–15 marks</span></div>
+  <div class="pyq-q">With neat sketches, differentiate between different types of spinal disc conditions. / State the functions of a spinal disc. Contrast the different types of spinal disc conditions.</div>
+  <div class="pyq-a"><strong>Functions of intervertebral disc:</strong> Shock absorption, flexibility (flexion/extension/rotation), and maintaining vertebral spacing for nerve exit.<br><br>
+  <strong>Types of disc conditions (pathological progression):</strong><br><br>
+  <strong>1. Normal Disc:</strong> Nucleus pulposus (gel core) centered; annulus fibrosus (fibrous rings) intact; disc height maintained; no nerve contact.<br><br>
+  <strong>2. Disc Bulge:</strong> Annulus weakens asymmetrically; disc margin extends beyond vertebral endplate edge but outer annulus is intact. Broad-based, symmetric. May cause mild nerve pressure.<br><br>
+  <strong>3. Disc Protrusion (Herniation):</strong> Nucleus material pushes into outer annulus fibers; focal outward displacement. Outer annulus intact. Can press on nerve roots → radiculopathy (shooting pain down leg = sciatica).<br><br>
+  <strong>4. Disc Extrusion:</strong> Nucleus pulposus breaks through the outer annulus; material still connected to disc. Severe nerve compression possible.<br><br>
+  <strong>5. Disc Sequestration:</strong> Fragment of nucleus pulposus completely separates and migrates into spinal canal. Can compress spinal cord or cauda equina → emergency.<br><br>
+  <strong>6. Disc Degeneration:</strong> Loss of water content (disc desiccation); disc height decreases; osteophytes form; reduced flexibility. Chronic, age-related. Treated conservatively.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">Jan 2021</span><span class="pyq-marks">Q6c · 15 marks</span></div>
+  <div class="pyq-q">(c) As an ergonomic professional at an IKEA furniture retail company, you have analyzed complaint records and identified them associated with poor seat design and inappropriate sitting posture. You are presenting principles of seat design to alleviate complaint issues. Discuss the salient points of your presentation.</div>
+  <div class="pyq-a"><strong>Presentation: Ergonomic Seat Design Principles to Reduce Spinal Complaints</strong><br><br>
+  <strong>1. Lumbar Support:</strong> Convex pad at L3–L4 to maintain lumbar lordosis; prevents lumbar kyphosis and reduces disc pressure from 185% to ~110% of standing baseline.<br><br>
+  <strong>2. Seat Height Adjustability:</strong> Range 38–52 cm; feet flat on floor; hip and knee angles ≥ 90°; prevents posterior pelvic tilt from dangling feet.<br><br>
+  <strong>3. Seat Depth (Sliding Pan):</strong> 3-finger clearance behind knees; avoids popliteal compression; reduces lower limb circulatory problems.<br><br>
+  <strong>4. Backrest Recline (100–115°):</strong> Transfers trunk weight to backrest; reduces disc pressure significantly; reduces paraspinal muscle load.<br><br>
+  <strong>5. Reduce Postural Fixity:</strong> Dynamic/floating seat mechanisms; encourage position changes; break every 30–45 min.<br><br>
+  <strong>6. Armrests:</strong> At elbow height; reduce shoulder load; transfer some weight off spine (~10–15% load reduction).<br><br>
+  <strong>7. Cushioning:</strong> Medium-firm; breathable; avoids both hard-edge pressure and "sinking-in" softness.<br><br>
+  <strong>8. Consumer education:</strong> Correct sitting posture instruction cards; chair setup guide; reminder of movement breaks.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">Jan 2021</span><span class="pyq-marks">Q8a · 8 marks</span></div>
+  <div class="pyq-q">(a) Do you think men are more prone to chronic pain issues compared to women? Explain your answer.</div>
+  <div class="pyq-a"><strong>No — women are generally more prone to chronic pain conditions than men.</strong><br><br>
+  <strong>Evidence:</strong> Fibromyalgia (9:1 female:male), rheumatoid arthritis (3:1 female), migraines (3:1 female), irritable bowel syndrome (2:1 female), temporomandibular disorders (2:1 female).<br><br>
+  <strong>Reasons women experience more chronic pain:</strong><br>
+  • <strong>Hormonal factors:</strong> Estrogen modulates pain sensitivity; fluctuating estrogen levels (menstrual cycle, menopause) affect pain thresholds. Progesterone has some protective effect.<br>
+  • <strong>Neurological differences:</strong> Women have denser distribution of nociceptors (pain receptors) and more sensitive central sensitization pathways.<br>
+  • <strong>Psychological/psychosocial:</strong> Higher rates of anxiety and depression (pain amplifiers) in women.<br>
+  • <strong>Musculoskeletal differences:</strong> Lower muscle mass relative to body weight → more joint loading per unit muscle force; wider Q-angle (hip-to-knee) → more knee stress.<br>
+  • <strong>Societal factors:</strong> Women historically underdiagnosed for pain — may report more because previously undertreated.<br><br>
+  <strong>Exception — occupational injuries:</strong> Men have higher rates of acute workplace injuries (heavy industry) but women have higher rates of repetitive strain and chronic pain in sedentary jobs.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">Jan 2021</span><span class="pyq-marks">Q8c · 15 marks</span></div>
+  <div class="pyq-q">(c) A factory worker carries load predominantly on the right side of his body. He experiences intense back pain, and during standing, he cannot lift his toes without pushing his hips backward. The plant physician prescribed painkillers. Was the diagnosis correct? What is the cause? Suggest solutions.</div>
+  <div class="pyq-a"><strong>Diagnosis assessment:</strong> Prescribing only painkillers is <strong>incorrect and inadequate</strong>. Painkillers mask symptoms but do not address the biomechanical cause. The correct approach requires ergonomic and physiotherapy intervention.<br><br>
+  <strong>Cause of symptoms:</strong><br>
+  • <strong>Asymmetric loading (right side):</strong> Creates lateral pelvic tilt → spinal scoliosis under load → asymmetric disc compression → disc pathology on loaded side.<br>
+  • <strong>Inability to lift toes (anterior tibialis weakness) + hips pushing back:</strong> Classic sign of <strong>tight hip flexors / tight lumbar extensors</strong> combined with weak anterior chain (hip extensors, anterior tibialis). This suggests the spine is in excessive lordosis that is compensated by hip posterior shift — consistent with spondylolisthesis or severe anterior pelvic tilt.<br><br>
+  <strong>Solutions:</strong><br>
+  • Ergonomic: Use material handling equipment (carts, hoists); balanced load carrying (both hands/sides); job rotation.<br>
+  • Medical: Proper diagnosis (imaging for disc/nerve involvement); physiotherapy; core strengthening.<br>
+  • Footwear: Assess whether footwear is contributing to altered gait.<br>
+  • Postural training: Correct asymmetric loading habits.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2018-19</span><span class="pyq-marks">Q1c · 17 marks</span></div>
+  <div class="pyq-q">(c) Suppose a man suffering from severe spondylolisthesis can work at the sitting condition for at most 30 minutes. However, his online-basis job is such that all he needs is a computer with an internet connection and he is desperate to continue this job. Finding no options to get relief from his disease for the next few months, he finds out a plan so that he can continue his job at lying down condition. In his plan, he realizes that a 2-in-1 PC (a portable computer that has features of both the tablets and laptops) can solve his problem. However, many other types of equipment are required for the workstation design as it should consider all the corresponding ergonomic factors so that no further physical problem arises during this short time working period. How should he design his workstation with that 2-in-1 PC? Explain with a schematic of the possible design solution. <em>Necessary anthropometric data are given in Table for Q. 1(c).</em>
+  <div class="box warning" style="margin-top:10px"><strong>⚠ Missing Table:</strong> The original 2018-19 exam question included an anthropometric data table (Table for Q. 1(c)) providing key measurements (e.g., sitting height, shoulder-to-elbow length, eye height lying, visual cone angles, etc.) needed to specify dimensions for the lying-down workstation. This table was <strong>not reproduced</strong> in the topicwise question compilation PDF. For a complete numerical answer, refer to the original IPE 407 exam paper for 2018-19.</div>
+  </div>
+  <div class="pyq-a"><strong>Spondylolisthesis</strong> = forward slipping of one vertebra over another → spinal canal narrowing → sitting compresses the slip → pain within 30 min.<br><br>
+  <strong>Lying-down workstation design principles:</strong><br><br>
+  <strong>Body positioning:</strong> Supine with slight knee bend (semi-recumbent) OR prone with chest supported — supine preferred (lowest disc pressure ~25% of standing).<br><br>
+  <strong>Device positioning for supine:</strong><br>
+  • 2-in-1 PC held by an adjustable <strong>tablet arm mount</strong> (ceiling/wall mounted or floor stand) positioned 40–60 cm above chest at 15–30° angle to minimize neck flexion.<br>
+  • Screen perpendicular to line of sight — no neck rotation.<br>
+  • <strong>Wireless keyboard and mouse</strong> resting on the chest/abdomen support or lap desk.<br><br>
+  <strong>Support equipment:</strong><br>
+  • Lumbar/leg pillows to maintain comfortable position.<br>
+  • Neck pillow to keep cervical spine in neutral.<br>
+  • <strong>Prism glasses</strong> (angled glasses) allow viewing a horizontal screen without lifting head.<br><br>
+  <strong>Ergonomic considerations:</strong><br>
+  • Arms should not be held up unsupported for long (shoulder fatigue) → use bean bag lap desk.<br>
+  • Regular position changes (supine → semi-reclined → prone) every 20–30 min.<br>
+  • Lighting: indirect, behind user to prevent screen glare.<br><br>
+  <figure style="margin:14px 0 4px">
+  <svg viewBox="0 0 540 220" width="100%" style="max-width:540px;font-family:inherit;display:block;margin:0 auto" aria-label="Schematic — Lying-down workstation for spondylolisthesis patient">
+    <rect width="540" height="220" fill="#f8fafc" rx="8" stroke="#e2e8f0"/>
+    <text x="270" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">Schematic: Lying-Down Workstation (Spondylolisthesis)</text>
+    <!-- Floor/bed surface -->
+    <rect x="30" y="155" width="480" height="12" rx="2" fill="#b45309" opacity="0.7"/>
+    <text x="270" y="182" text-anchor="middle" font-size="10" fill="#78350f">Adjustable bed / recliner surface</text>
+    <!-- Mattress -->
+    <rect x="30" y="140" width="480" height="17" rx="4" fill="#c7d2fe" stroke="#818cf8" stroke-width="1"/>
+    <!-- Pillow (head) -->
+    <ellipse cx="85" cy="134" rx="40" ry="12" fill="#e0e7ff" stroke="#818cf8" stroke-width="1"/>
+    <text x="85" y="137" text-anchor="middle" font-size="9" fill="#4f46e5">Neck pillow</text>
+    <!-- Leg pillow -->
+    <ellipse cx="410" cy="134" rx="40" ry="12" fill="#e0e7ff" stroke="#818cf8" stroke-width="1"/>
+    <text x="410" y="137" text-anchor="middle" font-size="9" fill="#4f46e5">Knee pillow</text>
+    <!-- Human body supine -->
+    <!-- head -->
+    <circle cx="85" cy="122" r="15" fill="#f5c299" stroke="#c8865c" stroke-width="1.5"/>
+    <!-- neck -->
+    <rect x="80" y="137" width="10" height="8" rx="2" fill="#f5c299" stroke="#c8865c" stroke-width="1"/>
+    <!-- torso -->
+    <rect x="90" y="122" width="175" height="22" rx="8" fill="#f5c299" stroke="#c8865c" stroke-width="1.5"/>
+    <!-- lumbar highlight (spondylolisthesis area) -->
+    <ellipse cx="230" cy="133" rx="20" ry="9" fill="#fca5a5" stroke="#dc2626" stroke-width="1.5" opacity="0.7"/>
+    <text x="230" y="136" text-anchor="middle" font-size="8" fill="#991b1b">L4/L5</text>
+    <!-- legs -->
+    <rect x="265" y="122" width="175" height="20" rx="8" fill="#f5c299" stroke="#c8865c" stroke-width="1.5"/>
+    <!-- slight knee bend (pillow lifts knees) -->
+    <path d="M390 122 Q415 108 435 122" fill="#f5c299" stroke="#c8865c" stroke-width="1.5"/>
+    <!-- arms/keyboard -->
+    <line x1="145" y1="130" x2="175" y2="130" stroke="#f5c299" stroke-width="8" stroke-linecap="round"/>
+    <line x1="145" y1="130" x2="175" y2="130" stroke="#c8865c" stroke-width="1.2" stroke-linecap="round"/>
+    <rect x="155" y="122" width="40" height="12" rx="3" fill="#94a3b8" stroke="#64748b" stroke-width="1"/>
+    <text x="175" y="130" text-anchor="middle" font-size="8" fill="white">Keyboard</text>
+    <!-- tablet arm mount (vertical pole) -->
+    <rect x="192" y="40" width="6" height="85" rx="2" fill="#475569"/>
+    <!-- horizontal arm -->
+    <rect x="195" y="40" width="45" height="6" rx="2" fill="#475569"/>
+    <!-- tablet/screen tilted -->
+    <rect x="228" y="27" width="50" height="36" rx="4" fill="#1e293b" stroke="#475569" stroke-width="2" transform="rotate(-15,253,45)"/>
+    <rect x="232" y="31" width="42" height="28" rx="2" fill="#38bdf8" opacity="0.4" transform="rotate(-15,253,45)"/>
+    <text x="253" y="78" text-anchor="middle" font-size="9" fill="#334155">Tablet arm</text>
+    <text x="253" y="88" text-anchor="middle" font-size="9" fill="#334155">mount</text>
+    <!-- dimension annotations -->
+    <line x1="195" y1="45" x2="228" y2="45" stroke="#16a34a" stroke-width="1" stroke-dasharray="3,2"/>
+    <!-- prism glasses indicator -->
+    <text x="85" y="108" text-anchor="middle" font-size="8" fill="#7c3aed">Prism glasses</text>
+    <line x1="85" y1="110" x2="85" y2="115" stroke="#7c3aed" stroke-width="1" stroke-dasharray="2,2"/>
+    <!-- dimension: screen distance -->
+    <line x1="100" y1="55" x2="225" y2="55" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ar)"/>
+    <text x="162" y="52" text-anchor="middle" font-size="9" fill="#64748b">40–60 cm</text>
+  </svg>
+  <figcaption style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px">Schematic: Lying-down workstation for a spondylolisthesis patient using a 2-in-1 PC. The adjustable tablet arm mount holds the screen overhead; prism glasses (optional) eliminate neck flexion; a wireless keyboard rests on the abdomen; knee and neck pillows maintain spinal neutral alignment.</figcaption>
+  </figure></div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2018-19</span><span class="pyq-marks">Q3c · 12 marks</span></div>
+  <div class="pyq-q">(c) Can stiff neck cause 'Vertigo'? How? What sleeping postures aggravate stiff neck? Explain with schematics. Mention four to-dos to get rid of stiff neck.</div>
+  <div class="pyq-a"><strong>Can stiff neck cause vertigo? Yes.</strong><br>
+  Mechanism: Cervicogenic vertigo — tight muscles/restricted joints in the upper cervical spine (C1–C3) interfere with proprioceptive signals from neck mechanoreceptors to the vestibular system (balance center). The brain receives conflicting signals → dizziness/vertigo. Also: tight suboccipital muscles can compress the vertebral arteries → reduced blood flow to cerebellum → true vertigo.<br><br>
+  <strong>Sleeping postures that aggravate stiff neck:</strong><br>
+  • Sleeping on stomach (prone): Forces head rotation 90° → sustained cervical rotation → muscle and joint strain.<br>
+  • Sleeping on side with pillow too high or too low: Lateral flexion of cervical spine throughout the night.<br>
+  • Sleeping with multiple pillows causing neck flexion.<br>
+  • Using excessively firm/soft mattress without adequate neck support.<br><br>
+  <strong>Four to-dos to get rid of stiff neck:</strong><br>
+  1. Apply heat (warm compress 15–20 min) to relax muscle spasm.<br>
+  2. Gentle range-of-motion exercises (slow neck tilts, rotations — NOT forceful).<br>
+  3. Ergonomic assessment: monitor height, pillow height correction.<br>
+  4. Physiotherapy: soft tissue massage, mobilization, posture retraining.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2018-19</span><span class="pyq-marks">Q3d · 6 marks</span></div>
+  <div class="pyq-q">(d) Ms. X was advised to cut her diet for weight loss. She claimed she rarely overeats. The doctor told her to eat the same calories in 5–6 small meals instead of 2–3. This worked without cutting favorite foods. How does the same caloric intake spread over more meals burn more weight?</div>
+  <div class="pyq-a"><strong>Mechanism: Thermic Effect of Food (TEF) and Metabolic Rate</strong><br><br>
+  Every time you eat, your body expends energy to digest, absorb, and metabolize the food — this is the <strong>Thermic Effect of Food (TEF)</strong>, approximately 10% of total caloric intake.<br><br>
+  <strong>Why more meals = more total TEF:</strong> Eating 6 small meals triggers 6 digestive responses; each meal "revs up" metabolism briefly. Though total TEF is similar to 2–3 large meals (TEF is proportional to calories consumed, not meal frequency), the key mechanisms are:<br><br>
+  1. <strong>Insulin management:</strong> Large infrequent meals → large insulin spikes → more fat storage. Small frequent meals → lower, stable insulin → less fat storage signal.<br>
+  2. <strong>Avoidance of fasting-induced fat storage:</strong> Long gaps between meals → body conserves energy → lower metabolic rate. Frequent meals prevent this adaptation.<br>
+  3. <strong>Muscle protein synthesis:</strong> More frequent protein intake → better muscle maintenance → higher resting metabolic rate (muscle burns more calories than fat at rest).<br>
+  4. <strong>Reduced overeating:</strong> Prevents extreme hunger that leads to binge eating.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2017-18</span><span class="pyq-marks">Q1b · 6 marks</span></div>
+  <div class="pyq-q">(b) How can strengthening core muscles save you from spinal disk degeneration at an early age? Explain from a biomechanical point of view.</div>
+  <div class="pyq-a"><strong>Biomechanical role of core muscles in disc protection:</strong><br><br>
+  The <strong>core muscles</strong> (transverse abdominis, multifidus, internal obliques, diaphragm, pelvic floor) form a muscular cylinder around the lumbar spine. When activated, they:<br><br>
+  1. <strong>Increase intra-abdominal pressure (IAP):</strong> The pressurized abdominal cavity acts as a hydraulic support pillar, reducing compressive load on lumbar discs by 20–40%.<br>
+  2. <strong>Provide intersegmental stability:</strong> Multifidus controls micro-movements between vertebrae; prevents the abnormal shear forces that damage annular fibers.<br>
+  3. <strong>Maintain lumbar lordosis:</strong> Prevents the kyphotic posture that maximizes disc pressure.<br>
+  4. <strong>Distribute load:</strong> Strong core transfers some spinal load to the pelvis and thoracic cage, reducing the share borne by lumbar discs.<br><br>
+  <strong>Without strong core:</strong> Every spine movement involves uncontrolled micro-shear → progressive annular fiber damage → disc degeneration accelerated.<br><br>
+  <strong>Evidence:</strong> Subjects with chronic low back pain show atrophy of multifidus; core training programs reduce recurrence of disc-related back pain.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2017-18 · 2016-17</span><span class="pyq-marks">★ 2× · Q2b/Q3c · 8/9 marks</span></div>
+  <div class="pyq-q">(b) How can you restore a bad neck curve? Explain with necessary schematics. / (c) What types of tasks deteriorate your neck curve? Briefly explain.</div>
+  <div class="pyq-a"><strong>Tasks that deteriorate neck curve (cervical kyphosis / loss of lordosis):</strong><br>
+  • Prolonged forward head posture (computer use, smartphone use — "text neck")<br>
+  • Jobs requiring downward gaze (sewing, microscopy, dental work)<br>
+  • Driving with poorly positioned headrest<br>
+  • Sleeping prone (forces neck rotation and loss of lordosis)<br>
+  • Heavy lifting with forward head posture<br><br>
+  <strong>How to restore bad neck curve:</strong><br>
+  <strong>1. Chin tucks (cervical retraction):</strong> Pull chin straight back (not down) — activates deep cervical flexors; counteracts forward head. Hold 5 sec, 10 reps × 3 sets daily.<br>
+  <strong>2. Cervical extension exercises:</strong> Gently tilt head back over a rolled towel or cervical roll.<br>
+  <strong>3. Ergonomic correction:</strong> Raise monitor to eye level; use document holder; adjust car headrest.<br>
+  <strong>4. Strengthening:</strong> Deep cervical flexor training, mid-trapezius and rhomboid strengthening to pull shoulders back.<br>
+  <strong>5. Postural taping/bracing:</strong> Temporarily corrects forward head to reinforce neutral position.<br>
+  <strong>6. Physiotherapy:</strong> Manual therapy, mobilization of stiff upper thoracic segments (which often drive forward head posture).</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2016-17</span><span class="pyq-marks">Q4c · 6 marks</span></div>
+  <div class="pyq-q">(c) Rabbi studies 8 hours/day at a reading table, mostly in a poor, slouched posture. (i) What future problems may he face? (ii) He is slowly gaining weight despite thinking he does enough physical work and eats frugally. Is weight gain correlated with his posture? Justify.</div>
+  <div class="pyq-a"><strong>(i) Future problems from chronic slouched posture:</strong><br>
+  • Lumbar disc herniation/degeneration (maximum disc pressure in slumped sitting = 185% of standing)<br>
+  • Chronic lower back pain and upper back pain<br>
+  • Cervical kyphosis / forward head posture → neck pain, headaches<br>
+  • Thoracic hyperkyphosis ("hunchback") → reduced lung capacity<br>
+  • Shoulder impingement syndrome (rounded shoulders compress subacromial space)<br><br>
+  <strong>(ii) Weight gain correlation with posture — Yes:</strong><br>
+  <strong>Mechanism 1 — Compressed diaphragm:</strong> Slouched posture compresses the thoracic and abdominal cavities → reduced breathing depth → lower oxygen availability → reduced aerobic metabolism → fewer calories burned.<br>
+  <strong>Mechanism 2 — Cortisol:</strong> Poor posture and chronic pain → elevated cortisol → promotes fat storage, especially visceral fat, and increases appetite (cortisol stimulates ghrelin).<br>
+  <strong>Mechanism 3 — Reduced NEAT:</strong> Chronic discomfort from poor posture may reduce non-exercise activity (walking, standing) → lower total daily energy expenditure.<br>
+  <strong>Mechanism 4 — Gut compression:</strong> Bent posture compresses digestive organs → reduced digestive efficiency → altered gut hormones.</div>
+</div>
+
+<div style="margin-top:32px;padding-top:20px;border-top:2px solid var(--border)">
+<h3 style="color:var(--blue);margin-bottom:16px">Human Body Joints &amp; Pelvis — PYQs</h3>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23</span><span class="pyq-marks">Q7b · 10 marks</span></div>
+  <div class="pyq-q">(b) How is pelvic tilt related to pregnancy? What would be your suggestions for fixing pelvic tilt after the pregnancy period?</div>
+  <div class="pyq-a"><strong>Pelvic tilt and pregnancy:</strong><br>
+  During pregnancy, the growing uterus shifts the center of gravity forward → body compensates with increased lumbar lordosis and <strong>anterior pelvic tilt</strong>. The added weight of the fetus/uterus (~3–5 kg at term) also stretches abdominal muscles (rectus abdominis — diastasis recti possible) and places more load on lumbar discs and sacroiliac joints.<br><br>
+  Relaxin hormone released during pregnancy loosens ligaments (preparation for birth) → hypermobility of pelvic joints → pelvic girdle pain, symphysis pubis dysfunction.<br><br>
+  <strong>Fixing post-pregnancy pelvic tilt:</strong><br>
+  • Wait for relaxin levels to normalize (6–12 weeks postpartum) before intensive exercise.<br>
+  • <strong>Core rehabilitation:</strong> Start with diaphragmatic breathing → transverse abdominis activation → progress to planks, bird-dogs.<br>
+  • <strong>Gluteal strengthening:</strong> Bridges, clamshells, squats — to counteract anterior tilt.<br>
+  • <strong>Hip flexor stretching:</strong> Kneeling lunge stretch (shortened during pregnancy).<br>
+  • <strong>Postural awareness:</strong> Avoid prolonged standing in exaggerated lordosis; use supportive footwear.<br>
+  • <strong>Pelvic floor therapy:</strong> With a women's health physiotherapist for comprehensive rehabilitation.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">Jan 2021</span><span class="pyq-marks">Q4a · 10 marks</span></div>
+  <div class="pyq-q">(a) Your team is tasked with designing a motorbike saddle for women only. You decide to design the saddle for proper posture but sacrifice comfort completely. Suggest specifications for the saddle that will ensure proper posture during driving. Does this design violate ergonomic design principles? Explain.</div>
+  <div class="pyq-a"><strong>Saddle specifications for proper posture (women-specific):</strong><br>
+  • <strong>Width:</strong> Match female ischial tuberosity spacing (wider than male average — women's sit bones are ~10–15% wider). Approximately 15–17 cm seat width at tuberosity contact zone.<br>
+  • <strong>Nose width:</strong> Narrow to prevent perineal pressure and allow leg freedom.<br>
+  • <strong>Tilt:</strong> Level or 2–3° nose-down to prevent forward sliding and reduce perineal pressure.<br>
+  • <strong>Firmness:</strong> Firm base (no excessive foam sinking) for pelvic stability; bony prominences receive firm support — maintains anterior pelvic tilt and lumbar lordosis.<br>
+  • <strong>Height:</strong> Adjusted so both feet can touch the ground with slight bend in knees (safety) OR for sport riding: pedal at bottom position with ~20–25° knee bend.<br><br>
+  <strong>Does this violate ergonomic principles?</strong><br>
+  <strong>Yes, partially.</strong> Ergonomics encompasses both performance (posture) AND well-being (comfort, injury prevention). Sacrificing comfort entirely violates the holistic definition. A properly designed ergonomic seat should achieve both. However, in motorcycle design, posture for safety and control is prioritized — the compromise is acceptable if discomfort is minimal and not injurious.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">Jan 2021</span><span class="pyq-marks">Q4b · 12 marks</span></div>
+  <div class="pyq-q">(b) State some design considerations for the saddle (from above scenario) that ensure the pelvis does not experience undue strain. In your opinion, can men also use these bikes? Explain.</div>
+  <div class="pyq-a"><strong>Design considerations to prevent pelvic strain:</strong><br>
+  • <strong>Adequate width for ischial tuberosities:</strong> Support bony prominences, not soft tissue. Saddle width must match sit-bone spacing to prevent soft-tissue compression.<br>
+  • <strong>Central cutout or pressure relief channel:</strong> Reduces perineal (soft tissue) pressure — important for both sexes but especially for women (labia/perineal anatomy).<br>
+  • <strong>Lumbar support or backrest:</strong> For extended riding, a backrest maintains lumbar lordosis and reduces pelvic rocking.<br>
+  • <strong>Pelvic stabilization:</strong> Saddle shape should prevent lateral pelvic tilt during riding (caused by asymmetric weight shifts).<br>
+  • <strong>Footpeg position:</strong> Height and forward position of footpegs affects hip angle → affects pelvic tilt.<br>
+  • <strong>Vibration damping:</strong> Anti-vibration seat material to protect sacroiliac joints and discs from road vibration.<br><br>
+  <strong>Can men use these bikes?</strong><br>
+  <strong>Not optimally.</strong> Male ischial tuberosity spacing is ~10–15% narrower than female. A saddle designed for female sit-bone spacing will be too wide for men → weight falls between tuberosities onto soft tissue → perineal pressure → numbness, impaired circulation. The posture-focused features (lumbar support, firmness, cutout) would still benefit men, but saddle width needs to be gender-specific.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2017-18</span><span class="pyq-marks">Q2c · 7 marks</span></div>
+  <div class="pyq-q">(c) Consider Fig. 2(a) showing a seated worker at a computer. (i) Which type of pelvic tilt occurs? (ii) Which muscles are included in this type of pelvic tilt? How do they affect your back and neck?
+<figure style="margin:14px 0 4px">
+<svg viewBox="0 0 480 290" width="100%" style="max-width:480px;font-family:inherit;display:block;margin:0 auto" aria-label="Fig. 2(a) — Seated computer worker showing posterior pelvic tilt">
+  <rect width="480" height="290" fill="#f8fafc" rx="8" stroke="#e2e8f0"/>
+  <text x="240" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">Fig. 2(a) — Posterior Pelvic Tilt at Computer Workstation</text>
+
+  <!-- === CHAIR === -->
+  <!-- seat -->
+  <rect x="80" y="175" width="110" height="14" rx="3" fill="#94a3b8" stroke="#64748b" stroke-width="1.5"/>
+  <!-- backrest -->
+  <rect x="80" y="100" width="14" height="78" rx="3" fill="#94a3b8" stroke="#64748b" stroke-width="1.5"/>
+  <!-- legs -->
+  <rect x="84" y="189" width="8" height="45" rx="2" fill="#64748b"/>
+  <rect x="174" y="189" width="8" height="45" rx="2" fill="#64748b"/>
+
+  <!-- === DESK & MONITOR === -->
+  <!-- desk surface -->
+  <rect x="175" y="145" width="200" height="10" rx="2" fill="#b45309" stroke="#92400e" stroke-width="1"/>
+  <!-- monitor stand -->
+  <rect x="285" y="98" width="8" height="47" rx="2" fill="#475569"/>
+  <!-- monitor -->
+  <rect x="255" y="58" width="68" height="44" rx="4" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+  <rect x="260" y="62" width="58" height="34" rx="2" fill="#38bdf8" opacity="0.4"/>
+
+  <!-- === FIGURE (slumped posture) === -->
+  <!-- pelvis — rotated posteriorly (back tilted) -->
+  <ellipse cx="145" cy="175" rx="22" ry="14" fill="#f5c299" stroke="#c8865c" stroke-width="1.5" transform="rotate(-10,145,175)"/>
+  <!-- posterior tilt indicator arc -->
+  <path d="M128 170 A18 18 0 0 0 148 162" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="3,2"/>
+  <text x="108" y="162" font-size="9" fill="#dc2626" font-weight="bold">Posterior</text>
+  <text x="108" y="172" font-size="9" fill="#dc2626" font-weight="bold">pelvic tilt</text>
+
+  <!-- lumbar spine — kyphotic (rounded outward) -->
+  <path d="M150 170 C170 158 172 140 165 125 C160 112 155 102 155 95" fill="none" stroke="#6b7280" stroke-width="4" stroke-linecap="round"/>
+  <!-- spine curve annotation -->
+  <path d="M172 140 Q185 138 192 148" fill="none" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <text x="193" y="145" font-size="9" fill="#dc2626">Lumbar</text>
+  <text x="193" y="155" font-size="9" fill="#dc2626">kyphosis</text>
+
+  <!-- thorax/upper back — kyphotic hunch -->
+  <path d="M155 95 C150 83 148 70 155 60" fill="none" stroke="#6b7280" stroke-width="4" stroke-linecap="round"/>
+  <path d="M148 72 Q135 70 132 80" fill="none" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <text x="100" y="77" font-size="9" fill="#f59e0b">Thoracic</text>
+  <text x="100" y="87" font-size="9" fill="#f59e0b">kyphosis</text>
+
+  <!-- head — forward head posture -->
+  <circle cx="162" cy="47" r="18" fill="#f5c299" stroke="#c8865c" stroke-width="1.5"/>
+  <!-- ear dot -->
+  <circle cx="150" cy="48" r="2" fill="#c8865c"/>
+  <!-- forward head arrow -->
+  <line x1="162" y1="47" x2="192" y2="47" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="2,2"/>
+  <polygon points="192,43 200,47 192,51" fill="#dc2626"/>
+  <text x="202" y="45" font-size="9" fill="#dc2626">Forward</text>
+  <text x="202" y="55" font-size="9" fill="#dc2626">head posture</text>
+
+  <!-- neck cervical spine -->
+  <line x1="156" y1="60" x2="155" y2="66" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- shoulder — rounded forward -->
+  <ellipse cx="143" cy="90" rx="14" ry="10" fill="#f5c299" stroke="#c8865c" stroke-width="1.2" transform="rotate(-20,143,90)"/>
+  <!-- upper arm -->
+  <line x1="140" y1="97" x2="155" y2="130" stroke="#f5c299" stroke-width="8" stroke-linecap="round"/>
+  <line x1="140" y1="97" x2="155" y2="130" stroke="#c8865c" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- forearm toward keyboard -->
+  <line x1="155" y1="130" x2="195" y2="142" stroke="#f5c299" stroke-width="7" stroke-linecap="round"/>
+  <line x1="155" y1="130" x2="195" y2="142" stroke="#c8865c" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- thigh -->
+  <line x1="145" y1="183" x2="185" y2="185" stroke="#f5c299" stroke-width="10" stroke-linecap="round"/>
+  <line x1="145" y1="183" x2="185" y2="185" stroke="#c8865c" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- lower leg -->
+  <line x1="185" y1="185" x2="185" y2="230" stroke="#f5c299" stroke-width="9" stroke-linecap="round"/>
+  <line x1="185" y1="185" x2="185" y2="230" stroke="#c8865c" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- === MUSCLE LABELS === -->
+  <!-- hamstrings (tightened) -->
+  <path d="M165 200 Q200 215 185 230" fill="none" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <text x="204" y="213" font-size="9" fill="#dc2626">Tight hamstrings</text>
+  <text x="204" y="223" font-size="9" fill="#dc2626">(pull pelvis back)</text>
+
+  <!-- lumbar erectors (weakened) -->
+  <path d="M172 150 Q230 148 232 155" fill="none" stroke="#6b7280" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="234" y="153" font-size="9" fill="#6b7280">Weak lumbar</text>
+  <text x="234" y="163" font-size="9" fill="#6b7280">erectors</text>
+
+  <!-- vertical reference line -->
+  <line x1="58" y1="40" x2="58" y2="240" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="58" y="38" text-anchor="middle" font-size="9" fill="#94a3b8">Vertical</text>
+</svg>
+<figcaption style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px">Fig. 2(a): Seated computer worker in slumped posture showing <strong>posterior pelvic tilt</strong> — the top of the pelvis tilts backward, flattening the lumbar lordosis into kyphosis. Tight hamstrings pull the ischium downward; the spine compensates with thoracic kyphosis and forward head posture.</figcaption>
+</figure>
+</div>
+  <div class="pyq-a"><strong>(i) Type of pelvic tilt in forward-slumped seated computer posture:</strong><br>
+  <strong>Posterior pelvic tilt</strong> — the top of the pelvis tilts backward (ischial tuberosities slide forward), flattening or reversing the lumbar lordosis into lumbar kyphosis. The lumbar spine rounds outward.<br><br>
+  <strong>(ii) Muscles involved in posterior pelvic tilt:</strong><br>
+  <em>Tight/shortened:</em> Hamstrings (biceps femoris, semimembranosus, semitendinosus) — pull the ischium down → rotate pelvis posteriorly. Rectus abdominis (shortened in slumped posture).<br>
+  <em>Lengthened/weak:</em> Hip flexors (iliopsoas), lumbar erector spinae.<br><br>
+  <strong>How they affect back and neck:</strong><br>
+  • Posterior pelvic tilt → lumbar kyphosis → increased posterior disc pressure (185% of standing) → disc herniation risk.<br>
+  • Forward slumped lumbar spine causes compensatory thoracic hyperkyphosis → shoulders round → head protrudes forward (forward head posture).<br>
+  • Forward head (+1 cm = +2–3 kg load on cervical spine) → chronic neck muscle tension, cervicogenic headaches, possible cervical disc compression.<br>
+  • Rounded shoulders → shoulder impingement risk.</div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+  var KEY='esm_zar_ch2';
+  var st={curIdx:0,completed:[]};
+  try{var sv=localStorage.getItem(KEY);if(sv){var p=JSON.parse(sv);st.curIdx=p.curIdx||0;st.completed=p.completed||[];}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+  var secs=[].slice.call(document.querySelectorAll('main > section'));
+
+  /* build tab strip */
+  var strip=document.createElement('div');strip.id='tab-strip';
+  secs.forEach(function(sec,i){
+    var h2=sec.querySelector('h2');
+    var raw=h2?h2.textContent:'§'+(i+1);
+    var label=raw.replace(/[★✓].*/,'').replace(/\s*\(.*\)/,'').trim();
+    if(label.length>24)label=label.substring(0,22)+'…';
+    var t=document.createElement('button');
+    t.className='sec-tab';t.id='tab-'+i;t.setAttribute('data-i',i);
+    t.textContent=(i+1)+'. '+label;
+    t.addEventListener('click',function(){show(+this.getAttribute('data-i'));}); 
+    strip.appendChild(t);
+  });
+  /* Build full-screen layout: header + sidebar + main */
+  var h1El=document.querySelector('main > h1');
+  var metaEl=document.querySelector('.chapter-meta');
+  var mainEl=document.querySelector('main');
+  var pgHeader=document.createElement('div');pgHeader.id='page-header';
+  if(h1El)pgHeader.appendChild(h1El);
+  if(metaEl)pgHeader.appendChild(metaEl);
+  document.body.prepend(pgHeader);
+  var pgBody=document.createElement('div');pgBody.id='page-body';
+  var sidebarEl=document.createElement('div');sidebarEl.id='sidebar';
+  var stitle=document.createElement('div');stitle.id='sidebar-title';stitle.textContent='Sections';
+  sidebarEl.appendChild(stitle);
+  sidebarEl.appendChild(strip);
+  pgBody.appendChild(sidebarEl);
+  if(mainEl)pgBody.appendChild(mainEl);
+  document.body.appendChild(pgBody);
+
+  /* prev/next + mark-done */
+  secs.forEach(function(sec,i){
+    var nav=document.createElement('div');nav.className='sec-nav';
+    var pBtn=i>0?'<button class="sec-btn" id="pbtn'+i+'">← Prev</button>':'<span></span>';
+    var nBtn=i<secs.length-1?'<button class="sec-btn" id="nbtn'+i+'">Next →</button>':'<span style="color:var(--green);font-size:12px">✓ Done</span>';
+    nav.innerHTML=pBtn+'<span class="sec-ctr">'+(i+1)+' / '+secs.length+'</span>'+nBtn;
+    sec.appendChild(nav);
+    if(i>0){(function(x){var b=document.getElementById('pbtn'+x);if(b)b.addEventListener('click',function(){show(x-1);});})(i);}
+    if(i<secs.length-1){(function(x){var b=document.getElementById('nbtn'+x);if(b)b.addEventListener('click',function(){show(x+1);});})(i);}
+    var mr=document.createElement('div');mr.className='mark-row';
+    var mb=document.createElement('button');mb.className='mark-btn';mb.id='mark'+i;mb.setAttribute('data-i',i);
+    mb.addEventListener('click',function(){toggleDone(+this.getAttribute('data-i'));});
+    mr.appendChild(mb);sec.appendChild(mr);
+  });
+
+  function show(idx){
+    if(idx<0)idx=0;if(idx>=secs.length)idx=secs.length-1;
+    st.curIdx=idx;save();
+    secs.forEach(function(s,i){s.classList.toggle('sec-active',i===idx);});
+    document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    refreshUI();
+  }
+
+  function toggleDone(idx){
+    var ci=st.completed.indexOf(idx);
+    if(ci>=0)st.completed.splice(ci,1);else st.completed.push(idx);
+    save();refreshUI();
+  }
+
+  function refreshUI(){
+    var idx=st.curIdx,done=st.completed.length,total=secs.length;
+    var pct=total?Math.round((done/total)*100):0;
+    var pb=document.getElementById('progress-bar');
+    var pl=document.getElementById('progress-label');
+    if(pb)pb.style.width=pct+'%';
+    if(pl)pl.textContent=done+'/'+total+' done';
+    secs.forEach(function(s,i){
+      var t=document.getElementById('tab-'+i);if(!t)return;
+      var isDone=st.completed.indexOf(i)>=0,isActive=i===idx;
+      var label=t.textContent.replace(/^[✓ ]*\d+\. /,'');
+      t.className='sec-tab'+(isActive?' tab-active':isDone?' tab-done':'');
+      t.textContent=(isDone&&!isActive?'✓ ':''+(i+1)+'. ')+label;
+    });
+    var at=document.getElementById('tab-'+idx);
+    if(at)at.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    secs.forEach(function(s,i){
+      var mb=document.getElementById('mark'+i);if(!mb)return;
+      var isDone=st.completed.indexOf(i)>=0;
+      mb.textContent=isDone?'✓ Done  · undo':'☐  Mark done';
+      mb.classList.toggle('is-done',isDone);
+    });
+  }
+
+  show(st.curIdx);
+  var banner=document.getElementById('resume-banner');
+  if(banner&&(st.curIdx>0||st.completed.length>0)){
+    banner.style.display='block';
+    banner.textContent='Resuming — §'+(st.curIdx+1)+' of '+secs.length+(st.completed.length?' · '+st.completed.length+' done':'');
+  }
+})();
+</script>
+
+<style id="tt-style">
+.tt-done-btn{display:inline-flex;align-items:center;gap:.35rem;margin-left:auto;padding:.28rem .8rem;border-radius:20px;border:1px solid var(--border,#2d3450);background:transparent;color:var(--muted,#8899aa);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tt-done-btn:hover{border-color:var(--green,#4ade80);color:var(--green,#4ade80)}
+.tt-done-btn.is-done{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:var(--green,#4ade80)}
+.tt-done-btn .tt-icon{font-size:.85rem}
+/* Chapter progress bar in sidebar */
+#tt-chapter-bar{margin:1rem .5rem .5rem;padding:.7rem .9rem;background:var(--bg3,#1e2130);border-radius:9px;border:1px solid var(--border,#2d3450)}
+#tt-chapter-bar .tt-bar-label{font-size:.7rem;color:var(--muted,#8899aa);display:flex;justify-content:space-between;margin-bottom:.45rem}
+#tt-chapter-bar .tt-bar-bg{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+#tt-chapter-bar .tt-bar-fill{height:100%;background:linear-gradient(90deg,var(--acc,#e8832a),var(--acc2,#f0a855));border-radius:999px;transition:width .4s ease}
+</style>
+<script id="topic-tracker-script">
+(function(){
+  // Derive key from filename
+  var href = location.pathname || location.href;
+  var m = href.match(/([A-Z]+)_Ch(\d+)/i);
+  if (!m) return;
+  var prefix = m[1].toLowerCase();
+  var num = m[2];
+  var lsBase = 'esm_' + prefix + '_ch' + num;
+  var topicsKey = lsBase + '_topics';
+  var pctKey = lsBase + '_pct';
+
+  // Find study sections (exclude pyq / quick-review)
+  function getStudySections(){
+    return Array.from(document.querySelectorAll('main > section[id], #content > section[id]')).filter(function(s){
+      return !s.id.match(/pyq|qr|quick/i);
+    });
+  }
+
+  // Load state
+  var state = {};
+  try{ state = JSON.parse(localStorage.getItem(topicsKey)||'{}'); }catch(e){}
+
+  function savePct(sections){
+    var done = sections.filter(function(s){ return state[s.id]; }).length;
+    var pct = sections.length ? Math.round(done/sections.length*100) : 0;
+    try{
+      localStorage.setItem(pctKey, pct);
+      // mark visited when anything is done
+      if(done>0) localStorage.setItem('esm_visited_'+prefix+'_ch'+num,'1');
+    }catch(e){}
+    return pct;
+  }
+
+  function updateBar(pct){
+    var bar = document.getElementById('tt-bar-fill');
+    var cnt = document.getElementById('tt-bar-cnt');
+    if(bar) bar.style.width = pct+'%';
+    if(cnt) cnt.textContent = pct+'%';
+  }
+
+  function addButtons(){
+    var sections = getStudySections();
+    var pct = savePct(sections);
+
+    // Inject sidebar bar widget after sidebar nav
+    var sidebar = document.getElementById('sidebar');
+    if(sidebar && !document.getElementById('tt-chapter-bar')){
+      var barDiv = document.createElement('div');
+      barDiv.id = 'tt-chapter-bar';
+      barDiv.innerHTML =
+        '<div class="tt-bar-label"><span>Chapter progress</span><span id="tt-bar-cnt">'+pct+'%</span></div>'+
+        '<div class="tt-bar-bg"><div class="tt-bar-fill" id="tt-bar-fill" style="width:'+pct+'%"></div></div>';
+      sidebar.appendChild(barDiv);
+    }
+
+    sections.forEach(function(sec){
+      var h2 = sec.querySelector('h2');
+      if(!h2 || h2.querySelector('.tt-done-btn')) return;
+
+      var isDone = !!state[sec.id];
+      var btn = document.createElement('button');
+      btn.className = 'tt-done-btn' + (isDone?' is-done':'');
+      btn.dataset.sid = sec.id;
+      btn.innerHTML = '<span class="tt-icon">'+(isDone?'✓':'○')+'</span><span>'+(isDone?'Done':'Mark done')+'</span>';
+
+      // Make h2 flex
+      h2.style.cssText += ';display:flex;align-items:center;flex-wrap:wrap;gap:.5rem';
+
+      h2.appendChild(btn);
+
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var sid = this.dataset.sid;
+        state[sid] = !state[sid];
+        try{ localStorage.setItem(topicsKey, JSON.stringify(state)); }catch(err){}
+        this.className = 'tt-done-btn'+(state[sid]?' is-done':'');
+        this.innerHTML = '<span class="tt-icon">'+(state[sid]?'✓':'○')+'</span><span>'+(state[sid]?'Done':'Mark done')+'</span>';
+        var sects = getStudySections();
+        var p = savePct(sects);
+        updateBar(p);
+      });
+    });
+  }
+
+  // Run after DOM ready
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', addButtons);
+  } else {
+    addButtons();
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAR Ch5 – Noise | ESM IPE 407</title>
+<style>
+  :root{--bg:#0f1117;--bg2:#181b24;--bg3:#1e2130;--acc:#e8832a;--acc2:#f0a855;--text:#e2e8f0;--muted:#8899aa;--border:#2d3450;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--purple:#c084fc;--star:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;font-size:15px}
+  #progress-bar{display:none}
+  #progress-label{display:none}
+  main{flex:1;padding:32px 40px 80px;overflow-y:auto;min-width:0}
+  h1{font-size:2em;color:var(--acc);margin-bottom:4px}
+  .chapter-meta{color:var(--muted);font-size:13px;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+  h2{font-size:1.3em;color:var(--acc2);margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  h3{font-size:1.05em;color:var(--blue);margin:20px 0 8px}
+  h4{font-size:.95em;color:var(--purple);margin:14px 0 6px}
+  p{margin-bottom:10px}
+  ul,ol{padding-left:22px;margin-bottom:10px}
+  li{margin-bottom:4px}
+  .importance{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
+  .i5{background:rgba(251,191,36,.15);color:var(--star);border:1px solid rgba(251,191,36,.3)}
+  .i4{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+  .i3{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+  .i2{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+  .box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+  .box.warn{border-left:3px solid var(--acc)}
+  .box.info{border-left:3px solid var(--blue)}
+  .box.star{border-left:3px solid var(--star)}
+  .box.danger{border-left:3px solid var(--red)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:var(--bg3);color:var(--acc2);padding:8px 10px;text-align:left;border:1px solid var(--border)}
+  td{padding:7px 10px;border:1px solid var(--border)}
+  tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+  .pyq-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin:14px 0}
+  .pyq-header{background:rgba(232,131,42,.1);padding:10px 16px;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center}
+  .pyq-year{color:var(--acc2);font-weight:700;font-size:13px}
+  .pyq-marks{background:var(--acc);color:#000;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+  .pyq-q{padding:12px 16px;color:var(--text);font-weight:500;border-bottom:1px solid var(--border);font-size:14px}
+  .pyq-a{padding:14px 16px;color:var(--muted);font-size:14px;line-height:1.75}
+  .pyq-a strong{color:var(--text)}
+  .summary-box{background:linear-gradient(135deg,rgba(232,131,42,.08),rgba(96,165,250,.06));border:1px solid rgba(232,131,42,.2);border-radius:10px;padding:20px;margin:16px 0}
+  .qa-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .qa-row:last-child{border-bottom:none}
+  .stars{color:var(--star);font-size:14px}
+  .qa-topic{flex:1;font-size:13px}
+  .qa-count{color:var(--muted);font-size:12px;white-space:nowrap}
+  .ear-diagram{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:12px;line-height:1.6;color:var(--green);margin:12px 0;overflow-x:auto}
+  .formula-box{background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:8px;padding:16px;margin:12px 0;font-family:monospace;font-size:14px;color:var(--blue)}
+  .perm-bar{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .perm-db{color:var(--acc2);font-weight:700;width:50px}
+  .perm-time{color:var(--text);width:50px}
+  .perm-fill{height:12px;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--acc2),var(--acc),var(--red))}
+  .hpd-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+  .hpd-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px}
+  .hpd-name{font-weight:700;color:var(--acc2);margin-bottom:8px}
+  /* ── Paginated sections ── */
+  /* paginated-sections */
+  section{display:none}
+  section.sec-active{display:block}
+  #tab-strip{display:flex;flex-direction:column;gap:3px;padding:4px 0;margin:0;border:none;overflow-x:visible;scrollbar-width:none}
+  #tab-strip::-webkit-scrollbar{display:none}
+  .sec-tab{flex-shrink:0;width:100%;text-align:left;padding:8px 12px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:12px;font-family:inherit;white-space:normal;line-height:1.4;background:transparent;color:var(--muted);transition:all .15s}
+  .sec-tab:hover{background:rgba(232,131,42,.1);color:var(--acc2);border-color:transparent}
+  .sec-tab.tab-active{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+  .sec-tab.tab-done{color:var(--green);border-color:rgba(74,222,128,.35)}
+  .sec-nav{display:flex;justify-content:space-between;align-items:center;margin-top:52px;padding-top:20px;border-top:1px solid var(--border)}
+  .sec-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 18px;border-radius:5px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s}
+  .sec-btn:hover{border-color:var(--acc);color:var(--text)}
+  .sec-ctr{font-size:11px;color:var(--muted)}
+  .mark-row{text-align:center;margin-top:20px}
+  .mark-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 24px;border-radius:20px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+  .mark-btn:hover{border-color:var(--green);color:var(--green)}
+  .mark-btn.is-done{color:var(--green);border-color:rgba(74,222,128,.4)}
+  .resume-banner{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.2);border-radius:5px;padding:7px 12px;font-size:11.5px;color:var(--blue);margin-bottom:16px;display:none}
+
+  /* ── Full-screen layout ── */
+  html{height:100%}
+  body{height:100%;display:flex;flex-direction:column}
+  #page-header{background:var(--bg2);border-bottom:2px solid var(--acc);padding:16px 32px;flex-shrink:0}
+  #page-header h1{font-size:1.5em;color:var(--acc);margin-bottom:2px}
+  #page-header .chapter-meta{margin-bottom:0;border-bottom:none;padding-bottom:0;font-size:12px}
+  #page-body{display:flex;flex:1;overflow:hidden}
+  #sidebar{width:224px;min-width:224px;background:var(--bg2);border-right:1px solid var(--border);padding:14px 10px;overflow-y:auto;flex-shrink:0}
+  #sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 8px 8px;border-bottom:1px solid var(--border);margin-bottom:8px;font-weight:600}
+  /* Mobile: stack vertically, tabs horizontal */
+  @media(max-width:800px){
+    html,body{height:auto}
+    #page-header{padding:12px 16px}
+    #page-body{flex-direction:column;overflow:visible}
+    #sidebar{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border);padding:8px 10px}
+    #tab-strip{flex-direction:row !important;overflow-x:auto;gap:5px;padding:4px 0}
+    #tab-strip::-webkit-scrollbar{display:none}
+    .sec-tab{flex-shrink:0 !important;width:auto !important;white-space:nowrap !important;padding:4px 10px !important;border-radius:14px !important;border:1px solid var(--border) !important;line-height:1.4 !important}
+    main{padding:20px 16px 60px;overflow-y:visible}
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="progress-label">0% read</div>
+
+
+<main>
+<div id="resume-banner" class="resume-banner"></div>
+<h1>Chapter 5: Noise</h1>
+<div class="chapter-meta">IPE 407 — Ergonomics & Safety Management &nbsp;|&nbsp; ZAR (Rafi Madam) &nbsp;|&nbsp; Exam Importance: ★★★★</div>
+
+<section id="intro">
+<h2>Overview</h2>
+<p>Noise is unwanted sound. Industrial noise is one of the leading causes of occupational disease worldwide. The main concern is <strong>Noise-Induced Hearing Loss (NIHL)</strong> — permanent, cumulative, and irreversible. This chapter covers the physics of sound, permissible exposure limits, hearing anatomy, health effects, and control measures.</p>
+</section>
+
+<section id="physics">
+<h2>Physics of Sound</h2>
+<p>Sound is a mechanical pressure wave propagating through a medium (air, liquid, solid). Key parameters:</p>
+<ul>
+  <li><strong>Frequency (Hz):</strong> Number of cycles per second; determines pitch. Human audible range: 20–20,000 Hz</li>
+  <li><strong>Amplitude / Pressure:</strong> Magnitude of pressure fluctuation; determines loudness</li>
+  <li><strong>Reference pressure (pr):</strong> 0.00002 N/m² (2×10⁻⁵ Pa) — the threshold of human hearing at 1000 Hz</li>
+  <li><strong>Decibel (dB):</strong> Logarithmic unit based on ratio to reference pressure; a 10 dB increase = 10× the sound intensity; a 3 dB increase ≈ 2× the sound intensity</li>
+</ul>
+<div class="box info"><strong>Logarithmic scale key facts:</strong><br>
+Normal conversation: ~60 dB | Factory floor: ~90–100 dB | Jet engine: ~140 dB | Threshold of pain: ~130 dB<br>
+Every 10 dB increase = 10× more intense. 90 dB is 10× more intense than 80 dB and 100× more intense than 70 dB.</div>
+</section>
+
+<section id="spl">
+<h2>Sound Pressure Level (SPL) Formula</h2>
+<div class="formula-box">
+  Lp = 20 · log₁₀(p / pr) dB<br><br>
+  Where:<br>
+  Lp = Sound Pressure Level in dB<br>
+  p  = Measured sound pressure (N/m²)<br>
+  pr = Reference pressure = 0.00002 N/m² = 2×10⁻⁵ Pa
+</div>
+<div class="box warn"><strong>Remember:</strong> The factor is 20 (not 10) because SPL uses pressure ratio, not intensity ratio. For intensity: L = 10·log₁₀(I/Ir). Since intensity ∝ pressure², 10·log(p²/pr²) = 20·log(p/pr).</div>
+</section>
+
+<section id="permissible">
+<h2>Permissible Noise Exposure Levels (OSHA)</h2>
+<div class="box star">★★★ This table appears frequently — memorize the dB vs hours relationship.</div>
+<table>
+  <tr><th>Sound Level (dBA)</th><th>Permissible Duration</th></tr>
+  <tr><td>90 dB</td><td>8 hours</td></tr>
+  <tr><td>95 dB</td><td>4 hours</td></tr>
+  <tr><td>100 dB</td><td>2 hours</td></tr>
+  <tr><td>105 dB</td><td>1 hour</td></tr>
+  <tr><td>110 dB</td><td>30 minutes</td></tr>
+  <tr><td>115 dB</td><td>15 minutes</td></tr>
+  <tr><td>120 dB</td><td>Impulsive only — no continuous exposure</td></tr>
+</table>
+<p>Pattern: Every 5 dB increase → permissible time is halved (5 dB exchange rate). Action level: 85 dBA (hearing protection program required).</p>
+
+<div style="margin:14px 0">
+  <div class="perm-bar"><span class="perm-db">90 dB</span><span class="perm-time">8 hrs</span><div class="perm-fill" style="width:100%"></div></div>
+  <div class="perm-bar"><span class="perm-db">95 dB</span><span class="perm-time">4 hrs</span><div class="perm-fill" style="width:50%"></div></div>
+  <div class="perm-bar"><span class="perm-db">100 dB</span><span class="perm-time">2 hrs</span><div class="perm-fill" style="width:25%"></div></div>
+  <div class="perm-bar"><span class="perm-db">105 dB</span><span class="perm-time">1 hr</span><div class="perm-fill" style="width:12.5%"></div></div>
+  <div class="perm-bar"><span class="perm-db">110 dB</span><span class="perm-time">30 min</span><div class="perm-fill" style="width:6.25%"></div></div>
+  <div class="perm-bar"><span class="perm-db">115 dB</span><span class="perm-time">15 min</span><div class="perm-fill" style="width:3.125%"></div></div>
+</div>
+</section>
+
+<section id="sum">
+<h2>Adding Multiple Noise Sources</h2>
+<div class="formula-box">
+  L∑ = 10 · log₁₀ ( 10^(L1/10) + 10^(L2/10) + ... + 10^(Ln/10) ) dB<br><br>
+  Rule of thumb: Two equal sources → combined level = source level + 3 dB<br>
+  Example: 85 dB + 85 dB = 88 dB
+</div>
+<div class="box info">When combining two noise sources of different levels, the total is dominated by the louder one. If the difference is > 10 dB, the quieter source adds less than 0.5 dB and can be ignored.</div>
+</section>
+
+<section id="ear">
+<h2>Anatomy of the Ear <span class="importance i4">★★★★ Exam (3×)</span></h2>
+<div class="ear-diagram">
+                       OUTER EAR            MIDDLE EAR         INNER EAR
+                   ┌──────────────┐    ┌──────────────────┐  ┌───────────────┐
+  Sound waves ──▶  │  Pinna       │    │  Malleus          │  │  Cochlea      │
+                   │  (Auricle)   │    │   ↓               │  │  (hearing)    │
+                   │      ↓       │    │  Incus             │  │               │
+                   │  Ear Canal   │    │   ↓               │  │  Semicircular │
+                   │  (External   │──▶ │  Stapes           │──▶  Canals       │
+                   │   Auditory   │    │  (Stirrup) ──▶    │  │  (balance)    │
+                   │   Meatus)    │    │  Oval Window      │  │               │
+                   │      ↓       │    │                   │  │  Auditory     │
+                   │  Tympanic    │    │  Eustachian Tube  │  │  Nerve        │
+                   │  Membrane    │    │  (to pharynx —    │  │  (VIII)       │
+                   │  (Eardrum)   │    │  pressure equalize│  │               │
+                   └──────────────┘    └──────────────────┘  └───────────────┘
+</div>
+
+<h3>Three Sections of the Ear</h3>
+<table>
+  <tr><th>Section</th><th>Structures</th><th>Function</th></tr>
+  <tr>
+    <td><strong>Outer Ear</strong></td>
+    <td>Pinna (Auricle), External Auditory Meatus (ear canal), Tympanic Membrane (eardrum)</td>
+    <td>Collects sound waves and channels them to the eardrum. Pinna provides directional cues. Ear canal resonates at ~3400 Hz (amplifies mid frequencies).</td>
+  </tr>
+  <tr>
+    <td><strong>Middle Ear</strong></td>
+    <td>Ossicles: Malleus (Hammer) → Incus (Anvil) → Stapes (Stirrup); Oval Window; Eustachian Tube</td>
+    <td>Mechanical amplification — the ossicular chain amplifies and transmits vibrations from eardrum (~55 mm²) to oval window (~3.2 mm²) = ~17× amplification. Eustachian tube equalizes pressure. Stapedius reflex (involuntary) — contracts stapes to reduce transmission of sudden loud sounds (acoustic reflex, 25–150 ms).</td>
+  </tr>
+  <tr>
+    <td><strong>Inner Ear</strong></td>
+    <td>Cochlea; Semicircular canals; Auditory nerve (Cranial nerve VIII)</td>
+    <td>Cochlea converts mechanical vibrations to electrical nerve signals (transduction). Tonotopic organization: high frequencies detected at base, low frequencies at apex. Semicircular canals detect rotational head movement (balance). Utricle/Saccule detect linear acceleration and gravity.</td>
+  </tr>
+</table>
+</section>
+
+<section id="hearing">
+<h2>The 3-Step Hearing Process <span class="importance i4">★★★★ Exam (3×)</span></h2>
+<div class="box star">★★★ Exam common question: "Describe the process of hearing." — 3-step answer expected.</div>
+
+<ol style="line-height:2.2">
+  <li>
+    <strong>Step 1 — Sound Pressure to Mechanical Vibration (Outer → Middle):</strong><br>
+    Sound waves enter the ear canal and cause the tympanic membrane (eardrum) to vibrate. This mechanical vibration is transferred to the malleus (attached to the eardrum).
+  </li>
+  <li>
+    <strong>Step 2 — Mechanical Amplification and Fluid Wave (Middle → Inner):</strong><br>
+    Vibration passes from malleus → incus → stapes (ossicular chain) through the middle ear. The stapes footplate pushes against the oval window membrane, creating pressure waves in the fluid (perilymph) inside the cochlea. The area difference (eardrum vs oval window) and lever action of ossicles provide ~25–30 dB gain.
+  </li>
+  <li>
+    <strong>Step 3 — Fluid Wave to Electrical Signal (Inner Ear → Brain):</strong><br>
+    Fluid waves inside the cochlea cause vibration of the basilar membrane. Different frequencies cause maximum deflection at different locations (tonotopic map). Deflection of the basilar membrane bends the stereocilia (hair cells) of the organ of Corti. This bending opens ion channels → potassium ions flow in → hair cells depolarize → neurotransmitter released → action potential in auditory nerve (cranial nerve VIII) → signal travels to brainstem and auditory cortex → perceived as sound.
+  </li>
+</ol>
+
+<div class="box info"><strong>Cochlear Hair Cells:</strong> Two types — Inner Hair Cells (~3,500): main sensory cells, transmit 95% of auditory information to brain. Outer Hair Cells (~12,000): mechanical amplifiers — actively amplify basilar membrane motion (responsible for the cochlear amplifier, +40 dB). Both types are <strong>irreplaceable</strong> in humans — once destroyed, hearing loss is permanent.</div>
+</section>
+
+<section id="health">
+<h2>Health Effects of Noise <span class="importance i4">★★★★ Exam (3×)</span></h2>
+<div class="box warn"><strong>PYQ (3×):</strong> What are the health effects of noise? Describe noise-induced hearing loss. Mention control measures.</div>
+
+<h3>Auditory Health Effects</h3>
+<ul>
+  <li><strong>Tinnitus:</strong> Ringing, buzzing, hissing, or roaring sound in the ear without external source. Can be temporary or permanent. Caused by damage to cochlear hair cells or abnormal firing of auditory nerve. Major quality-of-life impact.</li>
+  <li><strong>Temporary Threshold Shift (TTS):</strong> Temporary decrease in hearing sensitivity after noise exposure. Hearing typically recovers within hours to days. Repeated TTS eventually becomes permanent. TTS is the warning sign — an individual experiencing TTS is at risk of NIHL.</li>
+  <li><strong>Permanent Threshold Shift (PTS / NIHL):</strong> Irreversible hearing loss from destruction of cochlear outer hair cells. Gradual, cumulative — typically noticed only after years of exposure. First noticed as difficulty understanding speech in noise.</li>
+  <li><strong>Acoustic Trauma:</strong> Sudden, severe hearing loss from a single intense sound exposure (explosion, gunshot > 140 dB). Can rupture eardrum, dislocate ossicles, and destroy hair cells. May be permanent.</li>
+</ul>
+
+<h3>Non-Auditory Health Effects</h3>
+<ul>
+  <li><strong>Cardiovascular:</strong> Elevated blood pressure (hypertension), increased heart rate, vasoconstriction — noise activates the sympathetic nervous system (stress response)</li>
+  <li><strong>Psychological:</strong> Stress, irritability, anxiety, sleep disturbance, reduced concentration</li>
+  <li><strong>Cognitive:</strong> Impaired attention, reduced working memory performance, difficulty learning</li>
+  <li><strong>Reproductive:</strong> Some evidence of effects on pregnancy outcomes at extreme exposures</li>
+  <li><strong>Communication:</strong> Elevated voice levels needed → vocal fatigue; masks warning signals → safety hazard</li>
+</ul>
+</section>
+
+<section id="nihl">
+<h2>Noise-Induced Hearing Loss (NIHL) — Detailed</h2>
+<h3>Mechanism</h3>
+<ol>
+  <li>Excessive noise causes over-excitation of cochlear outer hair cells</li>
+  <li>Metabolic exhaustion → reactive oxygen species (oxidative stress) damage hair cells</li>
+  <li>Mechanical trauma: stereocilia (hair bundles) are physically broken or fused</li>
+  <li>Hair cells die (apoptosis) → permanent gap in tonotopic map → permanent threshold shift at that frequency</li>
+</ol>
+
+<h3>Characteristic Pattern</h3>
+<div class="box">
+NIHL classically shows a "4000 Hz notch" on an audiogram — hearing loss most pronounced at 4000 Hz (between speech range 500–3000 Hz and very high frequencies). This is because: (1) the cochlear region responding to 4000 Hz is about 11 mm from the base, where it receives the most mechanical energy and has the least blood supply; (2) the ear canal resonance (~3400 Hz) concentrates energy there.
+</div>
+
+<h3>Characteristics of NIHL</h3>
+<ul>
+  <li>Bilateral (both ears affected equally — usually from occupational exposure)</li>
+  <li>Gradual and cumulative — no pain, no warning until significant loss has occurred</li>
+  <li>Permanent — hair cells do not regenerate in humans (research ongoing)</li>
+  <li>Affects speech frequencies first at the margins (3–6 kHz), then spreads inward</li>
+  <li>NIHL from occupational exposure "plateaus" after ~10 years at any given noise level (a worker who develops NIHL rarely goes deaf from noise alone)</li>
+</ul>
+</section>
+
+<section id="program">
+<h2>Noise Conservation / Noise Control Program <span class="importance i3">★★★ Exam (2×)</span></h2>
+<div class="box warn"><strong>PYQ (2×):</strong> What should a comprehensive noise conservation program include?</div>
+<p>A comprehensive hearing conservation program includes:</p>
+<ol>
+  <li><strong>Noise Monitoring / Survey:</strong> Measure sound levels throughout the facility using sound level meters and dosimeters. Identify locations and operations exceeding 85 dBA (action level).</li>
+  <li><strong>Engineering Controls:</strong> Primary prevention — modify machinery, processes, or structures to reduce noise at source (see Control Hierarchy below).</li>
+  <li><strong>Administrative Controls:</strong> Rotation schedules to limit individual exposure; reduce working hours in high-noise areas; isolate noisy operations in separate rooms or time periods.</li>
+  <li><strong>Hearing Protection Devices (HPDs):</strong> Provide and require use of earplugs/earmuffs when engineering/admin controls cannot reduce to safe levels. Train workers in proper fitting (poorly fitted earplug is ineffective).</li>
+  <li><strong>Audiometric Testing (Hearing Surveillance):</strong> Baseline audiogram at employment; annual monitoring. Identify early threshold shifts. Medical referral if Significant Threshold Shift (STS) detected (≥10 dB shift at 2000, 3000, 4000 Hz average).</li>
+  <li><strong>Training and Education:</strong> Inform workers about noise hazards, effects, and proper HPD use. Motivation is key — workers who understand the risk use HPDs correctly.</li>
+  <li><strong>Recordkeeping:</strong> Maintain noise exposure records, audiograms, HPD selection records per regulatory requirements.</li>
+  <li><strong>Program Evaluation:</strong> Annually evaluate effectiveness — are STS rates decreasing? Is HPD compliance adequate?</li>
+</ol>
+</section>
+
+<section id="control">
+<h2>Noise Control Hierarchy</h2>
+<h3>1. Engineering Controls (Most Effective — Preferred)</h3>
+<ul>
+  <li><strong>Source reduction:</strong> Quieter machinery, better bearings, rubber-lined chutes, pneumatic silencers, anti-vibration mounts</li>
+  <li><strong>Path reduction:</strong> Enclosures around noisy machines, acoustic barriers/walls, vibration damping on panels, distance (noise ∝ 1/r² in free field)</li>
+  <li><strong>Receiver protection:</strong> Sound-absorbing treatment in control rooms, acoustic refuges</li>
+</ul>
+
+<h3>2. Administrative Controls</h3>
+<ul>
+  <li>Job rotation — limit continuous exposure time per worker</li>
+  <li>Schedule noisy operations during shifts with fewest workers present</li>
+  <li>Increase distance between workers and noise sources</li>
+  <li>Quiet areas for rest breaks</li>
+</ul>
+
+<h3>3. Personal Protective Equipment — HPDs (Least Effective as Sole Control)</h3>
+</section>
+
+<section id="hpd">
+<h2>Hearing Protection Devices (HPDs) <span class="importance i3">★★★ Exam (2×)</span></h2>
+<div class="hpd-grid">
+  <div class="hpd-card">
+    <div class="hpd-name" style="color:var(--blue)">Ear Plugs</div>
+    <ul style="font-size:13px;padding-left:16px;line-height:1.9">
+      <li>Inserted into ear canal</li>
+      <li>Types: foam (roll-compress-insert), premolded, custom-fit</li>
+      <li>NRR: 20–33 dB (Noise Reduction Rating)</li>
+      <li>Advantages: low cost, light, comfortable in hot environments, can wear with other PPE</li>
+      <li>Disadvantages: harder to fit correctly, hygiene issues, ineffective if dirty/wet, workers may resist</li>
+      <li>Must be inserted deeply into canal for full protection</li>
+    </ul>
+  </div>
+  <div class="hpd-card">
+    <div class="hpd-name" style="color:var(--acc2)">Ear Muffs</div>
+    <ul style="font-size:13px;padding-left:16px;line-height:1.9">
+      <li>Cups that seal over the outer ear</li>
+      <li>Types: standard, level-dependent (electronic), communication</li>
+      <li>NRR: 20–30 dB</li>
+      <li>Advantages: easier to put on/remove, visible (compliance), more consistent protection</li>
+      <li>Disadvantages: heavier, hot, may interfere with safety helmets or glasses (glasses break seal → reduced attenuation), more expensive</li>
+      <li>Level-dependent muffs: allow normal sound/communication, block impulse noise</li>
+    </ul>
+  </div>
+</div>
+
+<div class="box warn">
+  <strong>Combining Ear Plugs + Ear Muffs:</strong> Provides additional protection but NOT simply NRR(plugs) + NRR(muffs). Combined NRR ≈ higher NRR + 5 dB. Useful only in extreme environments (>115 dB).
+</div>
+
+<h3>Noise Reduction Rating (NRR) — How to Calculate Real-World Attenuation</h3>
+<div class="formula-box">
+  Real-world dB reduction = (NRR − 7) ÷ 2<br><br>
+  Example: Earplug with NRR 29:<br>
+  Real protection = (29 − 7) / 2 = 11 dB
+</div>
+<p>The 50% derating accounts for inconsistent real-world fitting vs laboratory conditions.</p>
+
+<h3>Comparison Table</h3>
+<table>
+  <tr><th>Feature</th><th>Ear Plugs</th><th>Ear Muffs</th></tr>
+  <tr><td>Insertion needed</td><td>Yes — into ear canal</td><td>No — worn over ear</td></tr>
+  <tr><td>Typical NRR</td><td>20–33 dB</td><td>20–30 dB</td></tr>
+  <tr><td>Heat comfort</td><td>Comfortable (hot env.)</td><td>Warm/uncomfortable</td></tr>
+  <tr><td>Glasses interference</td><td>No</td><td>Yes (breaks seal)</td></tr>
+  <tr><td>Compliance monitoring</td><td>Difficult (invisible)</td><td>Easy (visible)</td></tr>
+  <tr><td>Hygiene risk</td><td>Yes (must be clean)</td><td>Lower (less contact)</td></tr>
+  <tr><td>Cost</td><td>Low (disposable foam)</td><td>Higher but reusable</td></tr>
+</table>
+</section>
+
+<section id="summary">
+<h2>Chapter Summary</h2>
+<div class="summary-box">
+  <h3 style="color:var(--acc2);margin-bottom:12px">Key Takeaways</h3>
+  <ol style="padding-left:18px;line-height:2">
+    <li><strong>SPL formula:</strong> Lp = 20·log₁₀(p/pr) ; pr = 0.00002 N/m²</li>
+    <li><strong>Sum formula:</strong> L∑ = 10·log₁₀(10^L1/10 + 10^L2/10 + ...)</li>
+    <li><strong>Permissible levels:</strong> 90dB=8h, 95dB=4h, 100dB=2h, 105dB=1h, 110dB=30min, 115dB=15min</li>
+    <li><strong>Outer ear:</strong> Pinna → Ear canal → Tympanic membrane</li>
+    <li><strong>Middle ear:</strong> Malleus → Incus → Stapes → Oval Window; Eustachian tube</li>
+    <li><strong>Inner ear:</strong> Cochlea (hearing) + Semicircular canals (balance)</li>
+    <li><strong>3-step hearing:</strong> Pressure→vibration→fluid waves→hair cells→nerve→brain</li>
+    <li><strong>NIHL:</strong> 4 kHz notch; bilateral; cumulative; irreversible; outer hair cells destroyed</li>
+    <li><strong>TTS</strong> = temporary; <strong>PTS/NIHL</strong> = permanent</li>
+    <li><strong>Control hierarchy:</strong> Engineering → Administrative → HPDs</li>
+    <li><strong>Ear plugs</strong> (canal insert, NRR 20–33) vs <strong>Ear muffs</strong> (over ear, NRR 20–30)</li>
+    <li><strong>Noise program:</strong> Monitoring → Engineering → Admin → HPDs → Audiometry → Training → Records → Evaluation</li>
+  </ol>
+</div>
+</section>
+
+<section id="qanalysis">
+<h2>Question Analysis</h2>
+<div class="box">
+  <div class="qa-row"><span class="stars">★★★★</span><span class="qa-topic">Health effects of noise + control measures / NIHL mechanisms</span><span class="qa-count">3× | 10–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★★</span><span class="qa-topic">Process of hearing (3-step, anatomy)</span><span class="qa-count">3× | 10–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Noise conservation / hearing conservation program components</span><span class="qa-count">2× | 10–12 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Hearing protection devices (ear plugs vs ear muffs)</span><span class="qa-count">2× | 10 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">SPL / dB calculations</span><span class="qa-count">1× | 5–7 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Permissible exposure levels table</span><span class="qa-count">1× | 5 marks</span></div>
+</div>
+</section>
+
+<section id="pyq">
+<h2>Previous Year Questions</h2>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23</span><span class="pyq-marks">Q1c · 5 marks</span></div>
+  <div class="pyq-q">(c) Differentiate between Noise-Induced Hearing Loss (NIHL) and Temporary Threshold Shift (TTS).</div>
+  <div class="pyq-a"><table><tr><th>Feature</th><th>TTS (Temporary Threshold Shift)</th><th>NIHL (Noise-Induced Hearing Loss)</th></tr>
+  <tr><td>Nature</td><td>Reversible hearing reduction after noise</td><td>Permanent, irreversible hearing loss</td></tr>
+  <tr><td>Duration</td><td>Recovers within hours to ~16 hours after noise</td><td>Permanent — does not recover</td></tr>
+  <tr><td>Mechanism</td><td>Temporary metabolic exhaustion of hair cells; structural damage does not occur (or minimal)</td><td>Destruction of outer hair cells in the cochlea (Organ of Corti), especially at 4000 Hz region (basal turn)</td></tr>
+  <tr><td>Symptoms</td><td>Muffled hearing, tinnitus — temporary</td><td>Gradual hearing loss, permanent tinnitus, difficulty understanding speech</td></tr>
+  <tr><td>Trigger</td><td>Short-term noise exposure</td><td>Repeated TTS episodes, chronic high-noise exposure</td></tr>
+  <tr><td>Significance</td><td>Warning sign — if TTS does not fully recover before next exposure, cumulative damage accumulates</td><td>Occupational disease — measurable audiometric notch at 4 kHz</td></tr></table></div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2021-22 · 2020-21</span><span class="pyq-marks">★ 2× · Q2a/Q8a · 15/20 marks</span></div>
+  <div class="pyq-q">Define NIHL. How can you reduce worker exposure to noise hazards through engineering and administrative controls? Explain in detail. / How can you reduce worker exposure to noise hazard through engineering and administrative controls? Illustrate with examples.</div>
+  <div class="pyq-a"><strong>NIHL (Noise-Induced Hearing Loss):</strong> Permanent, sensorineural hearing loss caused by exposure to hazardous noise levels (typically > 85 dBA time-weighted average over 8 hours). Results from progressive destruction of outer hair cells in the cochlea, characteristically first affecting 4000 Hz. Irreversible; can be prevented but not cured.<br><br>
+  <strong>Hierarchy of Controls for Noise:</strong><br><br>
+  <strong>Engineering Controls (most effective — eliminate/reduce noise at source):</strong><br>
+  • <em>Substitution:</em> Replace noisy equipment with quieter alternatives (e.g., replace pneumatic tools with electric; use hydraulic presses instead of mechanical impact presses).<br>
+  • <em>Isolation/Enclosure:</em> Enclose noise source in acoustic enclosure; use vibration isolation mounts to prevent structure-borne noise transmission (e.g., rubber anti-vibration pads under compressors).<br>
+  • <em>Damping:</em> Apply damping material to vibrating panels (metal doors, guard covers) to reduce radiated sound.<br>
+  • <em>Silencers/Mufflers:</em> On exhaust ports of pneumatic tools, ventilation fans, engine exhausts.<br>
+  • <em>Path modification:</em> Install sound-absorbing panels, baffles, acoustic barriers between source and worker. Use absorptive ceiling tiles to reduce reverberation in noisy rooms.<br>
+  • <em>Maintenance:</em> Regular lubrication and replacement of worn parts (many machines get louder as they wear).<br><br>
+  <strong>Administrative Controls (reduce duration of exposure):</strong><br>
+  • <em>Job rotation:</em> Rotate workers between high-noise and low-noise areas to stay within daily dose limits (8-hr TWA ≤ 85 dBA). E.g., 2 hours in 100 dBA = same dose as 8 hours at 85 dBA (3 dB exchange rate).<br>
+  • <em>Work scheduling:</em> Schedule noisy operations during shift changes when fewer workers present.<br>
+  • <em>Rest areas:</em> Provide quiet rest zones away from production floor.<br>
+  • <em>Noise hazard signage and hearing conservation program.</em><br>
+  • <em>Audiometric monitoring:</em> Annual hearing tests to detect early TTS/NIHL.<br><br>
+  <strong>PPE (last resort):</strong><br>
+  • Earmuffs: NRR 20–30 dB; cover entire ear; effective but uncomfortable in hot environments.<br>
+  • Earplugs: NRR 15–30 dB; inserted into ear canal; smaller and more comfortable; must be properly fitted.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">Jan 2021 · 2013-14 · 2011-12</span><span class="pyq-marks">★★★ 3× · Q7b/Q1d/Q4c · 7–10 marks</span></div>
+  <div class="pyq-q">What are the health effects of excessive noise? Discuss in brief the control measures for noise hazard in the workplace. / What do you understand by Noise Pollution?</div>
+  <div class="pyq-a"><strong>Noise Pollution:</strong> The presence of sound at levels or frequencies that are harmful, disruptive, or unwanted in the living and work environment. Defined as sound that causes harm or adversely affects human health, communication, or quality of life.<br><br>
+  <strong>Health Effects of Excessive Noise:</strong><br><br>
+  <em>Auditory (Hearing):</em><br>
+  • Tinnitus — persistent ringing/buzzing in ears (can be permanent)<br>
+  • Temporary Threshold Shift (TTS) → progressive permanent NIHL<br>
+  • 4 kHz notch on audiogram (classic NIHL pattern)<br>
+  • Difficulty understanding speech (social isolation)<br><br>
+  <em>Non-auditory (Systemic):</em><br>
+  • <strong>Cardiovascular:</strong> Elevated blood pressure, increased heart rate, vasoconstriction → increased risk of hypertension and cardiovascular disease with chronic exposure.<br>
+  • <strong>Psychological:</strong> Stress, anxiety, irritability, disturbed sleep (even at non-hazardous levels) → mental health effects.<br>
+  • <strong>Cognitive:</strong> Reduced concentration, impaired task performance, communication difficulties → error rates increase.<br>
+  • <strong>Hormonal:</strong> Elevated cortisol and adrenaline with chronic noise stress.<br>
+  • <strong>Vertigo/Dizziness:</strong> Noise can irritate the vestibular system in the cochlea.<br><br>
+  <strong>Control measures:</strong> See engineering + administrative controls in 2021-22 entry above.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2017-18 · 2014-15</span><span class="pyq-marks">★ 2× · Q8a · 10/20 marks</span></div>
+  <div class="pyq-q">(a) Develop an effective noise conservation program for a manufacturing company in order to control the noise level in the production floor.</div>
+  <div class="pyq-a"><strong>Noise Conservation Program (OSHA Hearing Conservation Program components):</strong><br><br>
+  <strong>1. Noise Monitoring:</strong> Survey all workplaces; measure TWA (Time-Weighted Average) noise exposure for all workers. Identify areas/jobs exceeding action level (85 dBA TWA) and PEL (90 dBA TWA). Use dosimeters for personal monitoring.<br><br>
+  <strong>2. Engineering Controls:</strong> Apply hierarchy of controls (see 2021-22 entry). Priority given to source reduction over PPE.<br><br>
+  <strong>3. Administrative Controls:</strong> Job rotation schedules, work-rest schedules, noisy task scheduling, posting noise hazard areas.<br><br>
+  <strong>4. Audiometric Testing Program:</strong> Baseline audiogram before starting in noisy job; annual monitoring audiograms; compare to baseline to detect Standard Threshold Shift (STS = 10 dB average shift at 2000, 3000, 4000 Hz). Follow-up and referral for STS cases.<br><br>
+  <strong>5. Hearing Protection Device (HPD) Program:</strong> Provide selection of earmuffs and earplugs; ensure correct fitting (earplugs especially); check NRR adequate for measured exposure; replace worn HPDs. Mandate use in all areas > 85 dBA.<br><br>
+  <strong>6. Training and Education:</strong> Annual training on effects of noise, HPD use, and reporting procedures. Record keeping.<br><br>
+  <strong>7. Record Keeping:</strong> Maintain noise monitoring records, audiograms, HPD fitting records. Required by OSHA 29 CFR 1910.95.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2015-16 · 2013-14 · 2010-11</span><span class="pyq-marks">★★★ 3× · Q5c/Q1c/Q8a · 7–15 marks</span></div>
+  <div class="pyq-q">Describe the process of hearing. / Describe the process of hearing. What are the health effects of excessive noise?</div>
+  <div class="pyq-a"><strong>Process of Hearing (Sound Transduction):</strong><br><br>
+  <strong>1. Sound collection — Outer ear (pinna + ear canal):</strong> Pinna collects and directs sound waves into the external auditory meatus (ear canal). The canal resonates at ~3400 Hz (contributes to hearing sensitivity in speech range).<br><br>
+  <strong>2. Mechanical amplification — Middle ear (ossicles):</strong> Sound waves cause tympanic membrane (eardrum) to vibrate. Three ossicles (malleus → incus → stapes) transmit and amplify vibrations (20–30 dB gain from impedance matching between air and fluid). Stapes footplate vibrates oval window.<br><br>
+  <strong>3. Fluid waves — Cochlea (inner ear):</strong> Stapes motion creates pressure waves in cochlear perilymph (scala vestibuli). Waves travel along basilar membrane: high frequencies → narrow rigid base; low frequencies → wide flexible apex (tonotopic organization). Peak basilar membrane displacement location = frequency detection.<br><br>
+  <strong>4. Hair cell transduction — Organ of Corti:</strong> Basilar membrane deflection → inner and outer hair cells' stereocilia bend → mechanically gated ion channels open → K⁺ influx → hair cell depolarization → neurotransmitter release (glutamate) → auditory nerve fiber activation.<br><br>
+  <strong>5. Neural processing — Auditory pathway:</strong> Cochlear nerve → cochlear nucleus → superior olivary nucleus (binaural, sound localization) → inferior colliculus → medial geniculate nucleus (thalamus) → primary auditory cortex (temporal lobe) → conscious perception of sound.<br><br>
+  <strong>NIHL mechanism:</strong> Excessive noise → excessive stereocilia deflection → metabolic exhaustion and mechanical destruction of outer hair cells → permanent loss of frequency-specific sensitivity (worst at 4 kHz).</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2015-16</span><span class="pyq-marks">Q6c · 10 marks</span></div>
+  <div class="pyq-q">(c) What are the categories of 'Noise Measurement Devices'? Discuss briefly.</div>
+  <div class="pyq-a"><strong>Categories of Noise Measurement Devices:</strong><br><br>
+  <strong>1. Sound Level Meter (SLM):</strong> Basic real-time noise measurement device. Measures instantaneous sound pressure level in dB. Types: Type 1 (laboratory precision, ±0.7 dB), Type 2 (general purpose, ±1.0 dB). Features: A-weighting filter (mimics human ear frequency response — dBA), fast/slow response modes. Use: Area surveys, compliance spot checks.<br><br>
+  <strong>2. Integrating Sound Level Meter:</strong> Calculates equivalent continuous sound level (Leq) over a measurement period. Integrates varying noise levels over time → single equivalent steady-state level. Essential for fluctuating industrial noise environments.<br><br>
+  <strong>3. Personal Noise Dosimeter (Dosebadge):</strong> Worn on worker's shoulder/lapel at ear level throughout the shift. Automatically calculates cumulative daily noise dose (%). Gives Time-Weighted Average (TWA) for the full shift. Best for assessing actual personal exposure including movement between areas.<br><br>
+  <strong>4. Noise Analyzer (FFT Analyzer):</strong> Measures noise spectrum (frequency content) using Fast Fourier Transform. Shows octave-band or 1/3-octave-band spectrum → identifies dominant frequencies → directs engineering control design (which frequency to target).<br><br>
+  <strong>5. Audiometer:</strong> Not strictly a noise measurement device, but used in hearing conservation — measures individual hearing thresholds to detect NIHL.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2013-14 · 2010-11</span><span class="pyq-marks">★ 2× · Q8a/Q3c · 10 marks</span></div>
+  <div class="pyq-q">Compare and contrast between insert and muff type ear protectors.</div>
+  <div class="pyq-a"><table><tr><th>Feature</th><th>Earplugs (Insert Type)</th><th>Earmuffs (Muff Type)</th></tr>
+  <tr><td>Mechanism</td><td>Inserted into ear canal; block canal entrance; foam expands to fill canal</td><td>Rigid cups surround the entire pinna; seal against the head</td></tr>
+  <tr><td>NRR (Noise Reduction Rating)</td><td>15–30+ dB (highly variable based on correct fit)</td><td>20–30 dB (more consistent)</td></tr>
+  <tr><td>Comfort</td><td>Less obtrusive; not affected by safety helmet</td><td>Can be hot and heavy in warm environments; incompatible with some head gear</td></tr>
+  <tr><td>Fit dependency</td><td>VERY fit-dependent — improper insertion dramatically reduces actual protection</td><td>Less technique-dependent; easier to verify seal visually</td></tr>
+  <tr><td>Hygiene</td><td>Disposable foam plugs: good hygiene. Reusable: require cleaning. Can cause ear canal infections if dirty hands used for insertion</td><td>Cushion seals require periodic replacement; less infection risk</td></tr>
+  <tr><td>Communication</td><td>Reduces all sound including warning signals; less attenuation of low frequencies</td><td>Level-dependent electronic versions available; can amplify speech while blocking impact noise</td></tr>
+  <tr><td>Cost</td><td>Low (disposable foam: &lt;$0.50 each)</td><td>Higher ($10–$50+ for quality muffs)</td></tr>
+  <tr><td>Use with spectacles</td><td>Compatible</td><td>Spectacle temples break muff seal → reduced protection</td></tr></table></div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+  var KEY='esm_zar_ch5';
+  var st={curIdx:0,completed:[]};
+  try{var sv=localStorage.getItem(KEY);if(sv){var p=JSON.parse(sv);st.curIdx=p.curIdx||0;st.completed=p.completed||[];}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+  var secs=[].slice.call(document.querySelectorAll('main > section'));
+
+  /* build tab strip */
+  var strip=document.createElement('div');strip.id='tab-strip';
+  secs.forEach(function(sec,i){
+    var h2=sec.querySelector('h2');
+    var raw=h2?h2.textContent:'§'+(i+1);
+    var label=raw.replace(/[★✓].*/,'').replace(/\s*\(.*\)/,'').trim();
+    if(label.length>24)label=label.substring(0,22)+'…';
+    var t=document.createElement('button');
+    t.className='sec-tab';t.id='tab-'+i;t.setAttribute('data-i',i);
+    t.textContent=(i+1)+'. '+label;
+    t.addEventListener('click',function(){show(+this.getAttribute('data-i'));}); 
+    strip.appendChild(t);
+  });
+  /* Build full-screen layout: header + sidebar + main */
+  var h1El=document.querySelector('main > h1');
+  var metaEl=document.querySelector('.chapter-meta');
+  var mainEl=document.querySelector('main');
+  var pgHeader=document.createElement('div');pgHeader.id='page-header';
+  if(h1El)pgHeader.appendChild(h1El);
+  if(metaEl)pgHeader.appendChild(metaEl);
+  document.body.prepend(pgHeader);
+  var pgBody=document.createElement('div');pgBody.id='page-body';
+  var sidebarEl=document.createElement('div');sidebarEl.id='sidebar';
+  var stitle=document.createElement('div');stitle.id='sidebar-title';stitle.textContent='Sections';
+  sidebarEl.appendChild(stitle);
+  sidebarEl.appendChild(strip);
+  pgBody.appendChild(sidebarEl);
+  if(mainEl)pgBody.appendChild(mainEl);
+  document.body.appendChild(pgBody);
+
+  /* prev/next + mark-done */
+  secs.forEach(function(sec,i){
+    var nav=document.createElement('div');nav.className='sec-nav';
+    var pBtn=i>0?'<button class="sec-btn" id="pbtn'+i+'">← Prev</button>':'<span></span>';
+    var nBtn=i<secs.length-1?'<button class="sec-btn" id="nbtn'+i+'">Next →</button>':'<span style="color:var(--green);font-size:12px">✓ Done</span>';
+    nav.innerHTML=pBtn+'<span class="sec-ctr">'+(i+1)+' / '+secs.length+'</span>'+nBtn;
+    sec.appendChild(nav);
+    if(i>0){(function(x){var b=document.getElementById('pbtn'+x);if(b)b.addEventListener('click',function(){show(x-1);});})(i);}
+    if(i<secs.length-1){(function(x){var b=document.getElementById('nbtn'+x);if(b)b.addEventListener('click',function(){show(x+1);});})(i);}
+    var mr=document.createElement('div');mr.className='mark-row';
+    var mb=document.createElement('button');mb.className='mark-btn';mb.id='mark'+i;mb.setAttribute('data-i',i);
+    mb.addEventListener('click',function(){toggleDone(+this.getAttribute('data-i'));});
+    mr.appendChild(mb);sec.appendChild(mr);
+  });
+
+  function show(idx){
+    if(idx<0)idx=0;if(idx>=secs.length)idx=secs.length-1;
+    st.curIdx=idx;save();
+    secs.forEach(function(s,i){s.classList.toggle('sec-active',i===idx);});
+    document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    refreshUI();
+  }
+
+  function toggleDone(idx){
+    var ci=st.completed.indexOf(idx);
+    if(ci>=0)st.completed.splice(ci,1);else st.completed.push(idx);
+    save();refreshUI();
+  }
+
+  function refreshUI(){
+    var idx=st.curIdx,done=st.completed.length,total=secs.length;
+    var pct=total?Math.round((done/total)*100):0;
+    var pb=document.getElementById('progress-bar');
+    var pl=document.getElementById('progress-label');
+    if(pb)pb.style.width=pct+'%';
+    if(pl)pl.textContent=done+'/'+total+' done';
+    secs.forEach(function(s,i){
+      var t=document.getElementById('tab-'+i);if(!t)return;
+      var isDone=st.completed.indexOf(i)>=0,isActive=i===idx;
+      var label=t.textContent.replace(/^[✓ ]*\d+\. /,'');
+      t.className='sec-tab'+(isActive?' tab-active':isDone?' tab-done':'');
+      t.textContent=(isDone&&!isActive?'✓ ':''+(i+1)+'. ')+label;
+    });
+    var at=document.getElementById('tab-'+idx);
+    if(at)at.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    secs.forEach(function(s,i){
+      var mb=document.getElementById('mark'+i);if(!mb)return;
+      var isDone=st.completed.indexOf(i)>=0;
+      mb.textContent=isDone?'✓ Done  · undo':'☐  Mark done';
+      mb.classList.toggle('is-done',isDone);
+    });
+  }
+
+  show(st.curIdx);
+  var banner=document.getElementById('resume-banner');
+  if(banner&&(st.curIdx>0||st.completed.length>0)){
+    banner.style.display='block';
+    banner.textContent='Resuming — §'+(st.curIdx+1)+' of '+secs.length+(st.completed.length?' · '+st.completed.length+' done':'');
+  }
+})();
+</script>
+
+<style id="tt-style">
+.tt-done-btn{display:inline-flex;align-items:center;gap:.35rem;margin-left:auto;padding:.28rem .8rem;border-radius:20px;border:1px solid var(--border,#2d3450);background:transparent;color:var(--muted,#8899aa);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tt-done-btn:hover{border-color:var(--green,#4ade80);color:var(--green,#4ade80)}
+.tt-done-btn.is-done{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:var(--green,#4ade80)}
+.tt-done-btn .tt-icon{font-size:.85rem}
+/* Chapter progress bar in sidebar */
+#tt-chapter-bar{margin:1rem .5rem .5rem;padding:.7rem .9rem;background:var(--bg3,#1e2130);border-radius:9px;border:1px solid var(--border,#2d3450)}
+#tt-chapter-bar .tt-bar-label{font-size:.7rem;color:var(--muted,#8899aa);display:flex;justify-content:space-between;margin-bottom:.45rem}
+#tt-chapter-bar .tt-bar-bg{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+#tt-chapter-bar .tt-bar-fill{height:100%;background:linear-gradient(90deg,var(--acc,#e8832a),var(--acc2,#f0a855));border-radius:999px;transition:width .4s ease}
+</style>
+<script id="topic-tracker-script">
+(function(){
+  // Derive key from filename
+  var href = location.pathname || location.href;
+  var m = href.match(/([A-Z]+)_Ch(\d+)/i);
+  if (!m) return;
+  var prefix = m[1].toLowerCase();
+  var num = m[2];
+  var lsBase = 'esm_' + prefix + '_ch' + num;
+  var topicsKey = lsBase + '_topics';
+  var pctKey = lsBase + '_pct';
+
+  // Find study sections (exclude pyq / quick-review)
+  function getStudySections(){
+    return Array.from(document.querySelectorAll('main > section[id], #content > section[id]')).filter(function(s){
+      return !s.id.match(/pyq|qr|quick/i);
+    });
+  }
+
+  // Load state
+  var state = {};
+  try{ state = JSON.parse(localStorage.getItem(topicsKey)||'{}'); }catch(e){}
+
+  function savePct(sections){
+    var done = sections.filter(function(s){ return state[s.id]; }).length;
+    var pct = sections.length ? Math.round(done/sections.length*100) : 0;
+    try{
+      localStorage.setItem(pctKey, pct);
+      // mark visited when anything is done
+      if(done>0) localStorage.setItem('esm_visited_'+prefix+'_ch'+num,'1');
+    }catch(e){}
+    return pct;
+  }
+
+  function updateBar(pct){
+    var bar = document.getElementById('tt-bar-fill');
+    var cnt = document.getElementById('tt-bar-cnt');
+    if(bar) bar.style.width = pct+'%';
+    if(cnt) cnt.textContent = pct+'%';
+  }
+
+  function addButtons(){
+    var sections = getStudySections();
+    var pct = savePct(sections);
+
+    // Inject sidebar bar widget after sidebar nav
+    var sidebar = document.getElementById('sidebar');
+    if(sidebar && !document.getElementById('tt-chapter-bar')){
+      var barDiv = document.createElement('div');
+      barDiv.id = 'tt-chapter-bar';
+      barDiv.innerHTML =
+        '<div class="tt-bar-label"><span>Chapter progress</span><span id="tt-bar-cnt">'+pct+'%</span></div>'+
+        '<div class="tt-bar-bg"><div class="tt-bar-fill" id="tt-bar-fill" style="width:'+pct+'%"></div></div>';
+      sidebar.appendChild(barDiv);
+    }
+
+    sections.forEach(function(sec){
+      var h2 = sec.querySelector('h2');
+      if(!h2 || h2.querySelector('.tt-done-btn')) return;
+
+      var isDone = !!state[sec.id];
+      var btn = document.createElement('button');
+      btn.className = 'tt-done-btn' + (isDone?' is-done':'');
+      btn.dataset.sid = sec.id;
+      btn.innerHTML = '<span class="tt-icon">'+(isDone?'✓':'○')+'</span><span>'+(isDone?'Done':'Mark done')+'</span>';
+
+      // Make h2 flex
+      h2.style.cssText += ';display:flex;align-items:center;flex-wrap:wrap;gap:.5rem';
+
+      h2.appendChild(btn);
+
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var sid = this.dataset.sid;
+        state[sid] = !state[sid];
+        try{ localStorage.setItem(topicsKey, JSON.stringify(state)); }catch(err){}
+        this.className = 'tt-done-btn'+(state[sid]?' is-done':'');
+        this.innerHTML = '<span class="tt-icon">'+(state[sid]?'✓':'○')+'</span><span>'+(state[sid]?'Done':'Mark done')+'</span>';
+        var sects = getStudySections();
+        var p = savePct(sects);
+        updateBar(p);
+      });
+    });
+  }
+
+  // Run after DOM ready
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', addButtons);
+  } else {
+    addButtons();
+  }
+})();
+</script>
+
+</body>
+</html>

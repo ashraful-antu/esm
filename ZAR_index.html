@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZAR — Ergonomics & Safety (IPE 407)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#181b24;--bg3:#1e2130;
+  --acc:#a78bfa;--acc2:#c4b5fd;
+  --text:#e2e8f0;--muted:#8899aa;--border:#2d3450;
+  --green:#4ade80;--blue:#60a5fa;--purple:#a78bfa
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:0 0 4rem}
+.hero{background:linear-gradient(135deg,rgba(167,139,250,.18) 0%,rgba(30,33,48,.95) 60%);border-bottom:1px solid var(--border);padding:2.5rem 2rem 2rem}
+.hero-top{display:flex;align-items:center;gap:1rem;margin-bottom:.5rem}
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:8px;padding:.35rem .8rem;color:var(--muted);font-size:.8rem;text-decoration:none;transition:all .18s}
+.back-btn:hover{background:rgba(167,139,250,.15);border-color:var(--acc);color:var(--acc)}
+.teacher-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.3rem .9rem;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.35);border-radius:20px;color:var(--acc);font-size:.8rem;font-weight:700;letter-spacing:.04em}
+.hero h1{font-size:2rem;font-weight:800;color:var(--acc);margin-bottom:.3rem}
+.hero .subtitle{color:var(--muted);font-size:.95rem}
+.overall-bar-wrap{margin-top:1.4rem}
+.bar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.bar-header span{font-size:.8rem;color:var(--muted)}
+.bar-header .pct-label{font-size:1.1rem;font-weight:800;color:var(--acc)}
+.bar-bg{height:8px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .5s ease}
+.chapters{max-width:860px;margin:2rem auto 0;padding:0 1.5rem;display:grid;gap:1rem}
+.ch-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s,transform .15s;text-decoration:none;display:block}
+.ch-card:hover{border-color:var(--acc);transform:translateY(-2px)}
+.ch-inner{padding:1.1rem 1.3rem}
+.ch-top{display:flex;align-items:center;gap:.9rem;margin-bottom:.7rem}
+.ch-num{width:36px;height:36px;border-radius:10px;background:rgba(167,139,250,.18);border:1px solid rgba(167,139,250,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:var(--acc);flex-shrink:0}
+.ch-title{font-size:1rem;font-weight:700;color:var(--text)}
+.ch-pct-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.ch-pct-row .label{font-size:.72rem;color:var(--muted)}
+.ch-pct-row .pct{font-size:.8rem;font-weight:700;color:var(--acc)}
+.ch-bar-bg{height:4px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+.ch-bar-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:999px;transition:width .4s ease}
+.ch-status{font-size:.7rem;margin-top:.45rem;color:var(--muted)}
+.ch-status.done{color:var(--green)}
+.ch-status.started{color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <a href="index.html" class="back-btn">← Back to Overview</a>
+    <div class="teacher-badge">🔵 ZAR — Ergonomics</div>
+  </div>
+  <h1>Dr. ZAR</h1>
+  <div class="subtitle">Ergonomics • Work Spaces • Environment • Tools — 6 Chapters</div>
+  <div class="overall-bar-wrap">
+    <div class="bar-header">
+      <span>Overall Progress</span>
+      <span class="pct-label" id="zar-overall-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="zar-overall-bar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="chapters" id="chapters-grid">
+
+  <a class="ch-card" href="ZAR_Ch1_Work_Spaces.html" data-ch="1">
+    <div class="ch-inner">
+      <div class="ch-top">
+        <div class="ch-num">1</div>
+        <div class="ch-title">Work Spaces & Anthropometric Design</div>
+      </div>
+      <div class="ch-pct-row"><span class="label">Topics covered</span><span class="pct" id="zar-ch1-pct">0%</span></div>
+      <div class="ch-bar-bg"><div class="ch-bar-fill" id="zar-ch1-bar" style="width:0%"></div></div>
+      <div class="ch-status" id="zar-ch1-status">Not started</div>
+    </div>
+  </a>
+
+  <a class="ch-card" href="ZAR_Ch2_Spinal_Vertebrae.html" data-ch="2">
+    <div class="ch-inner">
+      <div class="ch-top">
+        <div class="ch-num">2</div>
+        <div class="ch-title">Spinal Vertebrae & Posture</div>
+      </div>
+      <div class="ch-pct-row"><span class="label">Topics covered</span><span class="pct" id="zar-ch2-pct">0%</span></div>
+      <div class="ch-bar-bg"><div class="ch-bar-fill" id="zar-ch2-bar" style="width:0%"></div></div>
+      <div class="ch-status" id="zar-ch2-status">Not started</div>
+    </div>
+  </a>
+
+  <a class="ch-card" href="ZAR_Ch3_Temperature_Environment.html" data-ch="3">
+    <div class="ch-inner">
+      <div class="ch-top">
+        <div class="ch-num">3</div>
+        <div class="ch-title">Temperature & Thermal Environment</div>
+      </div>
+      <div class="ch-pct-row"><span class="label">Topics covered</span><span class="pct" id="zar-ch3-pct">0%</span></div>
+      <div class="ch-bar-bg"><div class="ch-bar-fill" id="zar-ch3-bar" style="width:0%"></div></div>
+      <div class="ch-status" id="zar-ch3-status">Not started</div>
+    </div>
+  </a>
+
+  <a class="ch-card" href="ZAR_Ch4_Light.html" data-ch="4">
+    <div class="ch-inner">
+      <div class="ch-top">
+        <div class="ch-num">4</div>
+        <div class="ch-title">Illumination & Light</div>
+      </div>
+      <div class="ch-pct-row"><span class="label">Topics covered</span><span class="pct" id="zar-ch4-pct">0%</span></div>
+      <div class="ch-bar-bg"><div class="ch-bar-fill" id="zar-ch4-bar" style="width:0%"></div></div>
+      <div class="ch-status" id="zar-ch4-status">Not started</div>
+    </div>
+  </a>
+
+  <a class="ch-card" href="ZAR_Ch5_Noise.html" data-ch="5">
+    <div class="ch-inner">
+      <div class="ch-top">
+        <div class="ch-num">5</div>
+        <div class="ch-title">Noise & Vibration</div>
+      </div>
+      <div class="ch-pct-row"><span class="label">Topics covered</span><span class="pct" id="zar-ch5-pct">0%</span></div>
+      <div class="ch-bar-bg"><div class="ch-bar-fill" id="zar-ch5-bar" style="width:0%"></div></div>
+      <div class="ch-status" id="zar-ch5-status">Not started</div>
+    </div>
+  </a>
+
+  <a class="ch-card" href="ZAR_Ch6_Hand_Tools.html" data-ch="6">
+    <div class="ch-inner">
+      <div class="ch-top">
+        <div class="ch-num">6</div>
+        <div class="ch-title">Hand Tools & Equipment Design</div>
+      </div>
+      <div class="ch-pct-row"><span class="label">Topics covered</span><span class="pct" id="zar-ch6-pct">0%</span></div>
+      <div class="ch-bar-bg"><div class="ch-bar-fill" id="zar-ch6-bar" style="width:0%"></div></div>
+      <div class="ch-status" id="zar-ch6-status">Not started</div>
+    </div>
+  </a>
+
+</div>
+
+<script>
+(function(){
+  var chapters = [1,2,3,4,5,6];
+  var total = 0, count = 0;
+  chapters.forEach(function(n){
+    var pct = 0;
+    try{ pct = parseInt(localStorage.getItem('esm_zar_ch'+n+'_pct')||'0',10)||0; }catch(e){}
+    total += pct; count++;
+    var pctEl = document.getElementById('zar-ch'+n+'-pct');
+    var barEl = document.getElementById('zar-ch'+n+'-bar');
+    var statEl = document.getElementById('zar-ch'+n+'-status');
+    if(pctEl) pctEl.textContent = pct+'%';
+    if(barEl) barEl.style.width = pct+'%';
+    if(statEl){
+      if(pct===100){ statEl.textContent='✓ Completed'; statEl.className='ch-status done'; }
+      else if(pct>0){ statEl.textContent='In progress — '+pct+'% done'; statEl.className='ch-status started'; }
+      else{ statEl.textContent='Not started'; statEl.className='ch-status'; }
+    }
+  });
+  var overall = count ? Math.round(total/count) : 0;
+  var op = document.getElementById('zar-overall-pct');
+  var ob = document.getElementById('zar-overall-bar');
+  if(op) op.textContent = overall+'%';
+  if(ob) ob.style.width = overall+'%';
+
+  // Set visited when clicking a chapter
+  document.querySelectorAll('.ch-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      var ch = this.dataset.ch;
+      try{ localStorage.setItem('esm_visited_zar_ch'+ch,'1'); }catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>

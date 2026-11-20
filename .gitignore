@@ -1,0 +1,10 @@
+*.pdf
+*.pptx
+*.docx
+*.mp4
+*.avi
+.DS_Store
+Thumbs.db
+Cennet notes/
+Theories/
+*.swp

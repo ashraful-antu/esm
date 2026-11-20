@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAR Ch4 – Light, Illumination & Vision | ESM IPE 407</title>
+<style>
+  :root{--bg:#0f1117;--bg2:#181b24;--bg3:#1e2130;--acc:#e8832a;--acc2:#f0a855;--text:#e2e8f0;--muted:#8899aa;--border:#2d3450;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--purple:#c084fc;--star:#fbbf24;--yellow:#fde68a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;font-size:15px}
+  #progress-bar{display:none}
+  #progress-label{display:none}
+  main{flex:1;padding:32px 40px 80px;overflow-y:auto;min-width:0}
+  h1{font-size:2em;color:var(--acc);margin-bottom:4px}
+  .chapter-meta{color:var(--muted);font-size:13px;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+  h2{font-size:1.3em;color:var(--acc2);margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  h3{font-size:1.05em;color:var(--blue);margin:20px 0 8px}
+  h4{font-size:.95em;color:var(--purple);margin:14px 0 6px}
+  p{margin-bottom:10px}
+  ul,ol{padding-left:22px;margin-bottom:10px}
+  li{margin-bottom:4px}
+  .importance{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
+  .i5{background:rgba(251,191,36,.15);color:var(--star);border:1px solid rgba(251,191,36,.3)}
+  .i4{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+  .i3{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+  .box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+  .box.warn{border-left:3px solid var(--acc)}
+  .box.info{border-left:3px solid var(--blue)}
+  .box.star{border-left:3px solid var(--star)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:var(--bg3);color:var(--acc2);padding:8px 10px;text-align:left;border:1px solid var(--border)}
+  td{padding:7px 10px;border:1px solid var(--border)}
+  tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+  .pyq-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin:14px 0}
+  .pyq-header{background:rgba(232,131,42,.1);padding:10px 16px;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center}
+  .pyq-year{color:var(--acc2);font-weight:700;font-size:13px}
+  .pyq-marks{background:var(--acc);color:#000;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+  .pyq-q{padding:12px 16px;color:var(--text);font-weight:500;border-bottom:1px solid var(--border);font-size:14px}
+  .pyq-a{padding:14px 16px;color:var(--muted);font-size:14px;line-height:1.75}
+  .pyq-a strong{color:var(--text)}
+  .summary-box{background:linear-gradient(135deg,rgba(232,131,42,.08),rgba(96,165,250,.06));border:1px solid rgba(232,131,42,.2);border-radius:10px;padding:20px;margin:16px 0}
+  .qa-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .qa-row:last-child{border-bottom:none}
+  .stars{color:var(--star);font-size:14px}
+  .qa-topic{flex:1;font-size:13px}
+  .qa-count{color:var(--muted);font-size:12px;white-space:nowrap}
+  .spectrum-bar{display:flex;border-radius:6px;overflow:hidden;height:40px;margin:14px 0;font-size:11px}
+  .spectrum-seg{flex:1;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;text-shadow:none}
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .metric-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+  .metric-name{color:var(--acc2);font-weight:700;font-size:13px;margin-bottom:4px}
+  .metric-unit{color:var(--blue);font-size:14px;font-weight:700}
+  .metric-desc{color:var(--muted);font-size:12px;margin-top:4px}
+  .defect-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:14px 0}
+  .defect-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+  .defect-name{font-weight:700;color:var(--acc2);margin-bottom:6px;font-size:13px}
+  .defect-desc{font-size:12px;color:var(--muted);line-height:1.6}
+  /* ── Paginated sections ── */
+  /* paginated-sections */
+  section{display:none}
+  section.sec-active{display:block}
+  #tab-strip{display:flex;flex-direction:column;gap:3px;padding:4px 0;margin:0;border:none;overflow-x:visible;scrollbar-width:none}
+  #tab-strip::-webkit-scrollbar{display:none}
+  .sec-tab{flex-shrink:0;width:100%;text-align:left;padding:8px 12px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:12px;font-family:inherit;white-space:normal;line-height:1.4;background:transparent;color:var(--muted);transition:all .15s}
+  .sec-tab:hover{background:rgba(232,131,42,.1);color:var(--acc2);border-color:transparent}
+  .sec-tab.tab-active{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+  .sec-tab.tab-done{color:var(--green);border-color:rgba(74,222,128,.35)}
+  .sec-nav{display:flex;justify-content:space-between;align-items:center;margin-top:52px;padding-top:20px;border-top:1px solid var(--border)}
+  .sec-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 18px;border-radius:5px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s}
+  .sec-btn:hover{border-color:var(--acc);color:var(--text)}
+  .sec-ctr{font-size:11px;color:var(--muted)}
+  .mark-row{text-align:center;margin-top:20px}
+  .mark-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 24px;border-radius:20px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+  .mark-btn:hover{border-color:var(--green);color:var(--green)}
+  .mark-btn.is-done{color:var(--green);border-color:rgba(74,222,128,.4)}
+  .resume-banner{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.2);border-radius:5px;padding:7px 12px;font-size:11.5px;color:var(--blue);margin-bottom:16px;display:none}
+
+  /* ── Full-screen layout ── */
+  html{height:100%}
+  body{height:100%;display:flex;flex-direction:column}
+  #page-header{background:var(--bg2);border-bottom:2px solid var(--acc);padding:16px 32px;flex-shrink:0}
+  #page-header h1{font-size:1.5em;color:var(--acc);margin-bottom:2px}
+  #page-header .chapter-meta{margin-bottom:0;border-bottom:none;padding-bottom:0;font-size:12px}
+  #page-body{display:flex;flex:1;overflow:hidden}
+  #sidebar{width:224px;min-width:224px;background:var(--bg2);border-right:1px solid var(--border);padding:14px 10px;overflow-y:auto;flex-shrink:0}
+  #sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 8px 8px;border-bottom:1px solid var(--border);margin-bottom:8px;font-weight:600}
+  /* Mobile: stack vertically, tabs horizontal */
+  @media(max-width:800px){
+    html,body{height:auto}
+    #page-header{padding:12px 16px}
+    #page-body{flex-direction:column;overflow:visible}
+    #sidebar{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border);padding:8px 10px}
+    #tab-strip{flex-direction:row !important;overflow-x:auto;gap:5px;padding:4px 0}
+    #tab-strip::-webkit-scrollbar{display:none}
+    .sec-tab{flex-shrink:0 !important;width:auto !important;white-space:nowrap !important;padding:4px 10px !important;border-radius:14px !important;border:1px solid var(--border) !important;line-height:1.4 !important}
+    main{padding:20px 16px 60px;overflow-y:visible}
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="progress-label">0% read</div>
+
+
+<main>
+<div id="resume-banner" class="resume-banner"></div>
+<h1>Chapter 4: Light, Illumination & Vision</h1>
+<div class="chapter-meta">IPE 407 — Ergonomics & Safety Management &nbsp;|&nbsp; ZAR (Rafi Madam) &nbsp;|&nbsp; Exam Importance: ★★★★★ (Highest in ZAR)</div>
+
+<section id="intro">
+<h2>Overview</h2>
+<p>Lighting is one of the most examined topics in ZAR's section. Proper illumination design is critical for visual comfort, work accuracy, error prevention, and worker health. Poor lighting causes eyestrain, fatigue, errors, and accidents.</p>
+<div class="box star">★ Lighting Design Considerations has appeared <strong>5 times</strong> in PYQs — the single most examined topic across all of ZAR's chapters.</div>
+</section>
+
+<section id="spectrum">
+<h2>Light — The Visible Spectrum</h2>
+<p>Light is electromagnetic radiation visible to the human eye, with wavelengths between <strong>380–780 nm</strong>. Below 380 nm is ultraviolet (UV); above 780 nm is infrared (IR).</p>
+
+<div class="spectrum-bar">
+  <div class="spectrum-seg" style="background:#8B00FF;color:#fff;font-size:10px">Violet<br>400nm</div>
+  <div class="spectrum-seg" style="background:#4B0082;color:#fff;font-size:10px">Indigo<br>425nm</div>
+  <div class="spectrum-seg" style="background:#0000FF;color:#fff;font-size:10px">Blue<br>470nm</div>
+  <div class="spectrum-seg" style="background:#00AA00;color:#fff;font-size:10px">Green<br>550nm</div>
+  <div class="spectrum-seg" style="background:#FFFF00;font-size:10px">Yellow<br>600nm</div>
+  <div class="spectrum-seg" style="background:#FF7700;font-size:10px">Orange<br>630nm</div>
+  <div class="spectrum-seg" style="background:#FF0000;font-size:10px">Red<br>665nm</div>
+</div>
+
+<div class="box info">
+  <strong>Color Vision:</strong> Requires ambient luminance > 3 cd/m² for cone activation (photopic vision). Below this, only rods operate (scotopic/night vision) — no color perception. This is why colors appear gray in very dim light.
+</div>
+
+<h3>Wavelength Memory Aid</h3>
+<p>ROY G BIV: Red (665) → Orange (630) → Yellow (600) → Green (550) → Blue (470) → Indigo (425) → Violet (400)</p>
+</section>
+
+<section id="photometry">
+<h2>Photometry — 4 Key Concepts</h2>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-name">Luminous Intensity</div>
+    <div class="metric-unit">Candela (cd)</div>
+    <div class="metric-desc">Power of light emitted per unit solid angle. Property of the source. 1 candela ≈ light of one candle.</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-name">Luminance</div>
+    <div class="metric-unit">cd/m²</div>
+    <div class="metric-desc">Brightness of a surface as perceived by the eye. Property of a surface reflecting/emitting light. What we see when we look at a surface.</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-name">Luminous Flux</div>
+    <div class="metric-unit">Lumen (lm)</div>
+    <div class="metric-desc">Total amount of light emitted by a source in all directions. Total light output of a bulb. 1 lumen = luminous flux from 1 candela into 1 steradian.</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-name">Illuminance</div>
+    <div class="metric-unit">Lux (lm/m²)</div>
+    <div class="metric-desc">Amount of light falling on a surface. Property of the lit surface. 1 lux = 1 lumen falling on 1 m². Also: 1 foot-candle = 10.76 lux.</div>
+  </div>
+</div>
+
+<div class="box info">
+<strong>Exam Memory Aid:</strong><br>
+<em>Intensity</em> = source property (candela)<br>
+<em>Luminance</em> = surface property visible to eye (cd/m²) — "what you see"<br>
+<em>Flux</em> = total output (lumens) — "how much light from the bulb"<br>
+<em>Illuminance</em> = how much light hits a surface (lux) — "how well lit is my desk"<br><br>
+<strong>Relationship:</strong> Illuminance (lux) = Luminous Flux (lumens) ÷ Area (m²)
+</div>
+
+<div class="box warn">
+<strong>Exam True/False:</strong> "Illuminance is related to human eye while luminance is related to light falling on an object." → <strong>FALSE</strong>. It's the opposite: Luminance is what the eye perceives; Illuminance is light falling on an object.
+</div>
+</section>
+
+<section id="reflectance">
+<h2>Surface Reflectance</h2>
+<p>Reflectance is the fraction of incident light that a surface reflects (expressed as %):</p>
+<table>
+  <tr><th>Surface</th><th>Reflectance (%)</th></tr>
+  <tr><td>White Paper</td><td>95%</td></tr>
+  <tr><td>White Cloth</td><td>65%</td></tr>
+  <tr><td>Newspaper</td><td>55%</td></tr>
+  <tr><td>Plain Wood</td><td>45%</td></tr>
+</table>
+<div class="box info"><strong>Balance of Luminance:</strong> Increasing wall reflectance from 40% to 70% (i.e., painting walls lighter) results in 55% more usable light in a room — OR equivalently, 70% less electrical energy for the same light level. Huge energy saving.</div>
+</section>
+
+<section id="visibility">
+<h2>Improving Visibility — 4 Factors</h2>
+<ul>
+  <li><strong>1. Increase source intensity:</strong> More lumens from the light source → higher illuminance on the work</li>
+  <li><strong>2. Bring target closer to viewer or light source:</strong> Illuminance follows inverse square law — halving the distance quadruples illuminance</li>
+  <li><strong>3. Increase contrast:</strong> Greater difference in luminance between target and background improves detectability</li>
+  <li><strong>4. Increase target size:</strong> Larger features are easier to detect; use magnification when size is fixed</li>
+</ul>
+</section>
+
+<section id="color">
+<h2>Color Selection Guidelines <span class="importance i4">★★★★ Exam (3×)</span></h2>
+<div class="box warn"><strong>PYQ (3×):</strong> Why is color selection crucial for visual comfort? Mention different guidelines for color selection.</div>
+
+<h3>Color Combinations to AVOID</h3>
+<p>Certain color combinations reduce visual discrimination due to insufficient wavelength separation or chromatic aberration:</p>
+<table>
+  <tr><th>Avoid This Pairing</th><th>Reason</th></tr>
+  <tr><td>Red + Green</td><td>Most common color blindness (8% of males); wavelengths close together</td></tr>
+  <tr><td>Blue + Yellow (Green + Yellow)</td><td>Chromatic aberration; focal lengths differ</td></tr>
+  <tr><td>Green + Blue</td><td>Insufficient contrast; confusion in peripheral vision</td></tr>
+  <tr><td>Red + Blue</td><td>Chromatic aberration — cannot focus simultaneously; "stereo depth" illusion</td></tr>
+</table>
+
+<h3>Luminosity Order for Coding</h3>
+<p>When using color for coding/safety signage, use colors in order of decreasing visibility against backgrounds:</p>
+<div class="box">
+White > Yellow > Cyan > Green > Magenta > Red > Blue
+</div>
+<p>White and yellow have the highest luminosity (most visible); blue has the lowest (worst for small targets or fine detail).</p>
+
+<h3>Color Rendition Index (CRI)</h3>
+<p>The CRI measures how accurately a light source renders colors compared to a reference source (sunlight = 100):</p>
+<table>
+  <tr><th>CRI Range</th><th>Rating</th><th>Application</th></tr>
+  <tr><td>75–100</td><td>Excellent</td><td>Color grading, art studios, medical, inspection</td></tr>
+  <tr><td>65–75</td><td>Good</td><td>Offices, schools, retail</td></tr>
+  <tr><td>55–65</td><td>Fair</td><td>Industrial, warehouse (non-color-critical)</td></tr>
+  <tr><td>0–55</td><td>Poor</td><td>Road lighting, storage areas</td></tr>
+</table>
+<div class="box warn">CRI and color contrast are NOT the same thing. High CRI = accurate color rendering; high contrast = luminance difference between surfaces.</div>
+</section>
+
+<section id="cri">
+<h2>Three Main Types of Lighting Sources</h2>
+<table>
+  <tr><th>Type</th><th>Examples</th><th>CRI</th><th>Characteristics</th></tr>
+  <tr><td>Incandescent</td><td>Tungsten bulbs, halogen</td><td>~100</td><td>Excellent CRI; radiates uniformly; inefficient (5% light); warm (2700K)</td></tr>
+  <tr><td>Fluorescent</td><td>Tube fluorescent, CFL</td><td>60–80</td><td>Efficient; flickers at mains frequency (50/60 Hz — can cause stroboscopic effect); cool/neutral</td></tr>
+  <tr><td>Discharge</td><td>Sodium vapor, Mercury vapor, Metal halide</td><td>Varies (20–90)</td><td>High output; sodium (CRI~20) poor for color; metal halide (CRI~85) good for color</td></tr>
+</table>
+</section>
+
+<section id="design">
+<h2>Lighting Design Considerations — Grandjean (1980) <span class="importance i5">★★★★★ Exam (5×) — HIGHEST PRIORITY</span></h2>
+<div class="box star"><strong>HIGHEST EXAM IMPORTANCE — appeared 5 times across sessions 2010-11 through 2023-24.</strong> Master this section completely.</div>
+
+<p>Grandjean (1980) identified four key lighting design considerations for workplaces:</p>
+
+<h3>1. Suitable Illumination Level</h3>
+<p>The illuminance level must match the visual demands of the task. The IES (Illuminating Engineering Society) categorizes tasks into illuminance levels (Table A-I, Categories A–I):</p>
+<ul>
+  <li>Category A (20–50 lux): Public spaces with dark surroundings — corridors, lobbies</li>
+  <li>Category B–D (50–500 lux): Warehouses, offices, classrooms</li>
+  <li>Category E–G (500–5000 lux): Assembly, inspection, fine work</li>
+  <li>Category H–I (5000–20000 lux): Very fine inspection, extremely low contrast tasks</li>
+</ul>
+<p><strong>Practical guidance:</strong> Measure illuminance with a photometer. Increase by: brighter lamps, cleaning fixtures (dust reduces output 25–45%), repainting walls (40→70% reflectance = 55% more light).</p>
+
+<h3>2. Balance of Surface Luminance</h3>
+<p>The eye adapts to the average luminance in its field of view. Extreme luminance differences within the visual field cause pupil to oscillate between dilation/constriction → eyestrain, fatigue.</p>
+<ul>
+  <li>Recommended luminance ratios: Task:immediate surround = 3:1; Task:remote surround = 10:1; Bright:dark areas = max 40:1</li>
+  <li>Increasing wall reflectance from 40% → 70% provides 55% more light OR allows 70% energy saving</li>
+  <li>Use light-colored ceilings, walls, and desk surfaces to reduce luminance gradients</li>
+  <li>Avoid very dark surfaces adjacent to bright task areas</li>
+</ul>
+
+<h3>3. Avoidance of Glare</h3>
+<p><strong>Glare</strong> is caused by a bright light source (or its reflection) in the visual field, causing discomfort or reduced visibility.</p>
+<p><strong>Two types:</strong></p>
+<ul>
+  <li><strong>Discomfort glare:</strong> Causes discomfort but doesn't prevent seeing</li>
+  <li><strong>Disability glare:</strong> Reduces visual acuity — cannot see the task clearly</li>
+</ul>
+<p><strong>How to avoid glare:</strong></p>
+<ul>
+  <li>Combine direct + indirect (reflected from ceiling) lighting — soften overall luminance distribution</li>
+  <li>Keep luminaires at > 30° angle from the normal line of sight (minimum 30° cut-off angle)</li>
+  <li>Use shields, diffusers, louvres on luminaires</li>
+  <li>Avoid placing luminaires in front of operators (should be to the side or behind)</li>
+  <li>Use anti-glare screens on VDTs</li>
+  <li>Use matte (non-reflective) surfaces on desks and work areas</li>
+</ul>
+
+<h3>4. Uniformity of Lighting</h3>
+<p>Non-uniform lighting forces the eye to repeatedly re-adapt as workers move between areas of different luminance → fatigue.</p>
+<p><strong>Uniformity ratio:</strong> Minimum illuminance / Average illuminance ≥ 0.7 (IES standard)</p>
+<p><strong>Fluorescent flicker:</strong> Fluorescent tubes flicker at the mains supply frequency (50 Hz in Bangladesh/EU, 60 Hz in USA). This can cause the stroboscopic effect — rotating machinery appears stationary if rotation frequency matches flicker frequency → dangerous. Solution: use electronic ballasts that drive at high frequency (> 10 kHz), or use incandescent/LED for critical areas.</p>
+<p><strong>Incandescent uniformity:</strong> Incandescent bulbs radiate uniformly (no flicker at the frequency of concern) — preferred for areas with rotating machinery.</p>
+</section>
+
+<section id="illumination-table">
+<h2>IES Illuminance Categories (Table A-I)</h2>
+<table>
+  <tr><th>Category</th><th>Range (lux)</th><th>Application</th></tr>
+  <tr><td>A</td><td>20–30–50</td><td>Public areas with dark surroundings</td></tr>
+  <tr><td>B</td><td>50–75–100</td><td>Simple orientation tasks (brief visits)</td></tr>
+  <tr><td>C</td><td>100–150–200</td><td>Working spaces where tasks are occasionally performed</td></tr>
+  <tr><td>D</td><td>200–300–500</td><td>Performance of visual tasks of high contrast or large size</td></tr>
+  <tr><td>E</td><td>500–750–1000</td><td>Performance of visual tasks of medium contrast or small size</td></tr>
+  <tr><td>F</td><td>1000–1500–2000</td><td>Performance of visual tasks of low contrast or very small size</td></tr>
+  <tr><td>G</td><td>2000–3000–5000</td><td>Performance of prolonged and exacting visual tasks</td></tr>
+  <tr><td>H</td><td>5000–7500–10000</td><td>Very special visual tasks of extremely low contrast</td></tr>
+  <tr><td>I</td><td>10000–15000–20000</td><td>Extremely demanding visual tasks</td></tr>
+</table>
+</section>
+
+<section id="balance">
+<h2>Balance of Surface Luminance — Detail</h2>
+<p>The significance of wall reflectance on the light economy of a room is profound:</p>
+<div class="box info">
+<strong>Example calculation:</strong> A room with 40% wall reflectance vs 70% wall reflectance.<br>
+Increasing reflectance from 40% → 70% = <strong>55% more usable light</strong> from the same fixtures, OR the same illuminance with <strong>70% less electrical energy</strong>.<br>
+This means: painting the walls white can halve your lighting electricity bill.
+</div>
+<p><strong>Recommended room surface reflectances:</strong></p>
+<ul>
+  <li>Ceiling: 70–90% (white or near-white)</li>
+  <li>Walls: 40–60%</li>
+  <li>Work surface/desk: 25–45%</li>
+  <li>Floor: 20–30%</li>
+</ul>
+</section>
+
+<section id="glare">
+<h2>Glare — Full Coverage <span class="importance i4">★★★★ Exam (3×)</span></h2>
+<div class="box warn"><strong>PYQ (3×):</strong> What is glare? How can it be avoided? Also appears combined with uniform lighting questions.</div>
+
+<h3>Definition</h3>
+<p>Glare occurs when a bright object (or its reflection) exists within the visual field against a significantly darker background. The pupil contracts to handle the bright source, leaving the darker areas of the visual field underlit.</p>
+
+<h3>Sources of Glare in the Workplace</h3>
+<ul>
+  <li>Direct view of luminaire (bare bulb)</li>
+  <li>Reflected glare from shiny desk/screen surfaces</li>
+  <li>Window glare (skylight behind screen or in front of worker)</li>
+  <li>Bright walls near dark task area</li>
+</ul>
+
+<h3>Control Measures for Glare</h3>
+<ul>
+  <li>Combine direct (downward) + indirect (ceiling-reflected) lighting → smoother overall luminance</li>
+  <li>Luminaire placement: > 30° from line of sight (use the "30° rule")</li>
+  <li>Louvres, baffles, diffusers on luminaires</li>
+  <li>Anti-glare/matte screen coatings</li>
+  <li>Window blinds/curtains to control daylight</li>
+  <li>Non-reflective finishes on work surfaces</li>
+  <li>Computer monitor: position perpendicular to windows (not facing or backed by window)</li>
+</ul>
+</section>
+
+<section id="uniformity">
+<h2>Uniformity of Lighting — Flicker & Stroboscopic Effect</h2>
+<p>Fluorescent lamps flicker at the AC mains supply frequency (50 Hz in most of Asia and EU; 60 Hz in Americas). This flicker can cause:</p>
+<ul>
+  <li><strong>Stroboscopic effect:</strong> Rotating machinery appears to stand still if its rotation speed is a multiple of the flicker frequency → catastrophic safety hazard (a grinding wheel appearing stationary to the eye)</li>
+  <li><strong>Fatigue and headaches:</strong> Even sub-perceptual flicker at 50 Hz can cause visual fatigue</li>
+</ul>
+<div class="box warn">Solution: Use <strong>high-frequency electronic ballasts</strong> (operates fluorescent at >10 kHz — imperceptible to human eye), or use <strong>incandescent/LED</strong> lamps in areas with rotating machinery.</div>
+<p><strong>Incandescent lamps</strong> produce light from a heated filament — the thermal mass of the filament prevents rapid light modulation, so they radiate more uniformly (no stroboscopic effect).</p>
+</section>
+
+<section id="defects">
+<h2>Visual Defects <span class="importance i4">★★★★ Exam (3×)</span></h2>
+<div class="box warn"><strong>PYQ (3×):</strong> Briefly describe the different types of visual defects.</div>
+
+<div class="defect-grid">
+  <div class="defect-card">
+    <div class="defect-name" style="color:var(--green)">Emmetropic (Normal)</div>
+    <div class="defect-desc">Normal vision. The eye focuses light precisely on the retina at both near and far distances without correction.</div>
+  </div>
+  <div class="defect-card">
+    <div class="defect-name" style="color:var(--blue)">Myopia (Nearsightedness)</div>
+    <div class="defect-desc">Eyeball too long OR cornea too curved. Light focuses in FRONT of retina. Far objects blurry. Corrected with CONCAVE (diverging) lens.</div>
+  </div>
+  <div class="defect-card">
+    <div class="defect-name" style="color:var(--acc2)">Hypermetropia (Farsightedness)</div>
+    <div class="defect-desc">Eyeball too short OR cornea too flat. Light focuses BEHIND retina. Near objects blurry. Corrected with CONVEX (converging) lens.</div>
+  </div>
+  <div class="defect-card">
+    <div class="defect-name" style="color:var(--red)">Astigmatism</div>
+    <div class="defect-desc">Unequal curvature of the cornea — football-shaped rather than spherical. Light focuses at different points for different meridians → blurry at all distances. Corrected with cylindrical/toric lens.</div>
+  </div>
+  <div class="defect-card">
+    <div class="defect-name" style="color:var(--purple)">Asthenopia (Eyestrain)</div>
+    <div class="defect-desc">Eye muscle fatigue — specifically the ciliary muscle (accommodation). Symptoms: headache, eye fatigue, difficulty focusing, double vision. Associated with prolonged near work (reading, VDT). NOT a refractive error — an accommodative disorder.</div>
+  </div>
+  <div class="defect-card">
+    <div class="defect-name" style="color:var(--muted)">Presbyopia</div>
+    <div class="defect-desc">Age-related loss of accommodative ability (lens becomes rigid). Affects near vision. Corrected with reading glasses or bifocals. Usually begins around age 40.</div>
+  </div>
+</div>
+
+<h3>Color Blindness</h3>
+<p>Affects ~8% of males, ~0.5% of females. Most common: red-green (protanopia or deuteranopia). Design implication: <strong>never use red-green alone</strong> as a distinguishing code — always add shape, pattern, or text.</p>
+
+<h3>Rods and Cones</h3>
+<p>The retina contains two types of photoreceptors:</p>
+<ul>
+  <li><strong>Cones (~6 million):</strong> Concentrated in fovea; responsible for color vision and high-acuity vision; require luminance > 3 cd/m² (photopic/daylight vision)</li>
+  <li><strong>Rods (~120 million):</strong> Distributed across periphery; no color vision; operate at low light levels (scotopic/night vision); highly sensitive to motion</li>
+  <li><strong>Interaction:</strong> At intermediate luminance levels (mesopic), both operate. During reading, cones do all the work. At night, rods dominate — "looking slightly off-center at a dim star" reveals it better (rod-dominant peripheral vision).</li>
+</ul>
+</section>
+
+<section id="vdt">
+<h2>VDT Lighting Design <span class="importance i3">★★★ Exam</span></h2>
+<table>
+  <tr><th>Parameter</th><th>Recommendation</th></tr>
+  <tr><td>Optimal illuminance</td><td>50 fc / 500 Lux</td></tr>
+  <tr><td>Screen position (vertical)</td><td>15–20° below horizontal</td></tr>
+  <tr><td>Eye-to-screen distance</td><td>18–30 inches</td></tr>
+  <tr><td>Blink rate</td><td>VDT: 3.6/min vs Normal: 18.4/min → dry eyes</td></tr>
+  <tr><td>Rest breaks</td><td>1 minute rest per 15 minutes VDT use</td></tr>
+  <tr><td>Visual damage</td><td>No evidence VDT causes permanent damage or cataracts</td></tr>
+  <tr><td>Luminance ratio</td><td>Screen:surroundings should not exceed 3:1</td></tr>
+</table>
+
+<h3>During Reading — Lighting Notes</h3>
+<ul>
+  <li><strong>Indirect lighting during reading:</strong> NOT recommended. Requires higher illuminance levels because less directed. Direct task lighting preferred for reading.</li>
+  <li><strong>Near visual work → astigmatism:</strong> FALSE. Near visual work does not cause astigmatism (anatomical condition). It can cause asthenopia (eyestrain).</li>
+</ul>
+</section>
+
+<section id="summary">
+<h2>Chapter Summary</h2>
+<div class="summary-box">
+  <h3 style="color:var(--acc2);margin-bottom:12px">Key Takeaways</h3>
+  <ol style="padding-left:18px;line-height:2">
+    <li><strong>Visible light:</strong> 380–780 nm; color vision requires > 3 cd/m²</li>
+    <li><strong>Photometry:</strong> Intensity (cd) → Flux (lm) → Illuminance (lux) → Luminance (cd/m²)</li>
+    <li><strong>Reflectance:</strong> White paper 95%, cloth 65%, newspaper 55%, wood 45%</li>
+    <li><strong>Avoid color combos:</strong> R+G, B+Y, G+B, R+B; visibility order: White > Yellow > Cyan > Green > Magenta > Red > Blue</li>
+    <li><strong>CRI:</strong> 75–100=excellent, 65–75=good, 55–65=fair, 0–55=poor</li>
+    <li><strong>★★★★★ Lighting Design (Grandjean 1980):</strong> (1) Suitable level (2) Balance of luminance (3) No glare (4) Uniformity</li>
+    <li><strong>Reflectance 40%→70%:</strong> 55% more light OR 70% energy saving</li>
+    <li><strong>Glare:</strong> avoid by >30° cut-off, combine direct+indirect, anti-glare screens</li>
+    <li><strong>Flicker:</strong> fluorescent flickers at 50/60 Hz → stroboscopic effect; use HF ballasts or incandescent</li>
+    <li><strong>Visual defects:</strong> Myopia=concave; Hypermetropia=convex; Astigmatism=unequal cornea; Asthenopia=eyestrain</li>
+    <li><strong>VDT:</strong> 500 lux; screen 15–20° below; 18–30 in; blink 3.6/min; 1 min rest/15 min; no permanent damage</li>
+  </ol>
+</div>
+</section>
+
+<section id="qanalysis">
+<h2>Question Analysis — Exam Importance</h2>
+<div class="box">
+  <div class="qa-row"><span class="stars">★★★★★</span><span class="qa-topic">Lighting design considerations for production floor/workplace (Grandjean 4 points)</span><span class="qa-count">5× | 12–20 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★★</span><span class="qa-topic">Uniform lighting + glare (why important + how to avoid)</span><span class="qa-count">3× | 10–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★★</span><span class="qa-topic">Color selection (guidelines + why crucial for visual comfort)</span><span class="qa-count">3× | 5–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★★</span><span class="qa-topic">Visual defects (types with descriptions)</span><span class="qa-count">3× | 10–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">VDT lighting design considerations</span><span class="qa-count">1× | 7 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Quality of illumination factors / 4 photometric concepts</span><span class="qa-count">1× | 10 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Color rendition importance / CRI scale</span><span class="qa-count">1× | 5 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Control measures for visual discomfort</span><span class="qa-count">1× | 12 marks</span></div>
+</div>
+</section>
+
+<section id="pyq">
+<h2>Previous Year Questions</h2>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2023-24 · 2020-21 · Jan 2021 · 2014-15 · 2010-11</span><span class="pyq-marks">★★★★★ 5× · 12–20 marks</span></div>
+  <div class="pyq-q">Write in detail about the lighting design considerations for a typical production floor / workplace. / Apply your insights to develop a proper lighting plan for a confined production facility where natural lighting is barely available.</div>
+  <div class="pyq-a"><strong>Lighting Design Considerations for a Production Floor:</strong><br><br>
+  <strong>1. Illuminance Level (Quantity):</strong> Match task requirements. General areas: 200–300 lux. Detailed assembly: 500–750 lux. Fine inspection/quality control: 1000–2000 lux. Emergency lighting minimum: 10 lux. Use task lighting at individual workstations for precision tasks rather than raising ambient to maximum everywhere (energy-efficient).<br><br>
+  <strong>2. Uniformity:</strong> The ratio of minimum to average illuminance across the working plane should be ≥ 0.5 (Emin/Eavg ≥ 0.5) to avoid harsh light/dark contrasts that cause visual adaptation fatigue. Avoid placing fixtures in a grid that creates alternating bright/dark zones.<br><br>
+  <strong>3. Glare Control:</strong><br>
+  • <em>Direct glare:</em> From bare lamp sources in the visual field → use diffusers, indirect lighting, high-angle luminaires.<br>
+  • <em>Reflected glare:</em> From shiny surfaces → use matte finishes on work surfaces and walls; position light source so reflection angle ≠ viewing angle.<br>
+  • Use luminaires with appropriate UGR (Unified Glare Rating) ≤ 19 for offices, ≤ 22 for industrial.<br><br>
+  <strong>4. Colour Rendering Index (CRI):</strong> CRI > 80 for colour discrimination tasks (inspection, quality control). CRI > 90 for colour-critical tasks (colour matching, medical). Poor CRI → misidentification of colour defects → quality errors.<br><br>
+  <strong>5. Colour Temperature:</strong> Cool white (5000–6500K) for detailed, alertness-critical tasks. Neutral white (3500–4000K) for general production. Warm white for rest areas.<br><br>
+  <strong>6. Shadows:</strong> Lighting from multiple directions reduces hard shadows. Single-source lighting creates shadows that obscure features of the work object. Use diffuse/reflected lighting for 3D inspection tasks.<br><br>
+  <strong>7. Maintenance Factor:</strong> Lamps lose output over time (lumen depreciation); surfaces accumulate dust. Design at higher initial lux to maintain minimum lux over maintenance period. Schedule regular lamp replacement.<br><br>
+  <strong>8. Emergency Lighting:</strong> Minimum 10 lux along escape routes for ≥ 1 hour (BS 5266 standard); battery-backed.<br><br>
+  <strong>9. Heat stress from lighting:</strong> Industrial lighting (high-bay HID lamps) generates significant heat. Consider LED alternatives (90% less heat) in hot workplaces.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23 · 2015-16 · 2011-12</span><span class="pyq-marks">★★★ 3× · Q2b/Q7b/Q3c · 10–15 marks</span></div>
+  <div class="pyq-q">Why is uniform lighting crucial for the visual comfort of workers in a workplace? Mention different guidelines for avoiding glare and improving uniform lighting. / What is glare? How can it be avoided?</div>
+  <div class="pyq-a"><strong>Why uniform lighting is crucial:</strong><br>
+  When illuminance varies sharply across the workspace, the eye must constantly adapt (pupil dilation/contraction) as the worker looks between bright and dark areas. This <strong>visual adaptation fatigue</strong> causes: eye strain (asthenopia), headaches, reduced visual acuity, increased error rates, and slower task performance. High contrast also masks visual details in dark areas while overexposing bright areas.<br><br>
+  <strong>Glare:</strong> An excessive brightness ratio in the visual field that causes discomfort (discomfort glare) or reduced visibility (disability glare).<br>
+  • <strong>Direct glare:</strong> Light source directly in visual field (bare bulb, sky through window).<br>
+  • <strong>Reflected/specular glare:</strong> Bright reflection from shiny surfaces (monitor, polished metal).<br>
+  • <strong>Veiling glare:</strong> Diffuse reflected light that reduces contrast of the viewed task.<br><br>
+  <strong>Guidelines to avoid glare and improve uniformity:</strong><br>
+  • Use luminaires with diffusers, louvers, or baffles to shield the lamp source.<br>
+  • Position light fittings to avoid direct lines of sight to lamps from workstations.<br>
+  • Use indirect (upward) lighting: bounce off ceiling → soft, diffuse, uniform.<br>
+  • Matte finishes on work surfaces and walls (reflectance 20–40% for work surfaces).<br>
+  • Window blinds/louvers to control daylight glare; anti-glare screen filters for monitors.<br>
+  • Luminaire uniformity ratio: Emin/Eavg ≥ 0.5 for general areas; ≥ 0.7 for precision tasks.<br>
+  • Avoid placing workstations facing windows (monitor in front of window = silhouette against bright background).</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2021-22 · 2020-21 · 2015-16</span><span class="pyq-marks">★★★ 3× · Q2b/Q2c/Q6d · 5–15 marks</span></div>
+  <div class="pyq-q">Why is colour selection crucial for the visual comfort of workers in a workplace? Mention different guidelines for colour selection.</div>
+  <div class="pyq-a"><strong>Why colour selection is crucial:</strong><br>
+  Colour affects: visual contrast (task visibility), glare (from highly reflective surfaces), psychological mood and alertness, visual fatigue, safety coding (hazard recognition), and thermal perception (warm vs cool colours influence perceived temperature).<br><br>
+  <strong>Guidelines for colour selection:</strong><br>
+  • <strong>Ceiling:</strong> High reflectance (70–90%) — white or near-white. Reflects light downward; maximises light utilization.<br>
+  • <strong>Walls:</strong> Medium reflectance (40–60%) — light grey, beige, light blue. Provides soft ambient without glare.<br>
+  • <strong>Work surfaces:</strong> Low-medium reflectance (20–40%) — medium grey, natural wood. High enough to illuminate task object but not cause glare.<br>
+  • <strong>Floor:</strong> Low reflectance (10–30%) — not a source of upward glare.<br>
+  • <strong>Colour contrast for tasks:</strong> High contrast between task object and background improves detection speed.<br>
+  • <strong>Safety colour coding (ISO 3864):</strong> Red = fire/danger; Yellow = caution; Green = safety/first aid; Blue = mandatory; Orange = hazardous equipment.<br>
+  • <strong>Colour temperature:</strong> Cool colours (blue, green) for warm environments (perceived cooling effect); warm colours (yellow, orange) for cold areas.<br>
+  • <strong>Avoid:</strong> Large areas of saturated primary colours (psychologically fatiguing); black walls (oppressive, reduces light); all-white environments (glare risk).</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2020-21 · 2015-16 · 2011-12</span><span class="pyq-marks">★★★ 3× · Q2b/Q7c/Q2a · 10–15 marks</span></div>
+  <div class="pyq-q">Briefly describe the different types of visual defects. What are the guidelines for color selection?</div>
+  <div class="pyq-a"><strong>Types of visual defects:</strong><br><br>
+  <strong>1. Myopia (Short-sightedness):</strong> Eyeball too long or lens too powerful → focal point in front of retina → distant objects blurry, near objects clear. Corrected with concave (diverging) lenses.<br><br>
+  <strong>2. Hyperopia (Long-sightedness / Far-sightedness):</strong> Eyeball too short or lens too weak → focal point behind retina → near objects blurry, distant objects clearer. Corrected with convex (converging) lenses.<br><br>
+  <strong>3. Astigmatism:</strong> Irregular curvature of cornea/lens → different focal lengths in different meridians → blurry vision at all distances. Corrected with cylindrical lenses.<br><br>
+  <strong>4. Presbyopia:</strong> Age-related loss of lens accommodation (lens loses elasticity) → reduced ability to focus on near objects after ~age 40. Corrected with reading glasses or bifocals.<br><br>
+  <strong>5. Colour Vision Deficiency (Colour Blindness):</strong> Absence or malfunction of cone photoreceptors. Most common: red-green (8% of males, 0.5% of females). Complete: achromatopsia (very rare).<br><br>
+  <strong>6. Glaucoma:</strong> Elevated intraocular pressure → optic nerve damage → progressive peripheral vision loss → tunnel vision if untreated.<br><br>
+  <strong>7. Cataracts:</strong> Clouding of the lens → reduced contrast sensitivity, glare sensitivity, general blurring. Age-related or caused by UV/IR exposure.<br><br>
+  <strong>Ergonomic implications:</strong> Workplace lighting and task design must account for visual defects common in the workforce; regular vision screening in high-precision tasks recommended.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2017-18</span><span class="pyq-marks">Q4d · 7 marks</span></div>
+  <div class="pyq-q">(d) What are the lighting design considerations for a Video Display Terminal (VDT)? Explain any two considerations in brief.</div>
+  <div class="pyq-a"><strong>Key lighting considerations for VDT workstations:</strong><br>
+  Glare control, screen luminance vs. ambient balance, indirect lighting, monitor positioning, keyboard illuminance, colour temperature choice.<br><br>
+  <strong>Two in detail:</strong><br><br>
+  <strong>1. Glare Control:</strong> The most critical issue for VDT work. Sources: (a) Windows behind/beside monitor (reflected glare on screen), (b) Bare luminaires in the ceiling above the monitor (reflected in screen). Solutions: Position monitor perpendicular to windows (not facing or backing); use indirect/uplighting; fit anti-glare screen filter; use window blinds; specify low-UGR luminaires (UGR ≤ 19 for screen-based tasks). Screen brightness should be ≥ 3× ambient luminance to maintain contrast.<br><br>
+  <strong>2. Screen-to-ambient luminance balance:</strong> Large luminance ratio between the bright screen and dark surroundings (or vice versa) forces the eye to adapt repeatedly → eye fatigue. Recommendation: Surround wall reflectance 40–60%; ambient illuminance ~200–300 lux for screen-based work (lower than conventional office 500 lux to reduce reflected glare). Task lighting can supplement for paper/document tasks without raising ambient excessively.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2016-17</span><span class="pyq-marks">Q8c · 8 marks</span></div>
+  <div class="pyq-q">(c) State whether the following statements are TRUE or FALSE:<br>
+  (i) In poor light, iris expansion is related to slight blurring.<br>
+  (ii) Near visual work for long periods leads to astigmatism of eyes.<br>
+  (iii) Illuminance is related to human eye while luminance is related to light falling on an object.<br>
+  (iv) Color rendition index is the same as color contrast.<br>
+  (v) The more the room reflectance power, the better it is always.<br>
+  (vi) During reading, indirect lighting is good.<br>
+  (vii) Both the monitor height and distance from the monitor screen lead to human eye muscle fatigue.<br>
+  (viii) Less humidity in VDT environment along with less blinking leads to dry eyes.<br>
+  (ix) Both amplitude and frequency of sound wave actually causes noise hazard.<br>
+  (x) Exposing 80 dB sound all day long is not harmful as noise level is more than that 80 dB.<br>
+  (xi) Cochlea hair cells are mainly responsible for converting the sound wave to electrical signals.<br>
+  (xii) Both the amplitude and frequency sensation can be attributed to cochlea.<br>
+  (xiii) In our ear, sound wave propagates through both the solid and liquid medium.<br>
+  (xiv) Vertigo can be attributed to noise hazard.<br>
+  (xv) Work rostering from a higher noise hazardous area to a lesser one with hearing protection devices can be a good preventive measure for noise hazard.<br>
+  (xvi) Heat acclimatization is a psychological process of adaptation rather than a physiological adjustment to life in hot environment.</div>
+  <div class="pyq-a"><strong>Answers:</strong><br>
+  (i) <strong>TRUE</strong> — Iris dilates in poor light; at maximum dilation, depth of field decreases → slight blurring (less sharp focus).<br>
+  (ii) <strong>FALSE</strong> — Near work causes <em>myopia</em> (short-sightedness) in susceptible individuals, not astigmatism. Astigmatism is a structural corneal issue, not caused by near work.<br>
+  (iii) <strong>FALSE</strong> — It's reversed. <em>Illuminance</em> (lux) = light falling ON a surface. <em>Luminance</em> (cd/m²) = light leaving a surface toward the eye (perceived brightness).<br>
+  (iv) <strong>FALSE</strong> — CRI measures how accurately a light source renders colours compared to natural light. Colour contrast is the difference in luminance/colour between adjacent areas.<br>
+  (v) <strong>FALSE</strong> — Very high reflectance → glare. Recommended reflectance ranges: ceiling 70–90%, walls 40–60%, floors 20–30%. Too high everywhere causes veiling glare.<br>
+  (vi) <strong>TRUE</strong> — Indirect lighting (reflected off ceiling) produces soft, shadow-free, low-glare illumination ideal for reading tasks.<br>
+  (vii) <strong>TRUE</strong> — Monitor too close or too far: ciliary muscles must work harder to focus (accommodation fatigue). Monitor too high: neck/eye muscles strain.<br>
+  (viii) <strong>TRUE</strong> — VDT environments often have lower humidity (due to AC/heating) and operators blink less when concentrating on screens; reduced blinking reduces tear replenishment → dry eyes, irritation.<br>
+  (ix) <strong>FALSE</strong> — Primarily it is <em>amplitude</em> (sound pressure level/dB) that determines noise hazard (hearing damage threshold). Frequency affects the perception of harm but it is intensity (amplitude) that drives physiological damage to cochlear hair cells.<br>
+  (x) <strong>FALSE</strong> — 80 dB (or above) all-day exposure IS harmful. The statement is doubly wrong: 80 dB continuous exposure can cause noise-induced hearing loss over time; 85 dB is the common occupational action level (OSHA), not a safe limit.<br>
+  (xi) <strong>TRUE</strong> — Cochlear hair cells (inner and outer) transduce mechanical vibration of the basilar membrane into electrochemical nerve impulses sent via the auditory nerve to the brain.<br>
+  (xii) <strong>TRUE</strong> — The cochlea encodes both amplitude (louder sounds displace the basilar membrane more, stimulating more hair cells) and frequency (different locations along the basilar membrane respond to different frequencies — tonotopic organisation).<br>
+  (xiii) <strong>TRUE</strong> — Sound travels through the outer and middle ear as pressure waves in air (gas), through ossicles (solid bones: malleus, incus, stapes), and then through the perilymph and endolymph fluids (liquid) in the cochlea.<br>
+  (xiv) <strong>TRUE</strong> — The cochlea and vestibular apparatus (semicircular canals) share the inner ear. Excessive noise can damage vestibular structures or cause endolymph disruption → vertigo, dizziness, balance problems.<br>
+  (xv) <strong>TRUE</strong> — Work rostering (job rotation) moves workers from high-noise to low-noise areas, reducing total daily noise dose. Combined with hearing protection devices (HPDs), this is a valid administrative + PPE control measure under the hierarchy of controls.<br>
+  (xvi) <strong>FALSE</strong> — Heat acclimatization is a <em>physiological</em> process (not psychological). The body undergoes measurable physiological adaptations over 7–14 days: increased plasma volume, earlier onset of sweating, lower core temperature at which sweating begins, reduced heart rate at the same workload, and reduced salt concentration in sweat.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2014-15</span><span class="pyq-marks">Q2c · 5 marks</span></div>
+  <div class="pyq-q">(c) Why is color rendition important in selecting color for a workplace?</div>
+  <div class="pyq-a"><strong>Colour Rendition Index (CRI)</strong> measures how accurately a light source renders the colours of objects compared to a reference source (natural daylight = CRI 100).<br><br>
+  <strong>Importance in workplace colour selection:</strong><br>
+  • <strong>Quality control / Inspection:</strong> Low CRI light (e.g., older fluorescent: CRI 60–70) makes colours appear different from their true appearance → workers may pass defective coloured items or reject good ones. High CRI (≥ 85) needed for colour-accuracy-dependent tasks.<br>
+  • <strong>Safety colour coding:</strong> If CRI is too low, red safety signs may appear brownish, green exit signs may appear yellowish → slower hazard recognition → safety risk.<br>
+  • <strong>Psychological comfort:</strong> Low-CRI light (greenish, bluish) makes skin tones appear unnatural → worker discomfort, reduced morale over time.<br>
+  • <strong>Colour-critical industries:</strong> Textile, paint, food inspection → must use CRI > 90 lamps to ensure product colour accuracy.<br>
+  • <strong>Visual fatigue:</strong> Poor colour rendering forces the eye to work harder to interpret colour information → faster visual fatigue.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2014-15</span><span class="pyq-marks">Q8b · 15 marks</span></div>
+  <div class="pyq-q">(b) Explain how rods and cones work together to control the colour of vision of a human eye.</div>
+  <div class="pyq-a"><strong>Photoreceptors of the retina:</strong><br><br>
+  <strong>Rods (~120 million):</strong> Sensitive to low light levels (scotopic vision, < 0.01 cd/m²). Contain a single pigment — <em>rhodopsin</em> (peak sensitivity ~507 nm, blue-green). Do NOT distinguish colour — only detect light intensity. Concentrated in the periphery; absent from the fovea.<br><br>
+  <strong>Cones (~6–7 million):</strong> Active in normal light levels (photopic vision, > 3 cd/m²). Three types: S-cones (short wavelength, ~420 nm blue), M-cones (medium, ~530 nm green), L-cones (long, ~560 nm red). Colour perception arises from differential activation of S, M, L cones. Concentrated in the fovea (central 2° of vision).<br><br>
+  <strong>Interaction — Mesopic vision:</strong> At intermediate light levels (0.01–3 cd/m²), both rods and cones are active. This mesopic range is relevant for road/industrial lighting design; colour perception is degraded because rods contribute a "colourless" signal.<br><br>
+  <strong>Colour vision process:</strong> Light → different cone types activated in proportion to wavelength → signals processed in opponent channels in retinal ganglion cells (Red-Green; Blue-Yellow; Light-Dark) → visual cortex → colour percept.<br><br>
+  <strong>Colour blindness:</strong> Missing or defective cone type → cannot distinguish certain wavelengths (most common: M-cone deficiency = red-green blindness in 8% of males).</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2013-14</span><span class="pyq-marks">Q2a · 10 marks</span></div>
+  <div class="pyq-q">(a) On what factors does "Quality of Illumination" depend?</div>
+  <div class="pyq-a"><strong>Quality of Illumination</strong> refers to how well the lighting serves the visual tasks performed in the space. It depends on:<br><br>
+  1. <strong>Illuminance (lux):</strong> Adequate quantity of light falling on the task surface. Task-specific requirements (see lighting design card above).<br>
+  2. <strong>Uniformity:</strong> Even distribution across the workspace (Emin/Eavg ≥ 0.5).<br>
+  3. <strong>Glare control:</strong> Limitation of direct and reflected glare (UGR, luminance ratios).<br>
+  4. <strong>Colour rendering (CRI):</strong> How accurately colours are rendered (CRI > 80 generally; > 90 for colour-critical tasks).<br>
+  5. <strong>Colour temperature (CCT):</strong> Appropriate warmth/coolness of the light (Kelvin rating) for the task and environment.<br>
+  6. <strong>Modelling (shadow/directionality):</strong> Some directionality in lighting reveals surface texture and 3D form; totally diffuse lighting flattens 3D objects → difficult for inspection tasks.<br>
+  7. <strong>Flicker:</strong> Old fluorescent lights at 50 Hz can cause subconscious flicker fatigue; modern LED drivers eliminate this.<br>
+  8. <strong>Luminance ratios:</strong> Between task, surroundings, and background — should be within 10:1 (task:remote surroundings) and 3:1 (task:adjacent surroundings).</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2013-14</span><span class="pyq-marks">Q4b · 12 marks</span></div>
+  <div class="pyq-q">(b) Mention some control measures for visual discomfort.</div>
+  <div class="pyq-a"><strong>Control Measures for Visual Discomfort (Asthenopia):</strong><br><br>
+  <strong>Engineering controls (lighting):</strong><br>
+  • Use correct illuminance levels (not too low → eyestrain from dim light; not too high → glare).<br>
+  • Install anti-glare luminaires with diffusers/louvers.<br>
+  • Use indirect or semi-indirect lighting for screen-based tasks.<br>
+  • Install window blinds to control daylight glare.<br>
+  • Use anti-reflective coatings on monitors and spectacles.<br><br>
+  <strong>Workstation design:</strong><br>
+  • Position monitor perpendicular to windows.<br>
+  • Adjust monitor tilt/height to reduce reflections and neck strain.<br>
+  • Use document holders to avoid repeated gaze shifts between document and screen.<br>
+  • Set monitor brightness, contrast, and colour temperature appropriately.<br><br>
+  <strong>Administrative controls:</strong><br>
+  • Apply 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds (reduces ciliary muscle fatigue).<br>
+  • Regular eye examination for refractive errors and appropriate corrective lenses.<br>
+  • Adequate rest breaks in prolonged precision visual tasks.<br><br>
+  <strong>Personal controls:</strong><br>
+  • Correct vision with prescribed lenses (workplace-specific if needed).<br>
+  • Lubricating eye drops for dry eye syndrome (reduced blinking at VDTs).<br>
+  • Blue-light filtering glasses for extended screen use.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2013-14 · 2010-11</span><span class="pyq-marks">★ 2× · Q4d/Q8b · 5/10 marks</span></div>
+  <div class="pyq-q">What are the three main types of lighting source? Write down the characteristics of light sources.</div>
+  <div class="pyq-a"><strong>Three main types of lighting sources:</strong><br><br>
+  <strong>1. Incandescent (Tungsten) Lamps:</strong><br>
+  Mechanism: Electric current heats a tungsten filament to ~2700K → glows.<br>
+  Characteristics: Warm colour (2700K), excellent CRI (~100), low efficiency (10–15 lm/W), short life (~1000 hrs), emits significant heat (90% heat, 10% light). Largely phased out for energy efficiency reasons.<br><br>
+  <strong>2. Discharge Lamps (Fluorescent, HID):</strong><br>
+  Mechanism: Electric discharge through gas excites mercury/metal vapour → UV emission → phosphor coating converts to visible light.<br>
+  Types: Fluorescent (CRI 60–85, ~50–100 lm/W, 10,000–20,000 hrs), High-Pressure Mercury, Metal Halide (HID, high output for factories), High-Pressure Sodium (road/security lighting).<br>
+  Characteristics: More efficient than incandescent, longer life, variable CRI depending on phosphor blend.<br><br>
+  <strong>3. LED (Light Emitting Diode) Lamps:</strong><br>
+  Mechanism: Semiconductor junction — electron recombination releases photons directly.<br>
+  Characteristics: Highest efficiency (100–200+ lm/W), longest life (25,000–50,000 hrs), low heat output, dimmable, wide range of CCT and CRI options, no UV/IR emission, instant on. CRI can reach 90–97. Currently the preferred choice for new workplace installations.</div>
+</div>
+
+<div class="pyq-card" style="border-left-color:var(--blue)">
+  <div class="pyq-header" style="background:rgba(96,165,250,.1)"><span class="pyq-year">2013-14 — NUMERICAL</span><span class="pyq-marks">Q2c · 15 marks</span></div>
+  <div class="pyq-q">(c) A manufacturing company hires students for inspection work — checking right labels on goods. Labels: white paper with black letters. Room: painted light blue. Accuracy requirement: HIGH. Determine: (a) How many foot candles are required? (b) How many 1500-lumen bulbs are required if placed 4 ft above the inspection table and 3 ft apart from the perpendicular source?</div>
+  <div class="pyq-a"><strong>Part (a) — Required illuminance:</strong><br>
+  Task classification: Fine inspection / quality control with high accuracy requirement → 100–200 foot-candles (fc) required (IES standard for detailed inspection). With white background and black text (high contrast), lower end: <strong>100 fc (approximately 1076 lux)</strong>.<br><br>
+  <strong>Part (b) — Number of bulbs:</strong><br>
+  Lamp flux per bulb = 1500 lumens.<br>
+  Height above table = 4 ft; Spacing = 3 ft between sources.<br><br>
+  Using the inverse square law for a point source:<br>
+  E = I / d²<br>
+  where d = perpendicular distance = 4 ft, I = luminous intensity (candela)<br>
+  Assuming isotropic lamp: I = Flux / (4π) = 1500 / 12.57 ≈ 119.3 cd<br>
+  E from one lamp directly below = 119.3 / 4² = 119.3 / 16 ≈ <strong>7.5 fc per lamp directly below</strong><br><br>
+  For 100 fc requirement: Need 100/7.5 ≈ 13–14 lamps arranged in a grid with 3 ft spacing.<br><br>
+  <em>Note: Actual calculation requires knowing the utilization factor, maintenance factor, and room dimensions. The exam expects use of the lumen method or point-by-point method with the data provided.</em></div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+  var KEY='esm_zar_ch4';
+  var st={curIdx:0,completed:[]};
+  try{var sv=localStorage.getItem(KEY);if(sv){var p=JSON.parse(sv);st.curIdx=p.curIdx||0;st.completed=p.completed||[];}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+  var secs=[].slice.call(document.querySelectorAll('main > section'));
+
+  /* build tab strip */
+  var strip=document.createElement('div');strip.id='tab-strip';
+  secs.forEach(function(sec,i){
+    var h2=sec.querySelector('h2');
+    var raw=h2?h2.textContent:'§'+(i+1);
+    var label=raw.replace(/[★✓].*/,'').replace(/\s*\(.*\)/,'').trim();
+    if(label.length>24)label=label.substring(0,22)+'…';
+    var t=document.createElement('button');
+    t.className='sec-tab';t.id='tab-'+i;t.setAttribute('data-i',i);
+    t.textContent=(i+1)+'. '+label;
+    t.addEventListener('click',function(){show(+this.getAttribute('data-i'));}); 
+    strip.appendChild(t);
+  });
+  /* Build full-screen layout: header + sidebar + main */
+  var h1El=document.querySelector('main > h1');
+  var metaEl=document.querySelector('.chapter-meta');
+  var mainEl=document.querySelector('main');
+  var pgHeader=document.createElement('div');pgHeader.id='page-header';
+  if(h1El)pgHeader.appendChild(h1El);
+  if(metaEl)pgHeader.appendChild(metaEl);
+  document.body.prepend(pgHeader);
+  var pgBody=document.createElement('div');pgBody.id='page-body';
+  var sidebarEl=document.createElement('div');sidebarEl.id='sidebar';
+  var stitle=document.createElement('div');stitle.id='sidebar-title';stitle.textContent='Sections';
+  sidebarEl.appendChild(stitle);
+  sidebarEl.appendChild(strip);
+  pgBody.appendChild(sidebarEl);
+  if(mainEl)pgBody.appendChild(mainEl);
+  document.body.appendChild(pgBody);
+
+  /* prev/next + mark-done */
+  secs.forEach(function(sec,i){
+    var nav=document.createElement('div');nav.className='sec-nav';
+    var pBtn=i>0?'<button class="sec-btn" id="pbtn'+i+'">← Prev</button>':'<span></span>';
+    var nBtn=i<secs.length-1?'<button class="sec-btn" id="nbtn'+i+'">Next →</button>':'<span style="color:var(--green);font-size:12px">✓ Done</span>';
+    nav.innerHTML=pBtn+'<span class="sec-ctr">'+(i+1)+' / '+secs.length+'</span>'+nBtn;
+    sec.appendChild(nav);
+    if(i>0){(function(x){var b=document.getElementById('pbtn'+x);if(b)b.addEventListener('click',function(){show(x-1);});})(i);}
+    if(i<secs.length-1){(function(x){var b=document.getElementById('nbtn'+x);if(b)b.addEventListener('click',function(){show(x+1);});})(i);}
+    var mr=document.createElement('div');mr.className='mark-row';
+    var mb=document.createElement('button');mb.className='mark-btn';mb.id='mark'+i;mb.setAttribute('data-i',i);
+    mb.addEventListener('click',function(){toggleDone(+this.getAttribute('data-i'));});
+    mr.appendChild(mb);sec.appendChild(mr);
+  });
+
+  function show(idx){
+    if(idx<0)idx=0;if(idx>=secs.length)idx=secs.length-1;
+    st.curIdx=idx;save();
+    secs.forEach(function(s,i){s.classList.toggle('sec-active',i===idx);});
+    document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    refreshUI();
+  }
+
+  function toggleDone(idx){
+    var ci=st.completed.indexOf(idx);
+    if(ci>=0)st.completed.splice(ci,1);else st.completed.push(idx);
+    save();refreshUI();
+  }
+
+  function refreshUI(){
+    var idx=st.curIdx,done=st.completed.length,total=secs.length;
+    var pct=total?Math.round((done/total)*100):0;
+    var pb=document.getElementById('progress-bar');
+    var pl=document.getElementById('progress-label');
+    if(pb)pb.style.width=pct+'%';
+    if(pl)pl.textContent=done+'/'+total+' done';
+    secs.forEach(function(s,i){
+      var t=document.getElementById('tab-'+i);if(!t)return;
+      var isDone=st.completed.indexOf(i)>=0,isActive=i===idx;
+      var label=t.textContent.replace(/^[✓ ]*\d+\. /,'');
+      t.className='sec-tab'+(isActive?' tab-active':isDone?' tab-done':'');
+      t.textContent=(isDone&&!isActive?'✓ ':''+(i+1)+'. ')+label;
+    });
+    var at=document.getElementById('tab-'+idx);
+    if(at)at.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    secs.forEach(function(s,i){
+      var mb=document.getElementById('mark'+i);if(!mb)return;
+      var isDone=st.completed.indexOf(i)>=0;
+      mb.textContent=isDone?'✓ Done  · undo':'☐  Mark done';
+      mb.classList.toggle('is-done',isDone);
+    });
+  }
+
+  show(st.curIdx);
+  var banner=document.getElementById('resume-banner');
+  if(banner&&(st.curIdx>0||st.completed.length>0)){
+    banner.style.display='block';
+    banner.textContent='Resuming — §'+(st.curIdx+1)+' of '+secs.length+(st.completed.length?' · '+st.completed.length+' done':'');
+  }
+})();
+</script>
+
+<style id="tt-style">
+.tt-done-btn{display:inline-flex;align-items:center;gap:.35rem;margin-left:auto;padding:.28rem .8rem;border-radius:20px;border:1px solid var(--border,#2d3450);background:transparent;color:var(--muted,#8899aa);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tt-done-btn:hover{border-color:var(--green,#4ade80);color:var(--green,#4ade80)}
+.tt-done-btn.is-done{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:var(--green,#4ade80)}
+.tt-done-btn .tt-icon{font-size:.85rem}
+/* Chapter progress bar in sidebar */
+#tt-chapter-bar{margin:1rem .5rem .5rem;padding:.7rem .9rem;background:var(--bg3,#1e2130);border-radius:9px;border:1px solid var(--border,#2d3450)}
+#tt-chapter-bar .tt-bar-label{font-size:.7rem;color:var(--muted,#8899aa);display:flex;justify-content:space-between;margin-bottom:.45rem}
+#tt-chapter-bar .tt-bar-bg{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+#tt-chapter-bar .tt-bar-fill{height:100%;background:linear-gradient(90deg,var(--acc,#e8832a),var(--acc2,#f0a855));border-radius:999px;transition:width .4s ease}
+</style>
+<script id="topic-tracker-script">
+(function(){
+  // Derive key from filename
+  var href = location.pathname || location.href;
+  var m = href.match(/([A-Z]+)_Ch(\d+)/i);
+  if (!m) return;
+  var prefix = m[1].toLowerCase();
+  var num = m[2];
+  var lsBase = 'esm_' + prefix + '_ch' + num;
+  var topicsKey = lsBase + '_topics';
+  var pctKey = lsBase + '_pct';
+
+  // Find study sections (exclude pyq / quick-review)
+  function getStudySections(){
+    return Array.from(document.querySelectorAll('main > section[id], #content > section[id]')).filter(function(s){
+      return !s.id.match(/pyq|qr|quick/i);
+    });
+  }
+
+  // Load state
+  var state = {};
+  try{ state = JSON.parse(localStorage.getItem(topicsKey)||'{}'); }catch(e){}
+
+  function savePct(sections){
+    var done = sections.filter(function(s){ return state[s.id]; }).length;
+    var pct = sections.length ? Math.round(done/sections.length*100) : 0;
+    try{
+      localStorage.setItem(pctKey, pct);
+      // mark visited when anything is done
+      if(done>0) localStorage.setItem('esm_visited_'+prefix+'_ch'+num,'1');
+    }catch(e){}
+    return pct;
+  }
+
+  function updateBar(pct){
+    var bar = document.getElementById('tt-bar-fill');
+    var cnt = document.getElementById('tt-bar-cnt');
+    if(bar) bar.style.width = pct+'%';
+    if(cnt) cnt.textContent = pct+'%';
+  }
+
+  function addButtons(){
+    var sections = getStudySections();
+    var pct = savePct(sections);
+
+    // Inject sidebar bar widget after sidebar nav
+    var sidebar = document.getElementById('sidebar');
+    if(sidebar && !document.getElementById('tt-chapter-bar')){
+      var barDiv = document.createElement('div');
+      barDiv.id = 'tt-chapter-bar';
+      barDiv.innerHTML =
+        '<div class="tt-bar-label"><span>Chapter progress</span><span id="tt-bar-cnt">'+pct+'%</span></div>'+
+        '<div class="tt-bar-bg"><div class="tt-bar-fill" id="tt-bar-fill" style="width:'+pct+'%"></div></div>';
+      sidebar.appendChild(barDiv);
+    }
+
+    sections.forEach(function(sec){
+      var h2 = sec.querySelector('h2');
+      if(!h2 || h2.querySelector('.tt-done-btn')) return;
+
+      var isDone = !!state[sec.id];
+      var btn = document.createElement('button');
+      btn.className = 'tt-done-btn' + (isDone?' is-done':'');
+      btn.dataset.sid = sec.id;
+      btn.innerHTML = '<span class="tt-icon">'+(isDone?'✓':'○')+'</span><span>'+(isDone?'Done':'Mark done')+'</span>';
+
+      // Make h2 flex
+      h2.style.cssText += ';display:flex;align-items:center;flex-wrap:wrap;gap:.5rem';
+
+      h2.appendChild(btn);
+
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var sid = this.dataset.sid;
+        state[sid] = !state[sid];
+        try{ localStorage.setItem(topicsKey, JSON.stringify(state)); }catch(err){}
+        this.className = 'tt-done-btn'+(state[sid]?' is-done':'');
+        this.innerHTML = '<span class="tt-icon">'+(state[sid]?'✓':'○')+'</span><span>'+(state[sid]?'Done':'Mark done')+'</span>';
+        var sects = getStudySections();
+        var p = savePct(sects);
+        updateBar(p);
+      });
+    });
+  }
+
+  // Run after DOM ready
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', addButtons);
+  } else {
+    addButtons();
+  }
+})();
+</script>
+
+</body>
+</html>

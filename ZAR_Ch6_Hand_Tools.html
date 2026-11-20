@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAR Ch6 – Hand Tools | ESM IPE 407</title>
+<style>
+  :root{--bg:#0f1117;--bg2:#181b24;--bg3:#1e2130;--acc:#e8832a;--acc2:#f0a855;--text:#e2e8f0;--muted:#8899aa;--border:#2d3450;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--purple:#c084fc;--star:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;font-size:15px}
+  #progress-bar{display:none}
+  #progress-label{display:none}
+  main{flex:1;padding:32px 40px 80px;overflow-y:auto;min-width:0}
+  h1{font-size:2em;color:var(--acc);margin-bottom:4px}
+  .chapter-meta{color:var(--muted);font-size:13px;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+  h2{font-size:1.3em;color:var(--acc2);margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  h3{font-size:1.05em;color:var(--blue);margin:20px 0 8px}
+  h4{font-size:.95em;color:var(--purple);margin:14px 0 6px}
+  p{margin-bottom:10px}
+  ul,ol{padding-left:22px;margin-bottom:10px}
+  li{margin-bottom:4px}
+  .importance{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
+  .i5{background:rgba(251,191,36,.15);color:var(--star);border:1px solid rgba(251,191,36,.3)}
+  .i4{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+  .i3{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+  .i2{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+  .box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+  .box.warn{border-left:3px solid var(--acc)}
+  .box.info{border-left:3px solid var(--blue)}
+  .box.star{border-left:3px solid var(--star)}
+  .box.danger{border-left:3px solid var(--red)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:var(--bg3);color:var(--acc2);padding:8px 10px;text-align:left;border:1px solid var(--border)}
+  td{padding:7px 10px;border:1px solid var(--border)}
+  tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+  .pyq-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin:14px 0}
+  .pyq-header{background:rgba(232,131,42,.1);padding:10px 16px;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center}
+  .pyq-year{color:var(--acc2);font-weight:700;font-size:13px}
+  .pyq-marks{background:var(--acc);color:#000;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+  .pyq-q{padding:12px 16px;color:var(--text);font-weight:500;border-bottom:1px solid var(--border);font-size:14px}
+  .pyq-a{padding:14px 16px;color:var(--muted);font-size:14px;line-height:1.75}
+  .pyq-a strong{color:var(--text)}
+  .summary-box{background:linear-gradient(135deg,rgba(232,131,42,.08),rgba(96,165,250,.06));border:1px solid rgba(232,131,42,.2);border-radius:10px;padding:20px;margin:16px 0}
+  .qa-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .qa-row:last-child{border-bottom:none}
+  .stars{color:var(--star);font-size:14px}
+  .qa-topic{flex:1;font-size:13px}
+  .qa-count{color:var(--muted);font-size:12px;white-space:nowrap}
+  .principle-grid{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0}
+  .principle-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid;border-radius:8px;padding:16px}
+  .ctd-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .ctd-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+  .ctd-name{font-weight:700;font-size:13px;margin-bottom:6px}
+  .ctd-desc{font-size:12px;color:var(--muted);line-height:1.6}
+  .wrist-diagram{font-family:monospace;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:12px;line-height:1.6;color:var(--green);margin:12px 0;overflow-x:auto}
+  .grip-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+  .grip-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+  .grip-name{font-weight:700;color:var(--acc2);margin-bottom:8px}
+  /* ── Paginated sections ── */
+  /* paginated-sections */
+  section{display:none}
+  section.sec-active{display:block}
+  #tab-strip{display:flex;flex-direction:column;gap:3px;padding:4px 0;margin:0;border:none;overflow-x:visible;scrollbar-width:none}
+  #tab-strip::-webkit-scrollbar{display:none}
+  .sec-tab{flex-shrink:0;width:100%;text-align:left;padding:8px 12px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:12px;font-family:inherit;white-space:normal;line-height:1.4;background:transparent;color:var(--muted);transition:all .15s}
+  .sec-tab:hover{background:rgba(232,131,42,.1);color:var(--acc2);border-color:transparent}
+  .sec-tab.tab-active{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+  .sec-tab.tab-done{color:var(--green);border-color:rgba(74,222,128,.35)}
+  .sec-nav{display:flex;justify-content:space-between;align-items:center;margin-top:52px;padding-top:20px;border-top:1px solid var(--border)}
+  .sec-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 18px;border-radius:5px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s}
+  .sec-btn:hover{border-color:var(--acc);color:var(--text)}
+  .sec-ctr{font-size:11px;color:var(--muted)}
+  .mark-row{text-align:center;margin-top:20px}
+  .mark-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 24px;border-radius:20px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+  .mark-btn:hover{border-color:var(--green);color:var(--green)}
+  .mark-btn.is-done{color:var(--green);border-color:rgba(74,222,128,.4)}
+  .resume-banner{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.2);border-radius:5px;padding:7px 12px;font-size:11.5px;color:var(--blue);margin-bottom:16px;display:none}
+
+  /* ── Full-screen layout ── */
+  html{height:100%}
+  body{height:100%;display:flex;flex-direction:column}
+  #page-header{background:var(--bg2);border-bottom:2px solid var(--acc);padding:16px 32px;flex-shrink:0}
+  #page-header h1{font-size:1.5em;color:var(--acc);margin-bottom:2px}
+  #page-header .chapter-meta{margin-bottom:0;border-bottom:none;padding-bottom:0;font-size:12px}
+  #page-body{display:flex;flex:1;overflow:hidden}
+  #sidebar{width:224px;min-width:224px;background:var(--bg2);border-right:1px solid var(--border);padding:14px 10px;overflow-y:auto;flex-shrink:0}
+  #sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 8px 8px;border-bottom:1px solid var(--border);margin-bottom:8px;font-weight:600}
+  /* Mobile: stack vertically, tabs horizontal */
+  @media(max-width:800px){
+    html,body{height:auto}
+    #page-header{padding:12px 16px}
+    #page-body{flex-direction:column;overflow:visible}
+    #sidebar{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border);padding:8px 10px}
+    #tab-strip{flex-direction:row !important;overflow-x:auto;gap:5px;padding:4px 0}
+    #tab-strip::-webkit-scrollbar{display:none}
+    .sec-tab{flex-shrink:0 !important;width:auto !important;white-space:nowrap !important;padding:4px 10px !important;border-radius:14px !important;border:1px solid var(--border) !important;line-height:1.4 !important}
+    main{padding:20px 16px 60px;overflow-y:visible}
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="progress-label">0% read</div>
+
+
+<main>
+<div id="resume-banner" class="resume-banner"></div>
+<h1>Chapter 6: Hand Tools</h1>
+<div class="chapter-meta">IPE 407 — Ergonomics & Safety Management &nbsp;|&nbsp; ZAR (Rafi Madam) &nbsp;|&nbsp; Exam Importance: ★★★★★ (Highest exam frequency)</div>
+
+<section id="intro">
+<h2>Overview</h2>
+<p>Hand tool design is the most examined chapter in ZAR's section. Poorly designed hand tools are a leading cause of Cumulative Trauma Disorders (CTDs) — musculoskeletal injuries caused by repeated awkward motions over time. The key goal of ergonomic hand tool design is to fit the tool to the worker, not the worker to the tool.</p>
+<div class="box star">★★★★★ Straight Wrist Principle has appeared 4× in PYQs. HAVS has appeared 4×. Together these dominate this chapter.</div>
+</section>
+
+<section id="principles">
+<h2>5 Ergonomic Principles of Hand Tool Design</h2>
+<div class="box warn">The 5 principles framework is the backbone of this chapter. Know them in order.</div>
+
+<table>
+  <tr><th>#</th><th>Principle</th><th>Violation → CTD</th></tr>
+  <tr><td>1</td><td>Maintain Straight Wrist (Ulnar/Radial neutral)</td><td>CTS, Tennis Elbow, Tenosynovitis</td></tr>
+  <tr><td>2</td><td>Avoid Tissue Compression</td><td>Ischemia, Ulnar Artery Thrombosis, Digital Neuritis</td></tr>
+  <tr><td>3</td><td>Avoid Repetitive Finger Action</td><td>Trigger Finger, Tenosynovitis</td></tr>
+  <tr><td>4</td><td>Design for Safe Operation</td><td>Cuts, amputations, crush injuries</td></tr>
+  <tr><td>5</td><td>Remember Women and Left-handers</td><td>Fit mismatch → all of the above</td></tr>
+</table>
+</section>
+
+<section id="p1">
+<h2>Principle 1: Maintain Straight Wrist <span class="importance i5">★★★★★ Exam (4×)</span></h2>
+<div class="box warn"><strong>PYQ (4×):</strong> Explain the importance of maintaining a straight wrist in hand tool design. What disorders can result from wrist deviation?</div>
+
+<p>The wrist has four directions of deviation from neutral (straight) position:</p>
+<ul>
+  <li><strong>Ulnar Deviation:</strong> Wrist bent toward the little finger side — most common with standard hand tools</li>
+  <li><strong>Radial Deviation:</strong> Wrist bent toward the thumb side</li>
+  <li><strong>Dorsiflexion (Extension):</strong> Wrist bent back (upward)</li>
+  <li><strong>Palmar Flexion (Flexion):</strong> Wrist bent downward</li>
+</ul>
+
+<div class="wrist-diagram">
+            DORSIFLEXION (Extension)
+                     ↑
+                     |
+RADIAL ←─────────── 0 ───────────→ ULNAR
+DEVIATION            |             DEVIATION
+                     ↓
+            PALMAR FLEXION
+
+✓ NEUTRAL (STRAIGHT) = 0 deviation in all directions = "Bend the tool, not the wrist"
+✗ Sustained deviation in any direction = soft tissue stress → CTD
+</div>
+
+<h3>Why Straight Wrist Matters</h3>
+<p>When the wrist deviates from neutral, the carpal tunnel (a narrow passage on the palmar side of the wrist through which the median nerve and tendons pass) is compressed and distorted:</p>
+<ul>
+  <li>In ulnar or radial deviation: tendons press against carpal bones → friction → tenosynovitis</li>
+  <li>In dorsiflexion + ulnar deviation + forearm pronation: carpal tunnel is smallest → highest pressure on median nerve → Carpal Tunnel Syndrome (CTS)</li>
+  <li>Sustained non-neutral postures cause cumulative microtrauma → inflammation → permanent nerve/tendon damage</li>
+</ul>
+
+<h3>Solution: Bend the Tool, Not the Wrist</h3>
+<p>The classic solution, proposed by Tichauer (1976), is to redesign tools so the tool bends rather than the wrist. Example: Conventional pliers require the wrist in ulnar deviation to work in a horizontal plane → <strong>Redesigned Tichauer pliers</strong> (1976) have an angled handle — 19° ± 5° bend (Bennett, 1980) — allowing the wrist to remain neutral while the working jaw is correctly oriented.</p>
+
+<div class="box info"><strong>Bennett (1980):</strong> Optimal handle bend = 19° ± 5° (range 14°–24°). This angle accommodates the natural wrist position when gripping for most tasks.</div>
+
+<h3>Disorders from Wrist Deviation (Violations of P1)</h3>
+<ul>
+  <li><strong>Carpal Tunnel Syndrome (CTS):</strong> Compression of median nerve in carpal tunnel → numbness, tingling, weakness in thumb/index/middle finger</li>
+  <li><strong>Tennis Elbow (Lateral Epicondylitis):</strong> From combined radial deviation + pronation + dorsiflexion; inflammation of extensor tendon at lateral epicondyle</li>
+  <li><strong>Tenosynovitis:</strong> Inflammation of tendon sheaths from repeated awkward wrist positions; pain and crepitus (creaking) during movement</li>
+  <li><strong>de Quervain's Syndrome:</strong> Tenosynovitis specifically of the abductor pollicis longus and extensor pollicis brevis tendons at the thumb base; from combined radial deviation + thumb use</li>
+</ul>
+</section>
+
+<section id="p2">
+<h2>Principle 2: Avoid Tissue Compression <span class="importance i3">★★★ Exam (2×)</span></h2>
+<p>Tool handles that press into soft tissue cause localized tissue compression, cutting off blood flow (ischemia) and potentially injuring nerves.</p>
+
+<h3>Mechanisms of Injury</h3>
+<ul>
+  <li><strong>Ischemia (Tichauer, 1978):</strong> Any sustained pressure on soft tissue impairs blood circulation. Capillary closure occurs at pressures as low as 30–35 mmHg. Ischemic tissue cannot receive oxygen → pain, numbness, long-term tissue damage. Tool handles with small cross-section, sharp edges, or hard materials concentrate pressure on small areas of the palm.</li>
+  <li><strong>Ulnar Artery Thrombosis (Hypothenar Hammer Syndrome):</strong> Repeated impact or pressure on the hypothenar eminence (heel of palm, little-finger side) where the ulnar artery lies superficially. Blood clot forms in the ulnar artery → reduced blood flow to fingers → white, cold fingers (Raynaud-like symptoms). Common in workers using hand as a hammer, or in screwdrivers with square handles.</li>
+  <li><strong>Digital Neuritis:</strong> Inflammation of digital nerves from sustained pressure of tool handle rings or narrow handles across the finger roots.</li>
+  <li><strong>Trigger Point Myalgia:</strong> Tender knots in muscle from sustained compression.</li>
+</ul>
+
+<h3>Design Solutions for P2</h3>
+<ul>
+  <li>Use large-diameter handles (spread force over larger area)</li>
+  <li>Smooth, contoured handles — no hard edges or sharp ridges</li>
+  <li>Compressible/compliant grip material (rubber, foam, thermoplastic elastomer)</li>
+  <li>Handle length ≥ 125 mm (keeps handle from pressing into palm)</li>
+  <li>Avoid finger grooves/indentations (they create pressure concentration for non-standard hand sizes)</li>
+  <li>Avoid triggers that require sustained force (spring return)</li>
+</ul>
+</section>
+
+<section id="p3">
+<h2>Principle 3: Avoid Repetitive Finger Action <span class="importance i3">★★★ Exam (2×)</span></h2>
+<p>Repetitive index finger motions (such as operating a trigger) cause:</p>
+<ul>
+  <li>Fatigue of intrinsic hand muscles</li>
+  <li>Tenosynovitis of flexor tendons</li>
+  <li>Trigger Finger (stenosing tenosynovitis)</li>
+</ul>
+
+<h3>Solutions</h3>
+<ul>
+  <li>Use power tools with continuous operation mode instead of repeated trigger pulls</li>
+  <li>Use multi-finger "strip" triggers spanning 2–4 fingers (distributes load)</li>
+  <li>Use power grips instead of pinch grips for high-force tasks</li>
+  <li>Automate highly repetitive operations</li>
+  <li>Allow adequate rest/recovery time between repetitive operations</li>
+</ul>
+</section>
+
+<section id="p4">
+<h2>Principle 4: Design for Safe Operation</h2>
+<ul>
+  <li>Guards and shields to prevent contact with cutting edges, rotating parts</li>
+  <li>Non-slip handles — especially important for cutting tools</li>
+  <li>Positive-action triggers (must be intentionally activated, not accidentally)</li>
+  <li>Dead-man switches (tool stops when grip is released)</li>
+  <li>Weight balance — heavy power tools should be supported (spring balancers, articulated arms) so the worker doesn't hold all the weight</li>
+  <li>Store tools safely (sheaths, racks) to prevent cutting injuries when reaching for tools</li>
+</ul>
+</section>
+
+<section id="p5">
+<h2>Principle 5: Design for Women and Left-handers</h2>
+<p>Most hand tools are designed for the average right-handed male. This creates fit problems for:</p>
+<ul>
+  <li><strong>Women:</strong> Smaller hands, shorter fingers, lower grip strength (~60% of male grip strength); standard handles may be too large → fingers don't wrap around → no power grip → compensatory wrist deviation</li>
+  <li><strong>Left-handers (~10% of population):</strong> Controls, triggers, and grip contours designed for right-hand orientation can cause awkward postures and increased CTD risk for left-handers</li>
+</ul>
+<p><strong>Solutions:</strong> Adjustable handle sizes, ambidextrous designs, provide appropriately sized tools for all workers, consider 5th–95th percentile female grip dimensions in design.</p>
+</section>
+
+<section id="ctd">
+<h2>Cumulative Trauma Disorders (CTDs) — Overview <span class="importance i2">★★ Exam (1×)</span></h2>
+<div class="box">
+  <strong>CTD Definition:</strong> Injuries to tendons, nerves, muscles, and blood vessels caused by repeated microtrauma from occupational tasks — typically involving repetitive motion, forceful exertion, awkward posture, vibration, or cold. Also called Work-Related Musculoskeletal Disorders (WMSDs) or Repetitive Strain Injuries (RSIs).
+</div>
+
+<h3>Risk Factors (Silverstein et al.)</h3>
+<ul>
+  <li>High force (Fhand > 4.5 kg)</li>
+  <li>High repetition (cycle time < 30 sec, or > 50% cycle time doing same motion)</li>
+  <li>Awkward posture (wrist deviation, shoulder abduction)</li>
+  <li>Vibration</li>
+  <li>Cold temperatures</li>
+  <li>Contact stress (tissue compression)</li>
+</ul>
+<div class="box warn">Force × Repetition interaction: even modest force with high repetition can cause CTD. High force alone rarely causes CTD; it is the combination that is hazardous.</div>
+</section>
+
+<section id="cts">
+<h2>Carpal Tunnel Syndrome (CTS) <span class="importance i3">★★★ Exam (2×)</span></h2>
+<div class="ctd-grid">
+  <div class="ctd-card">
+    <div class="ctd-name" style="color:var(--blue)">Anatomy</div>
+    <div class="ctd-desc">The carpal tunnel is a narrow fibro-osseous channel on the palmar (anterior) side of the wrist, bounded by carpal bones and the transverse carpal ligament. Contains: 9 flexor tendons (finger + thumb flexors) and 1 median nerve.</div>
+  </div>
+  <div class="ctd-card">
+    <div class="ctd-name" style="color:var(--red)">Mechanism</div>
+    <div class="ctd-desc">Wrist deviation (dorsiflexion + ulnar deviation) or tenosynovitis swelling increases pressure in the carpal tunnel → compresses the median nerve → impairs nerve conduction.</div>
+  </div>
+  <div class="ctd-card">
+    <div class="ctd-name" style="color:var(--acc2)">Symptoms</div>
+    <div class="ctd-desc">Numbness, tingling, burning in thumb, index, middle, and radial half of ring finger (median nerve distribution). Pain, especially at night. Weakness of thumb pinch (thenar muscle wasting in severe cases). Phalen's test + Tinel's sign positive.</div>
+  </div>
+  <div class="ctd-card">
+    <div class="ctd-name" style="color:var(--green)">Causes & Treatment</div>
+    <div class="ctd-desc">Occupational: dorsiflexion + repetitive gripping, vibration. Treatment: wrist splinting (neutral), NSAIDs, corticosteroid injection, surgical decompression (carpal tunnel release) for severe cases.</div>
+  </div>
+</div>
+</section>
+
+<section id="havs">
+<h2>Hand-Arm Vibration Syndrome (HAVS) / Vibration White Finger (VWF) <span class="importance i5">★★★★★ Exam (4×)</span></h2>
+<div class="box warn"><strong>PYQ (4×):</strong> HAVS is joint-highest exam frequency with Straight Wrist — appears in almost every session. Know all 8 control measures.</div>
+
+<h3>Definition and Cause</h3>
+<p><strong>HAVS</strong> is an occupational disease caused by prolonged use of hand-held vibrating tools (jackhammers, chainsaws, grinders, chipping hammers, riveting guns). The vibration damages peripheral nerves and blood vessels in the fingers and hand.</p>
+
+<h3>Raynaud's Phenomenon (Vibration White Finger)</h3>
+<p>The most recognizable feature of HAVS is <strong>Vibration-Induced White Finger (VWF)</strong> — also called Raynaud's phenomenon of occupational origin:</p>
+<ul>
+  <li>Triggered by cold exposure or vibration → vasospasm of digital arteries</li>
+  <li>Blood flow to fingers reduced by <strong>38–67%</strong> (measured reduction range)</li>
+  <li>Fingers become white (ischemia), then blue (cyanosis), then red (reperfusion) = blanching-cyanosis-erythema triphasic response</li>
+  <li>Progressive — attacks become more frequent, severe, and triggered by less cold</li>
+</ul>
+
+<h3>Stages of HAVS (Stockholm Workshop Scale)</h3>
+<table>
+  <tr><th>Stage</th><th>Symptoms</th></tr>
+  <tr><td>0</td><td>No symptoms</td></tr>
+  <tr><td>1</td><td>Mild: occasional blanching of one or more fingertips; no functional impairment</td></tr>
+  <tr><td>2</td><td>Moderate: blanching of one or more fingers beyond tips; intermittent; some functional impairment in cold weather</td></tr>
+  <tr><td>3</td><td>Severe: extensive blanching, frequent episodes, in summer and winter; significant functional impairment</td></tr>
+  <tr><td>4</td><td>Very severe: as above plus trophic skin changes (skin damage, ulceration, gangrene)</td></tr>
+</table>
+
+<h3>Neural Effects of HAVS</h3>
+<p>In addition to vascular effects, HAVS causes peripheral neuropathy:</p>
+<ul>
+  <li>Tingling, numbness, reduced dexterity</li>
+  <li>Reduced grip strength and manual dexterity</li>
+  <li>Reduced vibrotactile sensitivity</li>
+</ul>
+
+<h3>8 Control Measures for HAVS</h3>
+<div class="box star">★★★★★ The 8 control measures are a standard exam question. Write all 8.</div>
+<ol>
+  <li><strong>Reduce vibration at source:</strong> Use low-vibration tool models; maintain tools (worn parts increase vibration); use anti-vibration tools with built-in damping</li>
+  <li><strong>Use anti-vibration gloves:</strong> Absorb and attenuate high-frequency vibration; partial protection only (most effective above 100 Hz)</li>
+  <li><strong>Limit daily vibration exposure:</strong> Rotate workers; limit continuous use; comply with ISO 5349 / EU Vibration Directive (Daily Vibration Exposure Action Value: 2.5 m/s²; Limit: 5 m/s²)</li>
+  <li><strong>Keep hands warm:</strong> Warm protective gloves; keep workplace warm; avoid cold water contact; cold triggers vasospasm</li>
+  <li><strong>Avoid gripping tools tightly:</strong> Light grip reduces coupling (transmission of vibration to hand); use tool suspension (spring balancers) to reduce tool weight</li>
+  <li><strong>Health surveillance (medical monitoring):</strong> Regular health checks (vibration-specific questionnaire + cold provocation test + vibrotactile/thermal tests); early detection allows work modification before severe damage</li>
+  <li><strong>Training and education:</strong> Inform workers of HAVS risk, early symptoms, cold avoidance; encourage early reporting — early cessation of exposure halts progression</li>
+  <li><strong>No smoking:</strong> Nicotine causes vasoconstriction — dramatically worsens HAVS. Smoking cessation is mandatory advice for HAVS patients</li>
+</ol>
+</section>
+
+<section id="trigger">
+<h2>Trigger Finger (Stenosing Tenosynovitis) <span class="importance i3">★★★ Exam (2×)</span></h2>
+<div class="box">
+  <strong>Definition:</strong> Trigger finger is a form of tenosynovitis affecting a flexor tendon of the finger. The tendon develops a nodule or becomes thickened, and the tendon sheath becomes inflamed and narrowed. The finger can be actively flexed (bent) but cannot be actively extended (straightened) — it locks in the flexed position and "snaps" or "triggers" when straightened passively with the other hand.
+</div>
+<h3>Ergonomic Cause</h3>
+<ul>
+  <li>Using a tool handle that is too <strong>large</strong> in diameter → finger wraps less than fully around handle → the distal joint of the index finger is used to operate the trigger, with the proximal joint in a curved position → sustained pressure on flexor tendon</li>
+  <li>High trigger pull force requirements</li>
+  <li>High repetition of trigger-pull motions</li>
+</ul>
+<h3>Prevention</h3>
+<ul>
+  <li>Correct handle diameter (see handle design section)</li>
+  <li>Reduce trigger pull force requirements (reduce spring strength, use power tools)</li>
+  <li>Multi-finger triggers to distribute load</li>
+</ul>
+</section>
+
+<section id="tenosynovitis">
+<h2>Tenosynovitis (General) <span class="importance i2">★★ Exam (1×)</span></h2>
+<p>Tenosynovitis is inflammation of the synovial sheath surrounding a tendon. The synovial sheath produces synovial fluid to lubricate tendon movement; when inflamed, it swells and produces excess fluid, causing pain, swelling, and characteristic crepitus (a creaking, grating sound during movement).</p>
+<ul>
+  <li><strong>Location:</strong> Common at the wrist (extensor/flexor tendons), thumb (de Quervain's), and fingers (trigger finger)</li>
+  <li><strong>Causes:</strong> Repetitive motion + sustained deviation; cold; vibration; direct trauma</li>
+  <li><strong>Symptoms:</strong> Pain during and after activity; swelling; warmth; crepitus on movement; reduced range of motion</li>
+  <li><strong>Treatment:</strong> Rest, immobilization, NSAIDs, steroid injection; surgical tendon sheath release in severe cases</li>
+</ul>
+</section>
+
+<section id="grip">
+<h2>Grip Types <span class="importance i2">★★ Exam (1×)</span></h2>
+<div class="grip-grid">
+  <div class="grip-card">
+    <div class="grip-name">Power Grip</div>
+    <p style="font-size:13px;color:var(--muted)">All four fingers and thumb wrap around the handle. Used for forceful, sustained tasks (hammering, sawing). Three types:</p>
+    <ul style="font-size:12px;color:var(--muted);padding-left:16px;line-height:1.9">
+      <li><strong>Parallel jaw grip:</strong> Force applied in same direction as forearm axis (screwdriver)</li>
+      <li><strong>Angled jaw grip:</strong> Force perpendicular to forearm axis (pliers, tongs)</li>
+      <li><strong>Torque grip:</strong> Rotation around long axis (wrench, screwdriver turning)</li>
+    </ul>
+    <div class="box" style="margin-top:8px;padding:8px;font-size:12px"><strong>Optimal handle diameter:</strong> 40 mm (power grip)<br><strong>Force:</strong> Male = 525 N, Female = 300 N<br><strong>Handle length:</strong> 125 mm minimum</div>
+  </div>
+  <div class="grip-card">
+    <div class="grip-name">Precision Grip</div>
+    <p style="font-size:13px;color:var(--muted)">Object held between fingertips and thumb. Used for fine, controlled manipulation. Two types:</p>
+    <ul style="font-size:12px;color:var(--muted);padding-left:16px;line-height:1.9">
+      <li><strong>Internal precision grip:</strong> Object held within the palm and fingertips; thumb opposes 2–3 fingers (holding a pen, pipette)</li>
+      <li><strong>External precision grip:</strong> Object held between fingertip pads, away from palm; more precise control (picking up a coin, threading a needle)</li>
+    </ul>
+    <div class="box" style="margin-top:8px;padding:8px;font-size:12px">Precision grip ≈ 20–25% of power grip force. Use power grip wherever possible for forceful tasks — precision grip on a screwdriver under force leads to CTDs.</div>
+  </div>
+</div>
+</section>
+
+<section id="handle">
+<h2>Handle Design Parameters</h2>
+<table>
+  <tr><th>Parameter</th><th>Value</th><th>Notes</th></tr>
+  <tr><td>Optimal grip diameter (power)</td><td>40 mm</td><td>Range 35–45 mm acceptable; too small → more force needed; too large → fingers cannot wrap → precision grip</td></tr>
+  <tr><td>Handle length</td><td>≥ 125 mm</td><td>Shorter → handle presses into palm (tissue compression)</td></tr>
+  <tr><td>Grip force, males</td><td>525 N (avg)</td><td>Use for tool resistance design limits</td></tr>
+  <tr><td>Grip force, females</td><td>300 N (avg)</td><td>~57% of male strength; design tools operable at < 300 N</td></tr>
+  <tr><td>Optimal handle bend angle</td><td>19° ± 5°</td><td>Bennett (1980) — allows neutral wrist posture</td></tr>
+  <tr><td>Surface material</td><td>Compressible, non-slip</td><td>Rubber/foam coating; reduce contact stress</td></tr>
+</table>
+
+<h3>Handle Surface and Material</h3>
+<ul>
+  <li><strong>Avoid smooth metal handles:</strong> Require more grip force (risk of slipping) → more tissue compression</li>
+  <li><strong>Rubber/elastomer coating:</strong> Increases friction (less force needed), cushions vibration, reduces tissue pressure</li>
+  <li><strong>Avoid trigger gaps < 25 mm:</strong> Forces index finger into extreme flexion</li>
+  <li><strong>Avoid finger grooves:</strong> Only fit one hand size; create pressure ridges for other sizes</li>
+</ul>
+</section>
+
+<section id="gloves">
+<h2>Gloves in Tool Use <span class="importance i3">★★★ Exam (2×)</span></h2>
+<div class="box warn"><strong>PYQ (2×):</strong> Describe the two types of glove cuts. How do different glove materials affect grip strength?</div>
+
+<h3>Two Glove Cut Types</h3>
+<table>
+  <tr><th>Cut Type</th><th>Name</th><th>Seam Location</th><th>Use</th></tr>
+  <tr><td><strong>Clute Cut</strong></td><td>Palm-side seamless</td><td>Seam runs along back of hand and fingers; palm/grip surface is seamless</td><td>Better grip comfort; preferred for gloves used with power grips and tools</td></tr>
+  <tr><td><strong>Gunn Cut</strong></td><td>Back-side seamless</td><td>Seam runs along palm/grip surface</td><td>Traditional cut; seam on grip surface can cause discomfort and uneven pressure distribution</td></tr>
+</table>
+<p><strong>Recommendation:</strong> Clute cut is preferred for work gloves where gripping tools — the seamless palm prevents pressure from seam ridges.</p>
+
+<h3>Effect of Glove Material on Grip Strength</h3>
+<table>
+  <tr><th>Glove Material</th><th>Grip Strength Retained</th><th>Notes</th></tr>
+  <tr><td>Bare hand</td><td>100% (baseline)</td><td>Maximum grip; reference</td></tr>
+  <tr><td>Rubber/latex</td><td>~80%</td><td>Best grip among gloves; anti-vibration properties; reduces slip</td></tr>
+  <tr><td>Cotton/fabric</td><td>~75%</td><td>Common general-purpose; decent grip</td></tr>
+  <tr><td>Insulated gloves</td><td>~63%</td><td>Significant reduction; bulky; needed for cold but reduces dexterity most</td></tr>
+</table>
+<div class="box warn">Gloves reduce grip strength → workers may apply more force to compensate → increases CTD risk. This is especially important when gloves are worn because of cold — both cold AND gloves increase CTD risk; anti-vibration gloves with heating are optimal for HAVS prevention.</div>
+</section>
+
+<section id="summary">
+<h2>Chapter Summary</h2>
+<div class="summary-box">
+  <h3 style="color:var(--acc2);margin-bottom:12px">Key Takeaways</h3>
+  <ol style="padding-left:18px;line-height:2">
+    <li><strong>5 Principles:</strong> Straight wrist | No tissue compression | No repetitive fingers | Safe design | Women + left-handers</li>
+    <li><strong>Bend the tool, not the wrist:</strong> Tichauer pliers (1976); optimal bend = 19°±5° (Bennett, 1980)</li>
+    <li><strong>Wrist deviations → CTDs:</strong> Ulnar/radial/dorsiflexion/palmar flexion all hazardous</li>
+    <li><strong>CTS:</strong> Median nerve compressed in carpal tunnel; dorsiflexion + ulnar deviation = worst position</li>
+    <li><strong>Tissue compression:</strong> Ischemia (Tichauer 1978); Ulnar Artery Thrombosis from hypothenar impact</li>
+    <li><strong>Trigger finger:</strong> Can flex, can't extend; handle too large; form of tenosynovitis</li>
+    <li><strong>HAVS/VWF:</strong> 38–67% blood flow reduction; Raynaud's; 8 control measures</li>
+    <li><strong>8 HAVS controls:</strong> Low-vib tools | Anti-vib gloves | Limit exposure | Keep hands warm | Light grip | Health surveillance | Training | No smoking</li>
+    <li><strong>Power grip (3 types):</strong> Parallel / Angled / Torque; optimal diameter 40mm; force M=525N, F=300N; length ≥125mm</li>
+    <li><strong>Precision grip (2 types):</strong> Internal / External; ~20% of power grip force</li>
+    <li><strong>Gloves:</strong> Clute (seamless palm) = preferred; grip strength rubber=80%, cotton=75%, insulated=63%</li>
+    <li><strong>Tenosynovitis:</strong> Inflamed tendon sheath; crepitus; from repetitive/awkward motions</li>
+  </ol>
+</div>
+</section>
+
+<section id="qanalysis">
+<h2>Question Analysis</h2>
+<div class="box">
+  <div class="qa-row"><span class="stars">★★★★★</span><span class="qa-topic">Straight wrist / wrist deviation / CTDs from P1 violation / Tichauer pliers</span><span class="qa-count">4× | 10–20 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★★★</span><span class="qa-topic">HAVS (definition, mechanism, 8 control measures)</span><span class="qa-count">4× | 10–20 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Tissue compression (ischemia, ulnar artery thrombosis)</span><span class="qa-count">2× | 5–10 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Trigger finger (mechanism, design fix)</span><span class="qa-count">2× | 5–10 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Gloves (Clute vs Gunn, grip strength by material)</span><span class="qa-count">2× | 5–10 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Carpal Tunnel Syndrome (anatomy + mechanism)</span><span class="qa-count">2× | 5–10 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Grip types (power vs precision, subtypes)</span><span class="qa-count">1× | 5–7 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">CTDs general (definition, risk factors, prevention)</span><span class="qa-count">1× | 7–10 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Tenosynovitis</span><span class="qa-count">1× | 5 marks</span></div>
+  <div class="qa-row"><span class="stars">★</span><span class="qa-topic">5 Principles of hand tool design overview</span><span class="qa-count">1× | 10 marks</span></div>
+</div>
+</section>
+
+<section id="pyq">
+<h2>Previous Year Questions</h2>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2023-24 · 2020-21 · 2014-15 · 2010-11</span><span class="pyq-marks">★★★★ 4× · Q8a/Q3a/Q3a/Q7a · 15 marks</span></div>
+  <div class="pyq-q">Explain elaborately the consequences of not maintaining a straight wrist while using hand tools. / Write in detail about the problems that would occur if straight wrist is not maintained in designing hand tools.</div>
+  <div class="pyq-a"><strong>The Straight Wrist Principle (Tichauer):</strong> "Bend the tool, not the wrist." Optimal hand tool design keeps the wrist in a neutral position (0° flexion/extension, 0° deviation).<br><br>
+  <strong>Consequences of non-neutral wrist postures:</strong><br><br>
+  <strong>1. Carpal Tunnel Syndrome (CTS):</strong> Wrist flexion or extension (especially >15°) reduces carpal tunnel cross-sectional area → increased pressure on median nerve → compression → symptoms: tingling/numbness in thumb, index, middle finger; weakened grip; thenar muscle atrophy in advanced cases. Repeated wrist deviation during tool use is a primary CTS risk factor.<br><br>
+  <strong>2. Tenosynovitis:</strong> Excessive wrist deviation (radial or ulnar) → tendons of wrist flexors/extensors must work around a bend → increased friction between tendon and tendon sheath → inflammation → tenosynovitis. Symptoms: pain, crepitus (creaking), swelling along tendon sheath.<br><br>
+  <strong>3. Trigger Finger (Stenosing Tenosynovitis):</strong> Repetitive flexion with wrist deviation → constriction of flexor tendon sheath (at A1 pulley in palm) → tendon catches during extension → finger "triggers" (snaps). Associated with non-neutral grip postures.<br><br>
+  <strong>4. De Quervain's Tenosynovitis:</strong> Combined wrist ulnar deviation + forceful thumb use → inflammation of abductor pollicis longus and extensor pollicis brevis tendons at wrist. Pain on radial aspect of wrist.<br><br>
+  <strong>5. Increased Grip Force Requirement:</strong> Wrist flexion reduces grip strength by up to 25% (passive stretching of finger extensors reduces flexor force). To achieve the same grip force with deviated wrist, muscles work harder → faster fatigue → higher cumulative trauma risk.<br><br>
+  <strong>6. Increased Internal Tissue Stress:</strong> Non-neutral wrist posture increases mechanical stress on joints, ligaments, and tendon sheaths even without external load, accelerating wear.<br><br>
+  <strong>Design principle:</strong> Bend the tool's handle to bring the working part in line with the work while the wrist stays neutral. Example: angled hammer handle, pistol-grip angle grinder, bent-handle pliers.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2023-24</span><span class="pyq-marks">Q8b · 20 marks</span></div>
+  <div class="pyq-q">(b) Write short notes on: (i) Hand-Arm Vibration Syndrome (HAVS), (ii) Frostbite, (iii) Hearing Protection Device (HPD), (iv) Disc Degeneration.</div>
+  <div class="pyq-a"><strong>(i) HAVS (Hand-Arm Vibration Syndrome):</strong><br>
+  Caused by prolonged use of vibrating hand tools (jackhammers, grinders, chainsaws). Affects vascular, neurological, and musculoskeletal system of the hand and arm. Classic presentation: Raynaud's phenomenon (vibration white finger) — episodic blanching of fingers triggered by cold. Stages: 1 (occasional blanching, no tingling) → 4 (frequent attacks year-round, skin atrophy, grip loss). Neurological: tingling, numbness, reduced two-point discrimination. Musculoskeletal: reduced grip strength. Prevention: Anti-vibration tools; gloves; job rotation; limit daily vibration exposure (EAV: 2.5 m/s² A(8); ELV: 5.0 m/s²).<br><br>
+  <strong>(ii) Frostbite:</strong><br>
+  Localized tissue freezing due to extreme cold exposure, often in cold-environment work (outdoor winter work, cold storage). Stages: Frostnip (skin red, numb, superficial — reversible) → Superficial frostbite (ice crystals in skin layers, blistering) → Deep frostbite (full tissue freezing → necrosis, gangrene risk). First aid: Remove from cold, loosen clothing, do NOT rub affected area, re-warm in warm water (40–42°C). Prevention: Insulated PPE, rotation out of cold environments, buddy system to monitor each other.<br><br>
+  <strong>(iii) Hearing Protection Device (HPD):</strong><br>
+  Devices worn to reduce noise reaching the cochlea. Types: Earplugs (NRR 15–30 dB), earmuffs (NRR 20–30 dB), canal caps (semi-aural). Rated by NRR (Noise Reduction Rating, USA) or SNR (Single Number Rating, Europe). Real-world protection = approximately half the NRR (accounting for fitting variability). Must be used consistently and correctly. Required when TWA > 85 dBA or peak > 140 dBC. Training on correct fitting is essential — improperly worn earplugs can provide near-zero protection.<br><br>
+  <strong>(iv) Disc Degeneration:</strong><br>
+  Age-related (and work-related) progressive deterioration of intervertebral discs. Nucleus pulposus loses water content (disc desiccation) → disc height decreases → facet joint stress → osteophyte formation → spinal stenosis possible. Accelerated by: chronic static loading (prolonged sitting), heavy lifting, vibration exposure (truck drivers), smoking, obesity. Symptoms: chronic back/neck pain, stiffness, may be asymptomatic early. Management: Exercise to maintain spinal mobility and core strength; ergonomic workstation; smoking cessation. Severe cases: spinal fusion or disc replacement surgery.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23</span><span class="pyq-marks">Q1b · 15 marks</span></div>
+  <div class="pyq-q">(b) "On size does not fit all" — elaborate on this statement about using gloves to operate vibrating hand tools.</div>
+  <div class="pyq-a"><strong>The statement</strong> means that a single glove size or design cannot adequately protect all users of vibrating hand tools. Gloves for vibrating tool use involve multiple trade-offs that are user and task-specific:<br><br>
+  <strong>Why one size cannot fit all — Dimensions of variation:</strong><br><br>
+  <strong>1. Physical fit (anthropometric):</strong> Hand dimensions vary significantly by sex, ethnicity, and individual variation (hand length, breadth, finger length). Too-large gloves → loose fit → reduced dexterity, blistering from movement. Too-small → constrict circulation, reduce grip already reduced by glove bulk → worker removes gloves.<br><br>
+  <strong>2. Anti-vibration performance:</strong> Gel/foam inserts in AV gloves attenuate high-frequency vibration well but are less effective at low frequencies (< 20 Hz). The effectiveness of vibration attenuation depends on how well the glove mass/stiffness matches the user's hand and the tool frequency. A glove excellent for one tool frequency may be ineffective for another.<br><br>
+  <strong>3. Task requirements:</strong> Precision tasks → thin gloves for tactile feedback → less VH protection. Power grip tasks → thicker padding possible. Some tasks are incompatible with thick AV gloves.<br><br>
+  <strong>4. Work environment:</strong> Hot environments: thick gloves increase heat stress → worker removes them. Cold environments: gloves needed for warmth + AV protection → different glove design needed.<br><br>
+  <strong>5. Duration:</strong> Workers with longer daily vibration exposure need higher-protection gloves; those with brief exposure may use lighter gloves.<br><br>
+  <strong>Solution:</strong> Provide multiple glove options in different sizes; select AV gloves certified for the specific tool's dominant frequency; ensure proper fitting and training.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23 · 2011-12</span><span class="pyq-marks">★ 2× · Q2a/Q3a · 15 marks</span></div>
+  <div class="pyq-q">Write in detail about the consequences of not avoiding tissue compression stresses while using hand tools. / Explain why tissue compression stress and repetitive finger action should be avoided in designing hand tools.</div>
+  <div class="pyq-a"><strong>Tissue compression stress</strong> occurs when a hard, narrow, or rigid part of a tool handle presses into the soft tissue of the hand/finger, creating localized high pressure.<br><br>
+  <strong>Consequences of tissue compression from tool handles:</strong><br><br>
+  <strong>1. Nerve compression:</strong> Hard ridges, edges, or narrow handles pressing on the ulnar side of the palm → ulnar nerve compression → "hypothenar hammer syndrome" — numbness, tingling in ring and little fingers, weakened grip. Similarly, pressure on the median nerve in the carpal tunnel.<br><br>
+  <strong>2. Vascular compression (Raynaud's-like symptoms):</strong> Compression of digital arteries by hard handle edges → reduced blood flow to fingers → blanching, coldness, numbness. Aggravated in cold environments.<br><br>
+  <strong>3. Trigger finger:</strong> Prolonged contact pressure of tool handle against flexor tendon at finger base → tendon sheath inflammation → triggering.<br><br>
+  <strong>4. Contact stress (repetitive):</strong> Even at subthreshold pressure levels, repeated local pressure cycles (each trigger pull, each tool stroke) accumulate cumulative tissue microtrauma → Cumulative Trauma Disorder (CTD).<br><br>
+  <strong>Why repetitive finger action should be avoided:</strong><br>
+  Repetitive index finger trigger pulling → extensor tendon of index finger must repeatedly oppose flexor force → extensor tendinitis (lateral epicondylitis if at elbow). Also: repetitive tendon motion → friction in tendon sheath → tenosynovitis → De Quervain's, trigger finger.<br><br>
+  <strong>Design solutions:</strong> Round, padded handles with no sharp edges; handle diameter 35–45 mm for power grip; triggers spanning 2–4 fingers; avoid index-finger-only triggers for high-force repetitive tools → use full-palm "palm switch."</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23 · 2010-11</span><span class="pyq-marks">★ 2× · Q3c/Q7c · 5/10 marks</span></div>
+  <div class="pyq-q">(c) What do you understand by "Design for Safe Operations"? / Write short notes on: (i) Design for safe operation, (ii) Work-Rest cycle.</div>
+  <div class="pyq-a"><strong>(i) Design for Safe Operations:</strong><br>
+  An ergonomic design principle ensuring that tools, machines, and workplaces are designed to minimize the risk of accident and injury during normal use. Key features include:<br>
+  • <strong>Fail-safe design:</strong> Failure of a component should lead to a safe state (e.g., power tools stop when trigger released).<br>
+  • <strong>Guards and shields:</strong> Physical barriers prevent contact with rotating/sharp parts.<br>
+  • <strong>Two-hand controls:</strong> Require both hands to initiate machine cycle → hands clear of dangerous zone.<br>
+  • <strong>Emergency stops:</strong> Large, clearly marked, within reach from operating position.<br>
+  • <strong>Interlock systems:</strong> Machine cannot operate unless guards are in place.<br>
+  • <strong>Anti-slip surfaces:</strong> On platforms, handles, footholds.<br>
+  • <strong>Color coding:</strong> Clear identification of control functions (red=stop, green=start).<br><br>
+  <strong>(ii) Work-Rest Cycle:</strong><br>
+  Scheduled alternation of work and rest periods to prevent fatigue accumulation and allow physiological recovery. Principles:<br>
+  • For high-force or high-vibration tasks: shorter continuous work periods, longer rest breaks.<br>
+  • Actual rest means removal of load on the affected tissues (e.g., for hand-arm vibration: set down the tool; for standing work: sit down).<br>
+  • Recovery occurs exponentially — most recovery in first few minutes of rest.<br>
+  • Erdmann's rule: Rest time ≈ load time × (R–S)/(S–1), where R = relative physical workload, S = sustainable workload ratio.<br>
+  • For VDT work: 5–10 min break per hour of screen work; use microbreaks (1–2 min every 20 min) to reduce eye and wrist strain.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2021-22</span><span class="pyq-marks">Q3a · 15 marks</span></div>
+  <div class="pyq-q">(a) Write short notes on: Carpal Tunnel Syndrome, Tennis Elbow, and Trigger Finger.</div>
+  <div class="pyq-a"><strong>Carpal Tunnel Syndrome (CTS):</strong><br>
+  Compression of the median nerve within the carpal tunnel (the rigid tunnel formed by carpal bones and transverse carpal ligament at the wrist). Caused by: increased carpal tunnel pressure from wrist flexion/extension, repetitive wrist movements, vibrating tools, pregnancy (fluid retention), hypothyroidism. Symptoms: tingling/numbness in thumb, index, middle, and radial half of ring finger (median nerve distribution); nocturnal symptoms; weakness/atrophy of thenar muscles (in advanced cases). Diagnosis: Tinel's sign (tapping over wrist → tingling), Phalen's test (sustained wrist flexion → symptoms). Treatment: Wrist splinting, corticosteroid injection, surgery (carpal tunnel release).<br><br>
+  <strong>Tennis Elbow (Lateral Epicondylitis):</strong><br>
+  Degeneration/micro-tearing of the common extensor tendon origin at the lateral epicondyle of the humerus. Caused by: repetitive wrist extension and forearm pronation/supination with gripping (tool use, racquet sports, meat processing). Symptoms: pain and tenderness at lateral epicondyle; pain on resisted wrist extension (Cozen's test); may radiate down forearm. Treatment: Rest, ice, physiotherapy (eccentric exercises), bracing (counterforce strap), injection, rarely surgery.<br><br>
+  <strong>Trigger Finger (Stenosing Tenosynovitis):</strong><br>
+  Thickening of the flexor tendon sheath at the A1 pulley in the palm → tendon catches during extension → finger "clicks" or "locks" in flexed position. Caused by: repetitive gripping, contact pressure on palm from tool handles, diabetes. Treatment: Corticosteroid injection (90% effective early), surgical release of A1 pulley.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2021-22 · 2020-21 · 2014-15 · 2011-12</span><span class="pyq-marks">★★★★ 4× · Q3b/Q3b/Q3b/Q1b · 10–15 marks</span></div>
+  <div class="pyq-q">Discuss the symptoms, consequences, and control measures of Hand Arm Vibration Syndrome (HAVS). / Mention the symptoms and control measures for HAVS.</div>
+  <div class="pyq-a"><strong>HAVS (Hand-Arm Vibration Syndrome):</strong> An occupational disease caused by prolonged use of vibrating hand tools (jackhammers, grinders, chainsaws, impact wrenches, needle guns). Involves three components:<br><br>
+  <strong>Symptoms — Three systems affected:</strong><br><br>
+  <em>Vascular (Vibration White Finger — VWF):</em><br>
+  • Episodic blanching (whitening) of fingers, usually triggered by cold or wet conditions.<br>
+  • Fingers progress through white (ischemia) → blue (cyanosis) → red (reactive hyperemia) during and after attack.<br>
+  • Stockholm Workshop Scale for vascular stage: 0 (no symptoms) → 4 (severe, year-round attacks, skin atrophy, ulcers possible).<br><br>
+  <em>Neurological:</em><br>
+  • Tingling, numbness, pins-and-needles in fingers and hand (especially at night).<br>
+  • Reduced tactile sensitivity → cannot feel small objects.<br>
+  • Reduced two-point discrimination.<br><br>
+  <em>Musculoskeletal:</em><br>
+  • Reduced grip strength.<br>
+  • Bone cysts in wrist/hand (in severe chronic cases).<br>
+  • Muscle weakness.<br><br>
+  <strong>Consequences:</strong> Work disability, inability to work in cold environments, difficulty performing daily tasks (buttoning, handling small objects), chronic pain, reduced quality of life. <strong>No cure</strong> — progression can only be halted, not reversed.<br><br>
+  <strong>Control measures (Hierarchy):</strong><br>
+  • <em>Elimination/Substitution:</em> Replace vibrating tools with non-vibrating alternatives (hydraulic instead of pneumatic; cutting instead of grinding).<br>
+  • <em>Engineering:</em> Anti-vibration tool design (vibration-isolated handles, balanced tools); anti-vibration gloves (limited effectiveness at low frequencies).<br>
+  • <em>Administrative:</em> Daily vibration exposure limit: EAV = 2.5 m/s² A(8), ELV = 5.0 m/s² A(8) (EU Directive 2002/44/EC). Job rotation to stay within limits. Work-rest schedules. Warm environment and gloves to prevent cold triggering VWF.<br>
+  • <em>Health surveillance:</em> Pre-employment screening; annual symptom questionnaire; vibrotactile threshold testing for early detection.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2021-22</span><span class="pyq-marks">Q5c · 10 marks</span></div>
+  <div class="pyq-q">(c) Write short notes on: (i) Recall-and-Check Method, (ii) Hand-Arm Vibration Syndrome.</div>
+  <div class="pyq-a"><strong>(i) Recall-and-Check Method:</strong><br>
+  An ergonomic assessment technique used to evaluate hand tool use and workstation design through structured worker recall. The worker is asked to recall the exact sequence of their task, checking against ergonomic criteria at each step. Used when direct observation is impractical or when subtle postural patterns are missed by observation alone.<br>
+  Steps: (1) Worker describes task step-by-step. (2) Analyst checks each step against criteria: wrist posture, grip type, force, duration, repetition, vibration exposure. (3) Deviations from ergonomic principles are flagged. (4) Design changes proposed.<br>
+  Advantage: Captures the worker's perspective and typical (not observed) behavior. Limitation: Subject to recall bias.<br><br>
+  <strong>(ii) HAVS:</strong> See full answer in 2021-22 · 2020-21 · 2014-15 entry above.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2020-21 · 2014-15</span><span class="pyq-marks">★ 2× · Q3c · 8/10 marks</span></div>
+  <div class="pyq-q">(c) How can you design a hand tool to avoid the risk of trigger finger?</div>
+  <div class="pyq-a"><strong>Trigger finger risk factors from hand tool design:</strong><br>
+  Repetitive finger flexion (trigger pulling), sustained grip, contact pressure of tool handle at the base of fingers (A1 pulley location = distal palmar crease).<br><br>
+  <strong>Design solutions:</strong><br>
+  • <strong>Distribute trigger force:</strong> Design trigger to span all four fingers (not just index) → shares flexion force across multiple fingers → less concentration at index flexor.<br>
+  • <strong>Reduce trigger force:</strong> Use power-assisted, pneumatic, or powered tools that require minimal trigger force (< 20 N for high-frequency repetitive tasks).<br>
+  • <strong>Minimize trigger area contact pressure:</strong> Wide, curved trigger surface distributes force → no focal point pressure at A1 pulley.<br>
+  • <strong>Pistol-grip handle with neutral wrist:</strong> Reduces flexor tendon deviation around the bend at the wrist → less tendon sheath friction.<br>
+  • <strong>Avoid recessed trigger designs:</strong> Recessed triggers force the trigger finger into an acute flexion angle → increased A1 pulley loading.<br>
+  • <strong>Handle diameter:</strong> 35–45 mm for power grip → allows full wrap of fingers without excessive flexion tension.<br>
+  • <strong>Job rotation and rest:</strong> Even well-designed tools carry risk at high repetition → rest breaks.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">Jan 2021</span><span class="pyq-marks">Q4c · 13 marks</span></div>
+  <div class="pyq-q">(c) You use a tool with a perfectly cylindrical grip (plastic, rough, non-compressible, diameter ~25 mm) that requires a power grip. Do you experience any issues working with this tool? Can you suggest grip adjustments to the designer?</div>
+  <div class="pyq-a"><strong>Issues with the described tool:</strong><br><br>
+  <strong>1. Handle diameter too small (25 mm):</strong> Optimal power grip handle diameter = 35–45 mm. At 25 mm, fingers must hyperextend slightly or grip is not full wrap → reduced grip force capability; increased tendon excursion to flex fully; faster fatigue.<br><br>
+  <strong>2. Perfectly cylindrical (no contouring):</strong> No grip guides or palm swells → difficult to orient tool consistently → unpredictable grip position → wrist may deviate during use.<br><br>
+  <strong>3. Plastic, non-compressible material:</strong> No damping of vibration or impact forces → all tool vibration transmits directly to hand. High contact stiffness → higher peak contact stress during gripping.<br><br>
+  <strong>4. Rough surface:</strong> While some texture improves grip (reduces required grip force), overly rough texture → abrasion over time → skin irritation with extended use.<br><br>
+  <strong>Suggested design improvements:</strong><br>
+  • <strong>Increase diameter to 35–45 mm</strong> for full power grip.<br>
+  • <strong>Add a palm swell:</strong> Slight bulge at the grip center guides consistent hand placement and distributes pressure more evenly.<br>
+  • <strong>Use a compressible, vibration-damping grip material:</strong> Thermoplastic rubber (TPR) or foam-over-plastic → absorbs impact and vibration, reduces contact stress, improves comfort.<br>
+  • <strong>Optimize surface texture:</strong> Moderate knurling or molded grip pattern — firm grip without abrasion.<br>
+  • <strong>Add finger contours:</strong> Molded grooves guide natural finger placement and prevent slippage.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2017-18</span><span class="pyq-marks">Q3c · 10 marks</span></div>
+  <div class="pyq-q">(c) (i) A person regularly carries a bucket with a handle, which does not have a proper grip, a number of times during the day. What problems he may have in his hand and why? (ii) To circumvent the problem, one of the ergonomic solutions is to redesign the bucket handle like Fig. 3(c). How such redesign may solve the former problems. Explain.
+<figure style="margin:14px 0 4px">
+<svg viewBox="0 0 540 240" width="100%" style="max-width:540px;font-family:inherit;display:block;margin:0 auto" aria-label="Fig. 3(c) — Ergonomic redesign of bucket handle">
+  <!-- ===== BACKGROUND ===== -->
+  <rect width="540" height="240" fill="#f8fafc" rx="8" stroke="#e2e8f0"/>
+  <text x="270" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">Fig. 3(c) — Ergonomic Bucket Handle Redesign</text>
+
+  <!-- ===== LEFT SIDE: STANDARD (BAD) HANDLE ===== -->
+  <text x="100" y="42" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="bold">Standard Handle (Poor)</text>
+  <!-- bucket body -->
+  <rect x="50" y="140" width="100" height="80" rx="4" fill="#94a3b8" stroke="#64748b" stroke-width="1.5"/>
+  <!-- thin wire arc handle -->
+  <path d="M60 140 Q100 55 140 140" fill="none" stroke="#64748b" stroke-width="3"/>
+  <!-- wrist in ulnar deviation -->
+  <!-- hand/arm gripping the wire at apex -->
+  <!-- forearm -->
+  <rect x="82" y="52" width="14" height="38" rx="3" fill="#f5c299" stroke="#c8865c" stroke-width="1" transform="rotate(-15,89,71)"/>
+  <!-- hand -->
+  <rect x="84" y="47" width="12" height="18" rx="3" fill="#f5c299" stroke="#c8865c" stroke-width="1" transform="rotate(-15,90,56)"/>
+  <!-- wrist angle annotation -->
+  <line x1="89" y1="88" x2="109" y2="88" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="112" y="92" font-size="9" fill="#dc2626">Ulnar</text>
+  <text x="112" y="103" font-size="9" fill="#dc2626">deviation</text>
+  <!-- narrow diameter arrow -->
+  <text x="100" y="125" text-anchor="middle" font-size="9" fill="#dc2626">Thin wire, narrow grip</text>
+  <!-- red X -->
+  <text x="100" y="175" text-anchor="middle" font-size="28" fill="#dc2626" opacity="0.3">✗</text>
+
+  <!-- ===== DIVIDER ===== -->
+  <line x1="270" y1="35" x2="270" y2="225" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="270" y="225" text-anchor="middle" font-size="10" fill="#94a3b8">→ Redesign →</text>
+
+  <!-- ===== RIGHT SIDE: REDESIGNED (GOOD) HANDLE ===== -->
+  <text x="405" y="42" text-anchor="middle" font-size="11" fill="#16a34a" font-weight="bold">Redesigned Handle (Ergonomic)</text>
+  <!-- bucket body -->
+  <rect x="355" y="140" width="100" height="80" rx="4" fill="#94a3b8" stroke="#64748b" stroke-width="1.5"/>
+  <!-- main arc handle — thicker, D-shaped profile -->
+  <path d="M365 140 Q405 60 445 140" fill="none" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>
+  <!-- horizontal secondary grip (key redesign feature) -->
+  <rect x="378" y="78" width="54" height="16" rx="8" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="405" y="90" text-anchor="middle" font-size="9" fill="white" font-weight="bold">Horizontal grip</text>
+  <!-- forearm — now nearly horizontal = neutral wrist -->
+  <rect x="388" y="58" width="14" height="40" rx="3" fill="#f5c299" stroke="#c8865c" stroke-width="1" transform="rotate(-90,395,78)"/>
+  <!-- annotations -->
+  <line x1="405" y1="96" x2="440" y2="110" stroke="#16a34a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <text x="442" y="113" font-size="9" fill="#16a34a">Wrist neutral</text>
+  <!-- wider handle annotation -->
+  <line x1="445" y1="140" x2="460" y2="128" stroke="#16a34a" stroke-width="1.2" stroke-dasharray="3,2"/>
+  <text x="462" y="124" font-size="9" fill="#16a34a">35–40 mm dia.</text>
+  <text x="462" y="134" font-size="9" fill="#16a34a">padded grip</text>
+  <!-- green tick -->
+  <text x="405" y="175" text-anchor="middle" font-size="28" fill="#16a34a" opacity="0.3">✓</text>
+</svg>
+<figcaption style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px">Fig. 3(c): Comparison of standard bucket handle (left) vs. ergonomic redesign (right). The redesigned handle features a wider-diameter padded grip and a horizontal secondary grip that allows the wrist to remain in a neutral position, eliminating the forced ulnar deviation of the standard wire handle.</figcaption>
+</figure>
+</div>
+  <div class="pyq-a"><strong>(i) Problems from carrying a bucket with improper handle:</strong><br>
+  <em>Standard bucket handle problem:</em> A straight, thin cylindrical wire/rod handle forces a narrow-contact-area power grip → concentrated tissue compression stress along the proximal phalanges → digital nerve compression → numbness, tingling in fingers.<br>
+  • Narrow handle diameter (< 25 mm) → excessive flexor tendon force to maintain grip (need more muscle force per unit grip force).<br>
+  • No wrist-neutral geometry → wrist in forced ulnar deviation during carrying (wire handle hangs perpendicular, pulling wrist into ulnar deviation).<br>
+  • Prolonged gripping → tenosynovitis, CTS risk, hand fatigue.<br>
+  • Rough wire surface → skin abrasion.<br><br>
+  <strong>(ii) How the redesigned handle (ergonomic bucket handle) solves the problems:</strong><br>
+  • <strong>Wider, D-shaped handle:</strong> Increases contact area → distributes force across the full palm → reduces peak pressure per unit area → less nerve/vessel compression.<br>
+  • <strong>Larger diameter (35–40 mm):</strong> Optimal for power grip → less tendon excursion required → less muscle force needed → less fatigue.<br>
+  • <strong>Soft/textured gripping surface:</strong> Compressible material reduces contact stress, improves friction → less required grip force.<br>
+  • <strong>Offset/angled design:</strong> Handle angled to allow wrist-neutral carrying posture → reduces ulnar deviation → less risk of tenosynovitis.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2016-17 · 2013-14</span><span class="pyq-marks">★ 2× · Q2a/Q5b · 20 marks</span></div>
+  <div class="pyq-q">Briefly describe the principles of hand tool and device design with necessary figures.</div>
+  <div class="pyq-a"><strong>Ergonomic Principles of Hand Tool Design (Sanders & McCormick; Tichauer):</strong><br><br>
+  <strong>1. Maintain Straight Wrist:</strong> "Bend the tool, not the wrist." Pistol-grip angle: approximately 100° between handle axis and working part for horizontal work. Prevents CTS, tenosynovitis (see detailed entry above).<br><br>
+  <strong>2. Avoid Static Muscle Loading:</strong> Tools should not require sustained awkward postures. Balance tools so the center of gravity is near the grip. Use articulated arm supports for heavy tools held aloft.<br><br>
+  <strong>3. Avoid Tissue Compression:</strong> No hard edges or ridges. Handle diameter 35–45 mm for power grip, 10–15 mm for precision grip. Avoid index-finger-only triggers for high-force repetitive tasks.<br><br>
+  <strong>4. Minimize Contact Stress:</strong> No sharp edges, narrow handles, or pinch zones in handle design. Use padded, compressible handle materials.<br><br>
+  <strong>5. Design for Appropriate Grip Type:</strong> Power grip (whole hand, forearm force): 35–45 mm handle, requires force along handle axis. Precision grip (fingertips): 10–15 mm handle, requires fine manipulation. Tool must be designed for the dominant grip type of its task.<br><br>
+  <strong>6. Reduce Vibration:</strong> Anti-vibration handles, balanced tool design, vibration-absorbing materials. Limit daily exposure below EAV (2.5 m/s² A(8)).<br><br>
+  <strong>7. Consider Left-Handed Users:</strong> At least 10% of population is left-handed; tools with asymmetric designs must be available in left-hand versions or be symmetric.<br><br>
+  <strong>8. Safe Design (see Design for Safe Operations entry):</strong> Guards, two-hand controls, dead-man switches, emergency stops.<br><br>
+  <strong>9. Tool Weight and Balance:</strong> Total weight < 2.3 kg for most hand tools; center of gravity at grip point; counterbalance heavy tools with balancers/arm supports.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2016-17</span><span class="pyq-marks">Q3a · 18 marks</span></div>
+  <div class="pyq-q">(a) Differentiate power grip and precision grip with examples. How will you improve grip quality for a power tool handle?</div>
+  <div class="pyq-a"><table style="margin-bottom:16px"><tr><th>Feature</th><th>Power Grip</th><th>Precision Grip</th></tr>
+  <tr><td>Definition</td><td>Whole hand wraps around object; force generated along forearm axis</td><td>Object held between fingertips and thumb; fine manipulation</td></tr>
+  <tr><td>Contact</td><td>All fingers + palm surface</td><td>Fingertips only (pad-to-pad or pad-to-side)</td></tr>
+  <tr><td>Force</td><td>High force (20–120 N or more)</td><td>Low force but high precision</td></tr>
+  <tr><td>Examples</td><td>Hammer, power drill, crowbar, sledgehammer</td><td>Screwdriver turning (fingertip), tweezers, writing, suturing</td></tr>
+  <tr><td>Handle diameter</td><td>35–45 mm optimal</td><td>10–15 mm optimal</td></tr>
+  <tr><td>Wrist position</td><td>Neutral (tool bent to work)</td><td>Neutral, fine control required</td></tr></table>
+  <strong>Improving grip quality for a power tool handle:</strong><br>
+  • <strong>Optimal diameter (35–45 mm):</strong> Full finger wrap without over-extension or under-flex → maximum grip force with minimum muscle effort.<br>
+  • <strong>Non-slip surface texture:</strong> Moderate knurling, rubber grip tape, molded finger grooves → reduces required grip force (less force needed to prevent slipping) by up to 30%.<br>
+  • <strong>Compressible/vibration-damping material:</strong> TPR or foam inner layer → reduces grip force needed to stabilize against vibration.<br>
+  • <strong>Pistol-grip angle (100°):</strong> Keeps wrist in neutral → maximizes grip strength (wrist flexion/extension reduces grip strength up to 25%).<br>
+  • <strong>Palm swell:</strong> Slight widening at grip center → distributes force, prevents handle from rotating.<br>
+  • <strong>Sweat management:</strong> Breathable or moisture-wicking grip material → prevents slipping from sweat.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2015-16 · 2013-14</span><span class="pyq-marks">★ 2× · Q5a · 10 marks</span></div>
+  <div class="pyq-q">Define Carpal Tunnel Syndrome. Describe its symptoms and measures to avoid it.</div>
+  <div class="pyq-a"><strong>Definition:</strong> Compression neuropathy of the median nerve within the carpal tunnel — the rigid passage at the wrist formed by the carpal bones (posterior) and the transverse carpal ligament (anterior). Any swelling within the tunnel increases pressure on the median nerve.<br><br>
+  <strong>Symptoms (median nerve distribution: thumb, index, middle, radial half of ring finger):</strong><br>
+  • Tingling, numbness, burning sensation in affected fingers (especially at night, waking patient)<br>
+  • Weakness in grip and pinch (particularly thenar muscles)<br>
+  • Thenar muscle atrophy in advanced cases (visible wasting of base of thumb)<br>
+  • Phalen's sign positive (sustained wrist flexion reproduces symptoms in <60 sec)<br>
+  • Tinel's sign positive (tapping over carpal tunnel → tingling in fingers)<br><br>
+  <strong>Measures to avoid CTS (ergonomic prevention):</strong><br>
+  • Maintain neutral wrist (avoid sustained flexion/extension/deviation) → bend the tool not the wrist<br>
+  • Reduce grip force requirements (tool design, power assists)<br>
+  • Minimize repetition rate; take microbreaks every 20–30 min<br>
+  • Use anti-vibration tools and gloves<br>
+  • Adjust workstation height so wrists work in neutral<br>
+  • Use wrist rests for keyboard/mouse work (but only during pauses, not while typing)<br>
+  • Early reporting of symptoms for timely intervention</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2015-16 · 2013-14</span><span class="pyq-marks">★ 2× · Q5b/Q8d · 7–18 marks</span></div>
+  <div class="pyq-q">(b) Describe different types of gloves. Discuss grip principles in detail.</div>
+  <div class="pyq-a"><strong>Types of gloves for industrial use:</strong><br><br>
+  <strong>1. Leather gloves:</strong> Durable, good abrasion resistance, moderate grip. For general material handling, welding.<br>
+  <strong>2. Rubber/latex gloves:</strong> Chemical protection, waterproof. For wet work, chemical handling. Limited cut protection.<br>
+  <strong>3. Cut-resistant gloves:</strong> Kevlar, stainless steel mesh, HPPE (high-performance polyethylene). For blade/cutting work.<br>
+  <strong>4. Anti-vibration (AV) gloves:</strong> Gel or foam padding in palm. Attenuates high-frequency vibration. Limited effectiveness below 20 Hz.<br>
+  <strong>5. Insulated gloves:</strong> For cold work environments; thermally lined. May reduce dexterity significantly.<br>
+  <strong>6. Nitrile gloves:</strong> Petroleum/chemical resistant; thin for dexterity in precision tasks.<br>
+  <strong>7. Chain mail gloves:</strong> Metal mesh; maximum cut protection for meat processing.<br><br>
+  <strong>Grip Principles:</strong><br>
+  • <strong>Friction coefficient:</strong> Grip force = Normal force × friction coefficient (μ). Rough handle surface and rubber/silicone grip coating increase μ → less force needed to prevent slipping.<br>
+  • <strong>Coefficient of friction (CoF):</strong> Wet conditions reduce CoF dramatically. Textured surfaces and grip coatings maintain CoF under wet conditions.<br>
+  • <strong>Grip span:</strong> Power grip: optimal span = 35–45 mm; handle diameter affects grip force up to ±25%.<br>
+  • <strong>Contact area:</strong> More contact area = distributed force = less tissue stress = less required grip force.<br>
+  • <strong>Glove effect:</strong> Gloves reduce tactile feedback → workers instinctively apply MORE grip force with gloves than bare-handed (12–40% increase). Design tools to reduce required force to compensate.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2015-16</span><span class="pyq-marks">Q6a · 10 marks</span></div>
+  <div class="pyq-q">(a) Write a short note on 'Cumulative Trauma Disorders (CTDs)'. What control measures will you take to prevent CTDs?</div>
+  <div class="pyq-a"><strong>Cumulative Trauma Disorders (CTDs):</strong> Also known as Repetitive Strain Injuries (RSI) or Work-Related Musculoskeletal Disorders (WMSDs). A broad category of musculoskeletal conditions resulting from cumulative physical stress — no single traumatic event but accumulation of microtrauma over time from repetitive motions, sustained awkward postures, excessive force, vibration, or contact stress.<br><br>
+  Common CTDs: Carpal Tunnel Syndrome, Tendinitis, Tenosynovitis, De Quervain's Disease, Trigger Finger, Tennis Elbow, HAVS, lower back disorders.<br><br>
+  Risk factors: Repetition (> 30 times/min for small muscles), force (> 10% MVC), awkward posture, vibration, cold temperatures, duration, insufficient recovery time.<br><br>
+  <strong>Control measures:</strong><br>
+  <strong>Engineering:</strong><br>
+  • Redesign tools: neutral wrist, proper handle diameter, reduced weight, anti-vibration<br>
+  • Mechanize/automate highest repetition tasks<br>
+  • Adjust workstation height and reach distances<br>
+  • Provide fixtures and jigs to hold workpieces (reduces sustained grip)<br><br>
+  <strong>Administrative:</strong><br>
+  • Job rotation between high and low CTD risk tasks<br>
+  • Microbreaks (60 sec every 20 min); scheduled rest breaks<br>
+  • Gradual introduction of new workers to repetitive tasks (avoid sudden full-dose exposure)<br>
+  • Early symptom reporting program<br><br>
+  <strong>Medical:</strong><br>
+  • Early medical intervention when symptoms appear<br>
+  • Modified duty during recovery<br>
+  • Ergonomic rehabilitation</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2013-14</span><span class="pyq-marks">Q5c · 5 marks</span></div>
+  <div class="pyq-q">(c) Write a short note on Tenosynovitis.</div>
+  <div class="pyq-a"><strong>Tenosynovitis:</strong> Inflammation of the synovial sheath (tendon sheath) surrounding a tendon. The tendon sheath produces synovial fluid to lubricate tendon movement; repetitive motion or sustained awkward posture → excess friction → sheath inflammation.<br><br>
+  <strong>Occupational causes:</strong> Repetitive wrist movements, non-neutral wrist posture during tool use, sustained gripping, cold temperatures (reduce tendon flexibility, increase friction).<br><br>
+  <strong>Common types in hand/wrist:</strong><br>
+  • <em>De Quervain's tenosynovitis:</em> At the first extensor compartment of the wrist (abductor pollicis longus + extensor pollicis brevis); pain at radial aspect of wrist; positive Finkelstein test.<br>
+  • <em>Trigger finger:</em> Flexor tendon sheath at A1 pulley in palm (see Trigger Finger entry).<br>
+  • <em>Extensor tenosynovitis:</em> Along dorsum of wrist; from repetitive wrist extension tasks.<br><br>
+  <strong>Symptoms:</strong> Pain and swelling along the tendon's course; crepitus (creaking sound/sensation during movement); tenderness to palpation.<br><br>
+  <strong>Treatment:</strong> Rest from aggravating activity; NSAIDs; corticosteroid injection into tendon sheath; splinting; physiotherapy; rarely surgery.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2011-12 · 2010-11</span><span class="pyq-marks">★ 2× · Q2c/Q6b · 10 marks</span></div>
+  <div class="pyq-q">What are the effects of wearing gloves on manual performance? / Is there any effect of glove materials on manual performance? Justify your answer.</div>
+  <div class="pyq-a"><strong>Effects of wearing gloves on manual performance:</strong><br><br>
+  <strong>1. Reduced dexterity:</strong> Even thin gloves reduce fine motor control. Thicker gloves (leather, anti-vibration) may reduce dexterity by 20–40% for precision tasks (small screw manipulation, button fastening). Dexterity loss increases with glove thickness and stiffness.<br><br>
+  <strong>2. Increased grip force (Compensation):</strong> Gloves reduce tactile feedback (force and texture sensation) → workers apply 12–40% more grip force when gloved to feel secure → faster muscle fatigue → increased CTD risk. This is a critical ergonomic concern.<br><br>
+  <strong>3. Reduced tactile sensitivity:</strong> Cannot detect slippage or surface texture as accurately → quality control tasks impaired; handling small components more difficult.<br><br>
+  <strong>4. Effect of glove material:</strong><br>
+  • <em>Rubber/nitrile:</em> High grip coefficient (improves grip friction) → less required grip force → reduces fatigue compared to bare hand on smooth surfaces.<br>
+  • <em>Leather:</em> Moderate friction; durable; reduced dexterity for fine tasks.<br>
+  • <em>Cotton:</em> Low friction → workers apply MORE grip force → more fatigue. Absorbs moisture → heavy when wet → affects dexterity.<br>
+  • <em>Anti-vibration gel:</em> Adds bulk → reduces dexterity; attenuates high-frequency vibration but not low frequency (< 20 Hz).<br><br>
+  <strong>5. Increased reaction time:</strong> For tasks requiring rapid manipulation, gloves slow response due to tactile delay and bulkiness.<br><br>
+  <strong>Conclusion:</strong> Glove material and design significantly affect performance. Select minimum-thickness glove that provides required protection; prefer high-friction coatings (nitrile dots) over thick padding for tasks requiring dexterity.</div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+  var KEY='esm_zar_ch6';
+  var st={curIdx:0,completed:[]};
+  try{var sv=localStorage.getItem(KEY);if(sv){var p=JSON.parse(sv);st.curIdx=p.curIdx||0;st.completed=p.completed||[];}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+  var secs=[].slice.call(document.querySelectorAll('main > section'));
+
+  /* build tab strip */
+  var strip=document.createElement('div');strip.id='tab-strip';
+  secs.forEach(function(sec,i){
+    var h2=sec.querySelector('h2');
+    var raw=h2?h2.textContent:'§'+(i+1);
+    var label=raw.replace(/[★✓].*/,'').replace(/\s*\(.*\)/,'').trim();
+    if(label.length>24)label=label.substring(0,22)+'…';
+    var t=document.createElement('button');
+    t.className='sec-tab';t.id='tab-'+i;t.setAttribute('data-i',i);
+    t.textContent=(i+1)+'. '+label;
+    t.addEventListener('click',function(){show(+this.getAttribute('data-i'));}); 
+    strip.appendChild(t);
+  });
+  /* Build full-screen layout: header + sidebar + main */
+  var h1El=document.querySelector('main > h1');
+  var metaEl=document.querySelector('.chapter-meta');
+  var mainEl=document.querySelector('main');
+  var pgHeader=document.createElement('div');pgHeader.id='page-header';
+  if(h1El)pgHeader.appendChild(h1El);
+  if(metaEl)pgHeader.appendChild(metaEl);
+  document.body.prepend(pgHeader);
+  var pgBody=document.createElement('div');pgBody.id='page-body';
+  var sidebarEl=document.createElement('div');sidebarEl.id='sidebar';
+  var stitle=document.createElement('div');stitle.id='sidebar-title';stitle.textContent='Sections';
+  sidebarEl.appendChild(stitle);
+  sidebarEl.appendChild(strip);
+  pgBody.appendChild(sidebarEl);
+  if(mainEl)pgBody.appendChild(mainEl);
+  document.body.appendChild(pgBody);
+
+  /* prev/next + mark-done */
+  secs.forEach(function(sec,i){
+    var nav=document.createElement('div');nav.className='sec-nav';
+    var pBtn=i>0?'<button class="sec-btn" id="pbtn'+i+'">← Prev</button>':'<span></span>';
+    var nBtn=i<secs.length-1?'<button class="sec-btn" id="nbtn'+i+'">Next →</button>':'<span style="color:var(--green);font-size:12px">✓ Done</span>';
+    nav.innerHTML=pBtn+'<span class="sec-ctr">'+(i+1)+' / '+secs.length+'</span>'+nBtn;
+    sec.appendChild(nav);
+    if(i>0){(function(x){var b=document.getElementById('pbtn'+x);if(b)b.addEventListener('click',function(){show(x-1);});})(i);}
+    if(i<secs.length-1){(function(x){var b=document.getElementById('nbtn'+x);if(b)b.addEventListener('click',function(){show(x+1);});})(i);}
+    var mr=document.createElement('div');mr.className='mark-row';
+    var mb=document.createElement('button');mb.className='mark-btn';mb.id='mark'+i;mb.setAttribute('data-i',i);
+    mb.addEventListener('click',function(){toggleDone(+this.getAttribute('data-i'));});
+    mr.appendChild(mb);sec.appendChild(mr);
+  });
+
+  function show(idx){
+    if(idx<0)idx=0;if(idx>=secs.length)idx=secs.length-1;
+    st.curIdx=idx;save();
+    secs.forEach(function(s,i){s.classList.toggle('sec-active',i===idx);});
+    document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    refreshUI();
+  }
+
+  function toggleDone(idx){
+    var ci=st.completed.indexOf(idx);
+    if(ci>=0)st.completed.splice(ci,1);else st.completed.push(idx);
+    save();refreshUI();
+  }
+
+  function refreshUI(){
+    var idx=st.curIdx,done=st.completed.length,total=secs.length;
+    var pct=total?Math.round((done/total)*100):0;
+    var pb=document.getElementById('progress-bar');
+    var pl=document.getElementById('progress-label');
+    if(pb)pb.style.width=pct+'%';
+    if(pl)pl.textContent=done+'/'+total+' done';
+    secs.forEach(function(s,i){
+      var t=document.getElementById('tab-'+i);if(!t)return;
+      var isDone=st.completed.indexOf(i)>=0,isActive=i===idx;
+      var label=t.textContent.replace(/^[✓ ]*\d+\. /,'');
+      t.className='sec-tab'+(isActive?' tab-active':isDone?' tab-done':'');
+      t.textContent=(isDone&&!isActive?'✓ ':''+(i+1)+'. ')+label;
+    });
+    var at=document.getElementById('tab-'+idx);
+    if(at)at.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    secs.forEach(function(s,i){
+      var mb=document.getElementById('mark'+i);if(!mb)return;
+      var isDone=st.completed.indexOf(i)>=0;
+      mb.textContent=isDone?'✓ Done  · undo':'☐  Mark done';
+      mb.classList.toggle('is-done',isDone);
+    });
+  }
+
+  show(st.curIdx);
+  var banner=document.getElementById('resume-banner');
+  if(banner&&(st.curIdx>0||st.completed.length>0)){
+    banner.style.display='block';
+    banner.textContent='Resuming — §'+(st.curIdx+1)+' of '+secs.length+(st.completed.length?' · '+st.completed.length+' done':'');
+  }
+})();
+</script>
+
+<style id="tt-style">
+.tt-done-btn{display:inline-flex;align-items:center;gap:.35rem;margin-left:auto;padding:.28rem .8rem;border-radius:20px;border:1px solid var(--border,#2d3450);background:transparent;color:var(--muted,#8899aa);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tt-done-btn:hover{border-color:var(--green,#4ade80);color:var(--green,#4ade80)}
+.tt-done-btn.is-done{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:var(--green,#4ade80)}
+.tt-done-btn .tt-icon{font-size:.85rem}
+/* Chapter progress bar in sidebar */
+#tt-chapter-bar{margin:1rem .5rem .5rem;padding:.7rem .9rem;background:var(--bg3,#1e2130);border-radius:9px;border:1px solid var(--border,#2d3450)}
+#tt-chapter-bar .tt-bar-label{font-size:.7rem;color:var(--muted,#8899aa);display:flex;justify-content:space-between;margin-bottom:.45rem}
+#tt-chapter-bar .tt-bar-bg{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+#tt-chapter-bar .tt-bar-fill{height:100%;background:linear-gradient(90deg,var(--acc,#e8832a),var(--acc2,#f0a855));border-radius:999px;transition:width .4s ease}
+</style>
+<script id="topic-tracker-script">
+(function(){
+  // Derive key from filename
+  var href = location.pathname || location.href;
+  var m = href.match(/([A-Z]+)_Ch(\d+)/i);
+  if (!m) return;
+  var prefix = m[1].toLowerCase();
+  var num = m[2];
+  var lsBase = 'esm_' + prefix + '_ch' + num;
+  var topicsKey = lsBase + '_topics';
+  var pctKey = lsBase + '_pct';
+
+  // Find study sections (exclude pyq / quick-review)
+  function getStudySections(){
+    return Array.from(document.querySelectorAll('main > section[id], #content > section[id]')).filter(function(s){
+      return !s.id.match(/pyq|qr|quick/i);
+    });
+  }
+
+  // Load state
+  var state = {};
+  try{ state = JSON.parse(localStorage.getItem(topicsKey)||'{}'); }catch(e){}
+
+  function savePct(sections){
+    var done = sections.filter(function(s){ return state[s.id]; }).length;
+    var pct = sections.length ? Math.round(done/sections.length*100) : 0;
+    try{
+      localStorage.setItem(pctKey, pct);
+      // mark visited when anything is done
+      if(done>0) localStorage.setItem('esm_visited_'+prefix+'_ch'+num,'1');
+    }catch(e){}
+    return pct;
+  }
+
+  function updateBar(pct){
+    var bar = document.getElementById('tt-bar-fill');
+    var cnt = document.getElementById('tt-bar-cnt');
+    if(bar) bar.style.width = pct+'%';
+    if(cnt) cnt.textContent = pct+'%';
+  }
+
+  function addButtons(){
+    var sections = getStudySections();
+    var pct = savePct(sections);
+
+    // Inject sidebar bar widget after sidebar nav
+    var sidebar = document.getElementById('sidebar');
+    if(sidebar && !document.getElementById('tt-chapter-bar')){
+      var barDiv = document.createElement('div');
+      barDiv.id = 'tt-chapter-bar';
+      barDiv.innerHTML =
+        '<div class="tt-bar-label"><span>Chapter progress</span><span id="tt-bar-cnt">'+pct+'%</span></div>'+
+        '<div class="tt-bar-bg"><div class="tt-bar-fill" id="tt-bar-fill" style="width:'+pct+'%"></div></div>';
+      sidebar.appendChild(barDiv);
+    }
+
+    sections.forEach(function(sec){
+      var h2 = sec.querySelector('h2');
+      if(!h2 || h2.querySelector('.tt-done-btn')) return;
+
+      var isDone = !!state[sec.id];
+      var btn = document.createElement('button');
+      btn.className = 'tt-done-btn' + (isDone?' is-done':'');
+      btn.dataset.sid = sec.id;
+      btn.innerHTML = '<span class="tt-icon">'+(isDone?'✓':'○')+'</span><span>'+(isDone?'Done':'Mark done')+'</span>';
+
+      // Make h2 flex
+      h2.style.cssText += ';display:flex;align-items:center;flex-wrap:wrap;gap:.5rem';
+
+      h2.appendChild(btn);
+
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var sid = this.dataset.sid;
+        state[sid] = !state[sid];
+        try{ localStorage.setItem(topicsKey, JSON.stringify(state)); }catch(err){}
+        this.className = 'tt-done-btn'+(state[sid]?' is-done':'');
+        this.innerHTML = '<span class="tt-icon">'+(state[sid]?'✓':'○')+'</span><span>'+(state[sid]?'Done':'Mark done')+'</span>';
+        var sects = getStudySections();
+        var p = savePct(sects);
+        updateBar(p);
+      });
+    });
+  }
+
+  // Run after DOM ready
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', addButtons);
+  } else {
+    addButtons();
+  }
+})();
+</script>
+
+</body>
+</html>

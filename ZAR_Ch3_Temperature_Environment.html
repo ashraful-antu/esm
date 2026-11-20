@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAR Ch3 – Temperature & Work Environment | ESM IPE 407</title>
+<style>
+  :root{--bg:#0f1117;--bg2:#181b24;--bg3:#1e2130;--acc:#e8832a;--acc2:#f0a855;--text:#e2e8f0;--muted:#8899aa;--border:#2d3450;--green:#4ade80;--blue:#60a5fa;--red:#f87171;--purple:#c084fc;--star:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;font-size:15px}
+  #progress-bar{display:none}
+  #progress-label{display:none}
+  main{flex:1;padding:32px 40px 80px;overflow-y:auto;min-width:0}
+  h1{font-size:2em;color:var(--acc);margin-bottom:4px}
+  .chapter-meta{color:var(--muted);font-size:13px;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+  h2{font-size:1.3em;color:var(--acc2);margin:36px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  h3{font-size:1.05em;color:var(--blue);margin:20px 0 8px}
+  h4{font-size:.95em;color:var(--purple);margin:14px 0 6px}
+  p{margin-bottom:10px}
+  ul,ol{padding-left:22px;margin-bottom:10px}
+  li{margin-bottom:4px}
+  .importance{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
+  .i5{background:rgba(251,191,36,.15);color:var(--star);border:1px solid rgba(251,191,36,.3)}
+  .i4{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+  .i3{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+  .i2{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+  .box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0}
+  .box.warn{border-left:3px solid var(--acc)}
+  .box.info{border-left:3px solid var(--blue)}
+  .box.danger{border-left:3px solid var(--red)}
+  .box.success{border-left:3px solid var(--green)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:var(--bg3);color:var(--acc2);padding:8px 10px;text-align:left;border:1px solid var(--border)}
+  td{padding:7px 10px;border:1px solid var(--border)}
+  tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+  .formula{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px 16px;font-family:monospace;font-size:14px;color:var(--acc2);margin:10px 0}
+  .pyq-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin:14px 0}
+  .pyq-header{background:rgba(232,131,42,.1);padding:10px 16px;border-bottom:1px solid var(--border);border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center}
+  .pyq-year{color:var(--acc2);font-weight:700;font-size:13px}
+  .pyq-marks{background:var(--acc);color:#000;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+  .pyq-q{padding:12px 16px;color:var(--text);font-weight:500;border-bottom:1px solid var(--border);font-size:14px}
+  .pyq-a{padding:14px 16px;color:var(--muted);font-size:14px;line-height:1.75}
+  .pyq-a strong{color:var(--text)}
+  .summary-box{background:linear-gradient(135deg,rgba(232,131,42,.08),rgba(96,165,250,.06));border:1px solid rgba(232,131,42,.2);border-radius:10px;padding:20px;margin:16px 0}
+  .qa-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .qa-row:last-child{border-bottom:none}
+  .stars{color:var(--star);font-size:14px}
+  .qa-topic{flex:1;font-size:13px}
+  .qa-count{color:var(--muted);font-size:12px;white-space:nowrap}
+  .illness-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .illness-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+  .illness-name{font-weight:700;font-size:14px;margin-bottom:6px}
+  .illness-detail{font-size:12px;color:var(--muted);line-height:1.6}
+  .frost-stages{display:flex;gap:10px;margin:12px 0;flex-wrap:wrap}
+  .frost-card{flex:1;min-width:140px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+  .frost-num{font-size:1.4em;font-weight:700;color:var(--blue)}
+  .frost-label{font-size:12px;color:var(--acc2);margin:4px 0}
+  .frost-desc{font-size:11px;color:var(--muted)}
+  /* ── Paginated sections ── */
+  /* paginated-sections */
+  section{display:none}
+  section.sec-active{display:block}
+  #tab-strip{display:flex;flex-direction:column;gap:3px;padding:4px 0;margin:0;border:none;overflow-x:visible;scrollbar-width:none}
+  #tab-strip::-webkit-scrollbar{display:none}
+  .sec-tab{flex-shrink:0;width:100%;text-align:left;padding:8px 12px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:12px;font-family:inherit;white-space:normal;line-height:1.4;background:transparent;color:var(--muted);transition:all .15s}
+  .sec-tab:hover{background:rgba(232,131,42,.1);color:var(--acc2);border-color:transparent}
+  .sec-tab.tab-active{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+  .sec-tab.tab-done{color:var(--green);border-color:rgba(74,222,128,.35)}
+  .sec-nav{display:flex;justify-content:space-between;align-items:center;margin-top:52px;padding-top:20px;border-top:1px solid var(--border)}
+  .sec-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 18px;border-radius:5px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s}
+  .sec-btn:hover{border-color:var(--acc);color:var(--text)}
+  .sec-ctr{font-size:11px;color:var(--muted)}
+  .mark-row{text-align:center;margin-top:20px}
+  .mark-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 24px;border-radius:20px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+  .mark-btn:hover{border-color:var(--green);color:var(--green)}
+  .mark-btn.is-done{color:var(--green);border-color:rgba(74,222,128,.4)}
+  .resume-banner{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.2);border-radius:5px;padding:7px 12px;font-size:11.5px;color:var(--blue);margin-bottom:16px;display:none}
+
+  /* ── Full-screen layout ── */
+  html{height:100%}
+  body{height:100%;display:flex;flex-direction:column}
+  #page-header{background:var(--bg2);border-bottom:2px solid var(--acc);padding:16px 32px;flex-shrink:0}
+  #page-header h1{font-size:1.5em;color:var(--acc);margin-bottom:2px}
+  #page-header .chapter-meta{margin-bottom:0;border-bottom:none;padding-bottom:0;font-size:12px}
+  #page-body{display:flex;flex:1;overflow:hidden}
+  #sidebar{width:224px;min-width:224px;background:var(--bg2);border-right:1px solid var(--border);padding:14px 10px;overflow-y:auto;flex-shrink:0}
+  #sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 8px 8px;border-bottom:1px solid var(--border);margin-bottom:8px;font-weight:600}
+  /* Mobile: stack vertically, tabs horizontal */
+  @media(max-width:800px){
+    html,body{height:auto}
+    #page-header{padding:12px 16px}
+    #page-body{flex-direction:column;overflow:visible}
+    #sidebar{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--border);padding:8px 10px}
+    #tab-strip{flex-direction:row !important;overflow-x:auto;gap:5px;padding:4px 0}
+    #tab-strip::-webkit-scrollbar{display:none}
+    .sec-tab{flex-shrink:0 !important;width:auto !important;white-space:nowrap !important;padding:4px 10px !important;border-radius:14px !important;border:1px solid var(--border) !important;line-height:1.4 !important}
+    main{padding:20px 16px 60px;overflow-y:visible}
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="progress-label">0% read</div>
+
+
+<main>
+<div id="resume-banner" class="resume-banner"></div>
+<h1>Chapter 3: Temperature & Work Environment Design</h1>
+<div class="chapter-meta">IPE 407 — Ergonomics & Safety Management &nbsp;|&nbsp; ZAR (Rafi Madam) &nbsp;|&nbsp; Exam Importance: ★★★★</div>
+
+<section id="intro">
+<h2>Overview</h2>
+<p>Human productivity and safety are significantly affected by the thermal environment. This chapter covers the physiological basis of heat and cold stress, the specific illnesses they cause, and the ergonomic principles for designing a thermally comfortable workplace.</p>
+</section>
+
+<section id="thermal-balance">
+<h2>Thermal Balance Equation</h2>
+<p>The human body maintains a core temperature of ~37°C. The thermal balance is governed by:</p>
+<div class="formula">S = M − E ± R ± C − W</div>
+<table>
+  <tr><th>Symbol</th><th>Meaning</th><th>Notes</th></tr>
+  <tr><td><strong>S</strong></td><td>Heat Storage (body temperature change)</td><td>S > 0: body heats up; S < 0: body cools down; S = 0: equilibrium</td></tr>
+  <tr><td><strong>M</strong></td><td>Metabolic heat production</td><td>Always positive; ranges from ~80W (sleeping) to ~1200W (heavy exercise)</td></tr>
+  <tr><td><strong>E</strong></td><td>Evaporative heat loss (sweating)</td><td>Always a loss; dominant in hot environments</td></tr>
+  <tr><td><strong>R</strong></td><td>Radiant heat exchange</td><td>+ = gain (hot surroundings); − = loss (cold surroundings)</td></tr>
+  <tr><td><strong>C</strong></td><td>Convective heat exchange</td><td>+ = gain (hot air); − = loss (cool air)</td></tr>
+  <tr><td><strong>W</strong></td><td>Mechanical work done</td><td>Work removes heat from body (subtracted); usually small</td></tr>
+</table>
+<div class="box info"><strong>Goal of thermal work environment design:</strong> Ensure S ≈ 0 (thermal equilibrium) during working hours, maintaining core temperature within ±1°C of 37°C.</div>
+</section>
+
+<section id="heat-stress">
+<h2>Heat Stress</h2>
+<p>Heat stress occurs when the body's thermoregulatory capacity is overwhelmed. The body responds to heat through:</p>
+<ul>
+  <li><strong>Vasodilation:</strong> Blood vessels in skin dilate to increase heat dissipation</li>
+  <li><strong>Sweating:</strong> Evaporative cooling — primary defense in hot environments</li>
+  <li><strong>Increased cardiac output:</strong> Heart works harder to pump blood to both skin (cooling) and muscles (work)</li>
+  <li><strong>Reduced blood viscosity</strong></li>
+</ul>
+<p>When these mechanisms fail to maintain thermal equilibrium, heat illnesses develop.</p>
+</section>
+
+<section id="heat-illnesses">
+<h2>Heat Illnesses <span class="importance i4">★★★★ Exam (3×)</span></h2>
+<div class="box warn"><strong>Most Examined in Ch3 (3×):</strong> Explain different health issues/symptoms and first aid procedures for different heat illnesses.</div>
+
+<div class="illness-grid">
+  <div class="illness-card">
+    <div class="illness-name" style="color:var(--red)">🔥 Heat Stroke</div>
+    <div class="illness-detail">Core temp > 41°C (106°F). Thermoregulation fails completely. Skin: hot, red, DRY (sweating stops). Confusion, seizures, unconsciousness. LIFE-THREATENING — medical emergency.</div>
+  </div>
+  <div class="illness-card">
+    <div class="illness-name" style="color:var(--acc2)">💧 Heat Exhaustion</div>
+    <div class="illness-detail">Cardiovascular strain — heart can't meet demand of skin + muscle circulation. Cool, moist skin, rapid weak pulse, heavy sweating, dizziness, nausea. Core temp normal or slightly elevated.</div>
+  </div>
+  <div class="illness-card">
+    <div class="illness-name" style="color:var(--purple)">😵 Heat Syncope</div>
+    <div class="illness-detail">Fainting (syncope) due to peripheral vasodilation pooling blood in extremities, reducing venous return and brain blood flow. Occurs on sudden standing or prolonged standing in heat.</div>
+  </div>
+  <div class="illness-card">
+    <div class="illness-name" style="color:var(--blue)">💨 Heat Hyperventilation</div>
+    <div class="illness-detail">Rapid breathing in heat causes excess CO₂ exhalation → respiratory alkalosis. Symptoms: dizziness, tingling, muscle cramps, carpopedal spasm.</div>
+  </div>
+  <div class="illness-card">
+    <div class="illness-name" style="color:var(--green)">🌡️ Prickly Heat</div>
+    <div class="illness-detail">Miliaria rubra. Skin rash from blocked sweat ducts after prolonged sweating. Red, itchy papules. Reduces sweating capacity → increases heat stroke risk. Common in tropical climates.</div>
+  </div>
+  <div class="illness-card">
+    <div class="illness-name" style="color:var(--muted)">💊 Heat Cramps</div>
+    <div class="illness-detail">Painful muscle cramps from electrolyte loss (sodium) through excessive sweating. Often occurs after heavy work. Treatment: oral electrolyte replacement.</div>
+  </div>
+</div>
+
+<h3>Heat Stroke — Key Details</h3>
+<div class="box danger">
+<strong>Definition of Heat Stroke (Heat Hyperpyrexia):</strong> A life-threatening condition where core body temperature exceeds 41°C (106°F) and the central thermoregulation mechanism fails.<br><br>
+<strong>Hallmark Sign:</strong> Skin is HOT, RED, and DRY (absence of sweating distinguishes heat stroke from heat exhaustion).<br><br>
+<strong>First Aid:</strong><br>
+1. Move person to cool environment immediately<br>
+2. Remove excess clothing<br>
+3. Aggressive cooling: ice packs to neck, groin, armpits; cool water spray with fanning<br>
+4. Do NOT give fluids orally if unconscious<br>
+5. Emergency medical care — IV fluids, monitoring<br>
+6. Cool to 38.5°C then stop aggressive cooling (risk of overshoot hypothermia)<br>
+</div>
+
+<h3>Heat Exhaustion — Key Details</h3>
+<div class="box info">
+<strong>Mechanism:</strong> Cardiovascular system is overloaded — blood must simultaneously supply working muscles AND skin for thermoregulation. Plasma volume decreases from sweating. Result: insufficient cardiac output for both demands.<br><br>
+<strong>Symptoms:</strong> Heavy sweating, weakness, cold/pale/clammy skin, fast/weak pulse, nausea, dizziness, possible fainting.<br><br>
+<strong>First Aid:</strong><br>
+1. Move to cool area, rest<br>
+2. Loosen clothing, apply cool wet cloths<br>
+3. Oral rehydration with electrolyte drink<br>
+4. Lie down, elevate legs slightly<br>
+5. Medical attention if no improvement in 15 min
+</div>
+
+<h3>All Heat Illnesses — First Aid Summary Table</h3>
+<table>
+  <tr><th>Illness</th><th>Key Sign</th><th>First Aid</th></tr>
+  <tr><td>Heat Stroke</td><td>Hot DRY skin, T > 41°C, confusion</td><td>Emergency cooling + call ambulance</td></tr>
+  <tr><td>Heat Exhaustion</td><td>Heavy sweating, pale/cool skin, weak pulse</td><td>Cool area + oral rehydration + rest</td></tr>
+  <tr><td>Heat Syncope</td><td>Fainting on standing</td><td>Lie down + legs elevated + rehydrate</td></tr>
+  <tr><td>Heat Hyperventilation</td><td>Rapid breathing, tingling, cramping</td><td>Breathe into paper bag + rest in cool area</td></tr>
+  <tr><td>Prickly Heat</td><td>Red itchy rash on sweating areas</td><td>Cool environment + dry skin + calamine lotion</td></tr>
+  <tr><td>Heat Cramps</td><td>Muscle cramps during/after work</td><td>Rest + electrolyte replacement</td></tr>
+</table>
+</section>
+
+<section id="acclimatization">
+<h2>Heat Acclimatization <span class="importance i3">★★★ Exam (2×)</span></h2>
+<div class="box warn"><strong>PYQ (2×):</strong> What is heat acclimatization? What is its significance on a production floor?</div>
+
+<p><strong>Heat acclimatization</strong> is the physiological adaptation process by which the body gradually adjusts to working in a hot environment. It involves a series of adaptations over approximately <strong>2 weeks</strong> of repeated heat exposure.</p>
+
+<h3>Physiological Changes During Acclimatization</h3>
+<table>
+  <tr><th>Parameter</th><th>Before Acclimatization</th><th>After Acclimatization</th></tr>
+  <tr><td>Sweat capacity</td><td>~1 L/hr</td><td>~2 L/hr (doubles)</td></tr>
+  <tr><td>Sweat onset temperature</td><td>Higher (delayed)</td><td>Lower (earlier onset)</td></tr>
+  <tr><td>Salt content of sweat</td><td>Higher (more NaCl lost)</td><td>Lower (conserves electrolytes)</td></tr>
+  <tr><td>Heart rate</td><td>Higher for same workload</td><td>Lower (more efficient cardiovascular)</td></tr>
+  <tr><td>Core temperature rise</td><td>Greater for same workload</td><td>Smaller (better thermoregulation)</td></tr>
+  <tr><td>Plasma volume</td><td>Lower</td><td>Higher (better blood volume)</td></tr>
+</table>
+
+<h3>Significance on Production Floor</h3>
+<ul>
+  <li>Reduces incidence of heat illnesses among workers</li>
+  <li>Improves work capacity and productivity in hot environments</li>
+  <li>Reduces physiological strain (heart rate, core temperature) for same workload</li>
+  <li>New workers should NOT be immediately assigned to full work in hot environments — requires a 2-week gradual acclimatization protocol</li>
+  <li>OSHA/NIOSH recommend starting at 20% of heat exposure time and increasing by ~20%/day for new workers</li>
+  <li>Salt supplementation needed only in unacclimatized workers — acclimatized workers conserve salt in sweat</li>
+</ul>
+<div class="box info"><strong>Note:</strong> Heat acclimatization is a <em>physiological</em> process of adaptation, not merely psychological. The body physically changes its thermoregulatory capacity. (Exam True/False: "Heat acclimatization is a psychological process" — FALSE: it is physiological.)</div>
+</section>
+
+<section id="comfort">
+<h2>Thermal Comfort Conditions</h2>
+<p>Thermal comfort is the condition in which a person is neither too hot nor too cold. ASHRAE defines it as "that condition of mind that expresses satisfaction with the thermal environment."</p>
+
+<h3>Comfortable Temperature</h3>
+<ul>
+  <li><strong>Sedentary work:</strong> 21–24°C (70–75°F)</li>
+  <li><strong>Light work:</strong> ~18–21°C</li>
+  <li><strong>Heavy work:</strong> Lower temperatures preferred</li>
+</ul>
+</section>
+
+<section id="humidity">
+<h2>Humidity and Air Movement <span class="importance i3">★★★</span></h2>
+
+<h3>Relative Humidity (RH)</h3>
+<table>
+  <tr><th>RH Level</th><th>Effect</th></tr>
+  <tr><td>Optimal: 40–50%</td><td>Comfortable; sweat evaporates effectively; skin does not dry out</td></tr>
+  <tr><td>&lt; 20%</td><td>Dryness of mucous membranes, skin cracking, static electricity</td></tr>
+  <tr><td>&gt; 80%</td><td>Fatigue; sweating becomes ineffective (air already saturated); body cannot cool itself efficiently</td></tr>
+  <tr><td>&gt; 90%</td><td>Heat illness risk dramatically increases even at moderate temperatures</td></tr>
+</table>
+
+<h3>Air Movement</h3>
+<ul>
+  <li><strong>&lt; 0.1 m/s:</strong> Stuffiness (insufficient air movement)</li>
+  <li><strong>0.1–0.5 m/s:</strong> Generally acceptable; enhances evaporative cooling</li>
+  <li><strong>&gt; 1.5 m/s:</strong> Draft, discomfort (especially in cold environments)</li>
+</ul>
+<div class="box">At moderate temperatures, air movement enhances evaporative and convective heat loss, increasing the apparent comfort temperature by several degrees. This is the basis for the "wind chill factor" in cold and "heat index" in heat.</div>
+</section>
+
+<section id="cold">
+<h2>Cold Stress and Cold Injuries</h2>
+<p>Cold injuries are classified into two categories:</p>
+
+<h3>Freezing Injuries</h3>
+<p><strong>Frostbite:</strong> Actual freezing of tissue. Ice crystals form in cells and extracellular spaces, causing mechanical cell damage and vascular injury. Full recovery may take months.</p>
+<p><strong>Frostnip:</strong> Milder form — skin surface blanches and loses sensation but tissue does not freeze deeply. Reversible within ~30 minutes of warming.</p>
+
+<h3>Non-Freezing Injuries</h3>
+<p><strong>Cold Sensitization (Raynaud's phenomenon):</strong> Repeated cold exposure damages peripheral vasomotor regulation. Fingers become hypersensitive to cold even after warming; triggered by mild cold exposure years later. Vasospasm of digital arteries → white → blue → red sequence.</p>
+<p><strong>Trench Foot (Immersion Foot):</strong> Prolonged cold, wet conditions (above freezing). Tissue damage from vasoconstriction rather than freezing.</p>
+</section>
+
+<section id="frostbite">
+<h2>Frostbite — Stages and Degrees</h2>
+
+<h3>Three Stages</h3>
+<div class="frost-stages">
+  <div class="frost-card">
+    <div class="frost-num">1</div>
+    <div class="frost-label" style="color:var(--acc2)">Frostnip</div>
+    <div class="frost-desc">Redness, numbness, skin firm but not frozen. Reversible with 30 min rewarming.</div>
+  </div>
+  <div class="frost-card">
+    <div class="frost-num">2</div>
+    <div class="frost-label" style="color:var(--acc)">Superficial Frostbite</div>
+    <div class="frost-desc">Outer layers frozen, blisters form after rewarming. Skin waxy/hard. Deep tissue still viable.</div>
+  </div>
+  <div class="frost-card">
+    <div class="frost-num">3</div>
+    <div class="frost-label" style="color:var(--red)">Deep Frostbite</div>
+    <div class="frost-desc">All tissue layers frozen. Skin black and hard. Tissue death (gangrene) likely. Blood-filled blisters.</div>
+  </div>
+</div>
+
+<h3>Four Degrees of Frostbite</h3>
+<table>
+  <tr><th>Degree</th><th>Tissue Involved</th><th>Appearance</th><th>Outcome</th></tr>
+  <tr><td>1st Degree (Frostnip)</td><td>Epidermis only</td><td>Red, numb, slightly swollen</td><td>Full recovery</td></tr>
+  <tr><td>2nd Degree</td><td>Epidermis + upper dermis</td><td>Blisters with clear fluid</td><td>Usually full recovery</td></tr>
+  <tr><td>3rd Degree</td><td>Full dermis</td><td>Dark/blood-filled blisters</td><td>Partial tissue loss possible</td></tr>
+  <tr><td>4th Degree</td><td>Extends to tendons, bones, muscles</td><td>Dark, rubbery, mummified</td><td>Amputation likely</td></tr>
+</table>
+
+<h3>Cold Protection Principles</h3>
+<ul>
+  <li><strong>Vapor-permeable materials:</strong> Allow moisture (sweat) to escape while blocking wind/cold. Avoid vapor-impermeable materials that trap sweat (creates wet clothing → conducts heat away 25× faster than dry air)</li>
+  <li><strong>Mittens vs gloves:</strong> Below 0°C, mittens are preferred (fingers share heat); gloves are inadequate for extreme cold</li>
+  <li><strong>Layering principle:</strong> Base layer (moisture wicking) + insulating layer (traps air) + outer shell (wind/water barrier)</li>
+  <li><strong>Keep extremities covered:</strong> Ears, fingers, nose, toes most vulnerable</li>
+</ul>
+</section>
+
+<section id="factors">
+<h2>Factors Affecting Work Environment Design <span class="importance i3">★★★ Exam</span></h2>
+<p>The ergonomic objective of work environment design is to control environmental factors to maintain worker health, comfort, and productivity. The key factors are:</p>
+
+<ol>
+  <li><strong>Temperature (Thermal Environment):</strong> Air temperature, radiant heat from hot surfaces, metabolic heat load. Control measures: HVAC, shielding hot surfaces, local cooling, scheduling heat-intensive work during cooler periods.</li>
+  <li><strong>Humidity:</strong> Affects evaporative cooling capacity and thermal comfort. Optimal 40–50% RH. Control: dehumidification (summer), humidification (winter).</li>
+  <li><strong>Air Movement / Ventilation:</strong> Provides cooling and removes contaminants. Minimum 0.1 m/s to prevent stuffiness; maximum to avoid cold drafts.</li>
+  <li><strong>Illumination / Lighting:</strong> Adequate luminance for visual tasks; avoidance of glare and flicker. (Covered in Chapter 4.)</li>
+  <li><strong>Noise:</strong> Affects concentration, communication, hearing. Control through engineering and administrative measures. (Covered in Chapter 5.)</li>
+  <li><strong>Radiation:</strong> UV (skin damage, eye damage), infrared (heat absorption), ionizing radiation (DNA damage). Shielding, PPE, exposure limits.</li>
+  <li><strong>Chemical Hazards / Air Quality:</strong> Dust, fumes, vapors. Local exhaust ventilation, dilution ventilation.</li>
+  <li><strong>Vibration:</strong> Whole-body and hand-arm vibration. Anti-vibration mountings, vibration-damping materials.</li>
+</ol>
+
+<div class="box warn"><strong>PYQ (2018-19):</strong> Which objective of studying ergonomics is accomplished by work environment design and how? → Answer: The objective of <em>fitting the work to the worker</em>. By controlling environmental stressors (temperature, lighting, noise), the work environment is optimized so human physiological and psychological capacities are not overwhelmed, enabling safe and productive work.</div>
+</section>
+
+<section id="summary">
+<h2>Chapter Summary</h2>
+<div class="summary-box">
+  <h3 style="color:var(--acc2);margin-bottom:12px">Key Takeaways</h3>
+  <ol style="padding-left:18px;line-height:2">
+    <li><strong>Thermal balance:</strong> S = M − E ± R ± C − W; goal = S = 0</li>
+    <li><strong>Heat stroke:</strong> T > 41°C; HOT RED DRY skin; emergency cooling</li>
+    <li><strong>Heat exhaustion:</strong> Cardiovascular strain; heavy sweating; cool/pale skin</li>
+    <li><strong>Heat syncope:</strong> Fainting from blood pooling; lie down + rehydrate</li>
+    <li><strong>Prickly heat:</strong> Blocked sweat ducts; itchy rash; raises heat stroke risk</li>
+    <li><strong>Acclimatization:</strong> 2 weeks; sweat doubles (1→2 L/hr); less salt in sweat; lower HR</li>
+    <li><strong>Comfort temp:</strong> 21–24°C sedentary; optimal RH 40–50%; air &lt; 0.1 m/s = stuffiness</li>
+    <li><strong>Frostbite stages:</strong> Frostnip → Superficial → Deep; 4 degrees of severity</li>
+    <li><strong>Cold protection:</strong> Vapor-permeable materials; mittens below 0°C (not gloves)</li>
+  </ol>
+</div>
+</section>
+
+<section id="qanalysis">
+<h2>Question Analysis — Exam Importance</h2>
+<div class="box">
+  <div class="qa-row"><span class="stars">★★★★</span><span class="qa-topic">Health issues from unhealthy exposure to high-temperature work environment (all heat illnesses + first aid)</span><span class="qa-count">3× | 5–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Heat acclimatization definition + significance on production floor</span><span class="qa-count">2× | 5–15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★★</span><span class="qa-topic">Work environment design — factors and ergonomics objective</span><span class="qa-count">1× | 15 marks</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Frostbite stages and degrees</span><span class="qa-count">1× | as part of combined question</span></div>
+  <div class="qa-row"><span class="stars">★★</span><span class="qa-topic">Thermal balance equation and components</span><span class="qa-count">1× background knowledge</span></div>
+</div>
+</section>
+
+<section id="pyq">
+<h2>Previous Year Questions</h2>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23 · Jan 2021 · 2015-16</span><span class="pyq-marks">★★★ 3× · Q3b/Q7a/Q7a · 5–15 marks</span></div>
+  <div class="pyq-q">Explain different health issues arising from unhealthy exposure to high-temperature work environments. / What is heat hyperpyrexia? Discuss its basic first aid procedures. / Discuss symptoms and basic first aid procedures for different heat illnesses.</div>
+  <div class="pyq-a"><strong>Heat Illnesses — Spectrum from mild to severe:</strong><br><br>
+  <strong>1. Heat Cramps</strong><br>
+  Cause: Excessive sweating → loss of electrolytes (Na, K) → muscle cramping.<br>
+  Symptoms: Painful muscle spasms (usually calves, abdomen).<br>
+  First Aid: Move to cool area; rehydrate with electrolyte drink; gentle stretching. NOT water alone (dilutes electrolytes further).<br><br>
+  <strong>2. Heat Syncope</strong><br>
+  Cause: Peripheral vasodilation (blood pools in skin vessels to cool the body) + dehydration → reduced cerebral blood flow → fainting.<br>
+  Symptoms: Lightheadedness, brief loss of consciousness, pale cool skin.<br>
+  First Aid: Lay down with feet elevated; cool environment; rehydrate.<br><br>
+  <strong>3. Heat Exhaustion</strong><br>
+  Cause: Significant dehydration + electrolyte loss; blood flow inadequate to both muscles and skin cooling.<br>
+  Symptoms: Heavy sweating, weakness, cold/pale/moist skin, weak pulse, nausea, possible fainting. Core temperature < 40°C.<br>
+  First Aid: Move to cool area, lay down, loosen clothing, apply cool wet cloths, rehydrate. If vomiting, IV fluids needed → hospital.<br><br>
+  <strong>4. Heat Stroke (Heat Hyperpyrexia)</strong><br>
+  Cause: Thermoregulatory system overwhelmed; core temperature ≥ 40°C (104°F). MEDICAL EMERGENCY.<br>
+  Symptoms: HIGH body temperature (≥40°C), hot DRY skin (sweating ceases — classic heat stroke), rapid strong pulse, confusion/unconsciousness, possible seizures.<br>
+  First Aid: Call emergency services immediately; rapid cooling (ice packs to neck/armpits/groin; cold water immersion if available); do NOT give fluids to unconscious person; fan while misting with cool water.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2022-23 · 2020-21</span><span class="pyq-marks">★ 2× · Q2c/Q8b · 5/15 marks</span></div>
+  <div class="pyq-q">(c) What is the significance of heat acclimatization on a production floor? / (b) What is heat acclimatization? Briefly describe different types of heat illness.</div>
+  <div class="pyq-a"><strong>Heat Acclimatization:</strong> The physiological adaptation process that occurs when the body is repeatedly exposed to heat stress over 7–14 days. It is a <em>physiological</em> (not psychological) adaptation.<br><br>
+  <strong>Physiological changes during acclimatization:</strong><br>
+  • <strong>Plasma volume expansion:</strong> Blood volume increases ~10–25% → more fluid available for sweating and circulation.<br>
+  • <strong>Earlier onset of sweating:</strong> Sweating begins at a lower core temperature threshold → more efficient early cooling.<br>
+  • <strong>Increased sweat rate:</strong> Can increase from ~1 L/hr to 2–3 L/hr in acclimatized individuals.<br>
+  • <strong>Sweat becomes more dilute:</strong> Lower NaCl concentration in sweat → less electrolyte loss per litre.<br>
+  • <strong>Lower core temperature and heart rate</strong> for the same work in the same heat.<br>
+  • <strong>Improved cardiovascular efficiency:</strong> Less strain on the heart.<br><br>
+  <strong>Significance on a production floor:</strong><br>
+  • Reduces heat illness risk dramatically (acclimatized workers can tolerate conditions that would cause heat exhaustion in non-acclimatized workers).<br>
+  • OSHA recommends acclimatization protocol: start new workers at 20% heat exposure, increase by 20% each day over 5 days (or 7–14 days for severe heat).<br>
+  • Improves productivity and reduces absenteeism in hot environments.<br>
+  • Reduces workers' compensation claims for heat-related illness.</div>
+</div>
+
+<div class="pyq-card">
+  <div class="pyq-header"><span class="pyq-year">2018-19</span><span class="pyq-marks">Q8c · 15 marks</span></div>
+  <div class="pyq-q">(c) Which objective of studying ergonomics is accomplished by work environment design and how? Describe in detail the factors affecting work environment design.</div>
+  <div class="pyq-a"><strong>Ergonomic objective accomplished:</strong> Work environment design primarily addresses <strong>health and safety</strong> (reducing physiological stress, illness, and injury from environmental factors) and secondarily <strong>productivity and comfort</strong> (maintaining cognitive and physical performance in adverse conditions).<br><br>
+  <strong>Factors affecting work environment design:</strong><br><br>
+  <strong>1. Thermal Environment:</strong><br>
+  • Temperature (dry bulb), humidity (relative humidity), air velocity (wind chill / convection cooling), radiant heat (WBGT — Wet Bulb Globe Temperature index used for comprehensive assessment).<br>
+  • Design: Ventilation, air conditioning, radiant heat shields, insulation, appropriate PPE (cooling vests).<br><br>
+  <strong>2. Lighting:</strong><br>
+  • Illuminance level (lux), glare control, colour rendering index, uniformity ratio.<br>
+  • Design: Task-appropriate lux levels (500 lux office, 100 lux corridors), anti-glare diffusers, daylight integration.<br><br>
+  <strong>3. Noise:</strong><br>
+  • Sound pressure level (dB), frequency spectrum, duration of exposure, background vs. impulsive noise.<br>
+  • Design: Engineering controls (enclosures, damping), administrative controls (job rotation), PPE (earmuffs).<br><br>
+  <strong>4. Air Quality:</strong><br>
+  • Chemical contaminants (dust, fumes, VOCs), biological agents, CO₂ levels.<br>
+  • Design: Ventilation, filtration, extraction at source.<br><br>
+  <strong>5. Vibration:</strong><br>
+  • Whole-body vibration (vehicles) and hand-arm vibration (tools).<br>
+  • Design: Anti-vibration mounts, vibration-damping handles, work-rest schedules.</div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+  var KEY='esm_zar_ch3';
+  var st={curIdx:0,completed:[]};
+  try{var sv=localStorage.getItem(KEY);if(sv){var p=JSON.parse(sv);st.curIdx=p.curIdx||0;st.completed=p.completed||[];}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+  var secs=[].slice.call(document.querySelectorAll('main > section'));
+
+  /* build tab strip */
+  var strip=document.createElement('div');strip.id='tab-strip';
+  secs.forEach(function(sec,i){
+    var h2=sec.querySelector('h2');
+    var raw=h2?h2.textContent:'§'+(i+1);
+    var label=raw.replace(/[★✓].*/,'').replace(/\s*\(.*\)/,'').trim();
+    if(label.length>24)label=label.substring(0,22)+'…';
+    var t=document.createElement('button');
+    t.className='sec-tab';t.id='tab-'+i;t.setAttribute('data-i',i);
+    t.textContent=(i+1)+'. '+label;
+    t.addEventListener('click',function(){show(+this.getAttribute('data-i'));}); 
+    strip.appendChild(t);
+  });
+  /* Build full-screen layout: header + sidebar + main */
+  var h1El=document.querySelector('main > h1');
+  var metaEl=document.querySelector('.chapter-meta');
+  var mainEl=document.querySelector('main');
+  var pgHeader=document.createElement('div');pgHeader.id='page-header';
+  if(h1El)pgHeader.appendChild(h1El);
+  if(metaEl)pgHeader.appendChild(metaEl);
+  document.body.prepend(pgHeader);
+  var pgBody=document.createElement('div');pgBody.id='page-body';
+  var sidebarEl=document.createElement('div');sidebarEl.id='sidebar';
+  var stitle=document.createElement('div');stitle.id='sidebar-title';stitle.textContent='Sections';
+  sidebarEl.appendChild(stitle);
+  sidebarEl.appendChild(strip);
+  pgBody.appendChild(sidebarEl);
+  if(mainEl)pgBody.appendChild(mainEl);
+  document.body.appendChild(pgBody);
+
+  /* prev/next + mark-done */
+  secs.forEach(function(sec,i){
+    var nav=document.createElement('div');nav.className='sec-nav';
+    var pBtn=i>0?'<button class="sec-btn" id="pbtn'+i+'">← Prev</button>':'<span></span>';
+    var nBtn=i<secs.length-1?'<button class="sec-btn" id="nbtn'+i+'">Next →</button>':'<span style="color:var(--green);font-size:12px">✓ Done</span>';
+    nav.innerHTML=pBtn+'<span class="sec-ctr">'+(i+1)+' / '+secs.length+'</span>'+nBtn;
+    sec.appendChild(nav);
+    if(i>0){(function(x){var b=document.getElementById('pbtn'+x);if(b)b.addEventListener('click',function(){show(x-1);});})(i);}
+    if(i<secs.length-1){(function(x){var b=document.getElementById('nbtn'+x);if(b)b.addEventListener('click',function(){show(x+1);});})(i);}
+    var mr=document.createElement('div');mr.className='mark-row';
+    var mb=document.createElement('button');mb.className='mark-btn';mb.id='mark'+i;mb.setAttribute('data-i',i);
+    mb.addEventListener('click',function(){toggleDone(+this.getAttribute('data-i'));});
+    mr.appendChild(mb);sec.appendChild(mr);
+  });
+
+  function show(idx){
+    if(idx<0)idx=0;if(idx>=secs.length)idx=secs.length-1;
+    st.curIdx=idx;save();
+    secs.forEach(function(s,i){s.classList.toggle('sec-active',i===idx);});
+    document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    refreshUI();
+  }
+
+  function toggleDone(idx){
+    var ci=st.completed.indexOf(idx);
+    if(ci>=0)st.completed.splice(ci,1);else st.completed.push(idx);
+    save();refreshUI();
+  }
+
+  function refreshUI(){
+    var idx=st.curIdx,done=st.completed.length,total=secs.length;
+    var pct=total?Math.round((done/total)*100):0;
+    var pb=document.getElementById('progress-bar');
+    var pl=document.getElementById('progress-label');
+    if(pb)pb.style.width=pct+'%';
+    if(pl)pl.textContent=done+'/'+total+' done';
+    secs.forEach(function(s,i){
+      var t=document.getElementById('tab-'+i);if(!t)return;
+      var isDone=st.completed.indexOf(i)>=0,isActive=i===idx;
+      var label=t.textContent.replace(/^[✓ ]*\d+\. /,'');
+      t.className='sec-tab'+(isActive?' tab-active':isDone?' tab-done':'');
+      t.textContent=(isDone&&!isActive?'✓ ':''+(i+1)+'. ')+label;
+    });
+    var at=document.getElementById('tab-'+idx);
+    if(at)at.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    secs.forEach(function(s,i){
+      var mb=document.getElementById('mark'+i);if(!mb)return;
+      var isDone=st.completed.indexOf(i)>=0;
+      mb.textContent=isDone?'✓ Done  · undo':'☐  Mark done';
+      mb.classList.toggle('is-done',isDone);
+    });
+  }
+
+  show(st.curIdx);
+  var banner=document.getElementById('resume-banner');
+  if(banner&&(st.curIdx>0||st.completed.length>0)){
+    banner.style.display='block';
+    banner.textContent='Resuming — §'+(st.curIdx+1)+' of '+secs.length+(st.completed.length?' · '+st.completed.length+' done':'');
+  }
+})();
+</script>
+
+<style id="tt-style">
+.tt-done-btn{display:inline-flex;align-items:center;gap:.35rem;margin-left:auto;padding:.28rem .8rem;border-radius:20px;border:1px solid var(--border,#2d3450);background:transparent;color:var(--muted,#8899aa);font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tt-done-btn:hover{border-color:var(--green,#4ade80);color:var(--green,#4ade80)}
+.tt-done-btn.is-done{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:var(--green,#4ade80)}
+.tt-done-btn .tt-icon{font-size:.85rem}
+/* Chapter progress bar in sidebar */
+#tt-chapter-bar{margin:1rem .5rem .5rem;padding:.7rem .9rem;background:var(--bg3,#1e2130);border-radius:9px;border:1px solid var(--border,#2d3450)}
+#tt-chapter-bar .tt-bar-label{font-size:.7rem;color:var(--muted,#8899aa);display:flex;justify-content:space-between;margin-bottom:.45rem}
+#tt-chapter-bar .tt-bar-bg{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+#tt-chapter-bar .tt-bar-fill{height:100%;background:linear-gradient(90deg,var(--acc,#e8832a),var(--acc2,#f0a855));border-radius:999px;transition:width .4s ease}
+</style>
+<script id="topic-tracker-script">
+(function(){
+  // Derive key from filename
+  var href = location.pathname || location.href;
+  var m = href.match(/([A-Z]+)_Ch(\d+)/i);
+  if (!m) return;
+  var prefix = m[1].toLowerCase();
+  var num = m[2];
+  var lsBase = 'esm_' + prefix + '_ch' + num;
+  var topicsKey = lsBase + '_topics';
+  var pctKey = lsBase + '_pct';
+
+  // Find study sections (exclude pyq / quick-review)
+  function getStudySections(){
+    return Array.from(document.querySelectorAll('main > section[id], #content > section[id]')).filter(function(s){
+      return !s.id.match(/pyq|qr|quick/i);
+    });
+  }
+
+  // Load state
+  var state = {};
+  try{ state = JSON.parse(localStorage.getItem(topicsKey)||'{}'); }catch(e){}
+
+  function savePct(sections){
+    var done = sections.filter(function(s){ return state[s.id]; }).length;
+    var pct = sections.length ? Math.round(done/sections.length*100) : 0;
+    try{
+      localStorage.setItem(pctKey, pct);
+      // mark visited when anything is done
+      if(done>0) localStorage.setItem('esm_visited_'+prefix+'_ch'+num,'1');
+    }catch(e){}
+    return pct;
+  }
+
+  function updateBar(pct){
+    var bar = document.getElementById('tt-bar-fill');
+    var cnt = document.getElementById('tt-bar-cnt');
+    if(bar) bar.style.width = pct+'%';
+    if(cnt) cnt.textContent = pct+'%';
+  }
+
+  function addButtons(){
+    var sections = getStudySections();
+    var pct = savePct(sections);
+
+    // Inject sidebar bar widget after sidebar nav
+    var sidebar = document.getElementById('sidebar');
+    if(sidebar && !document.getElementById('tt-chapter-bar')){
+      var barDiv = document.createElement('div');
+      barDiv.id = 'tt-chapter-bar';
+      barDiv.innerHTML =
+        '<div class="tt-bar-label"><span>Chapter progress</span><span id="tt-bar-cnt">'+pct+'%</span></div>'+
+        '<div class="tt-bar-bg"><div class="tt-bar-fill" id="tt-bar-fill" style="width:'+pct+'%"></div></div>';
+      sidebar.appendChild(barDiv);
+    }
+
+    sections.forEach(function(sec){
+      var h2 = sec.querySelector('h2');
+      if(!h2 || h2.querySelector('.tt-done-btn')) return;
+
+      var isDone = !!state[sec.id];
+      var btn = document.createElement('button');
+      btn.className = 'tt-done-btn' + (isDone?' is-done':'');
+      btn.dataset.sid = sec.id;
+      btn.innerHTML = '<span class="tt-icon">'+(isDone?'✓':'○')+'</span><span>'+(isDone?'Done':'Mark done')+'</span>';
+
+      // Make h2 flex
+      h2.style.cssText += ';display:flex;align-items:center;flex-wrap:wrap;gap:.5rem';
+
+      h2.appendChild(btn);
+
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var sid = this.dataset.sid;
+        state[sid] = !state[sid];
+        try{ localStorage.setItem(topicsKey, JSON.stringify(state)); }catch(err){}
+        this.className = 'tt-done-btn'+(state[sid]?' is-done':'');
+        this.innerHTML = '<span class="tt-icon">'+(state[sid]?'✓':'○')+'</span><span>'+(state[sid]?'Done':'Mark done')+'</span>';
+        var sects = getStudySections();
+        var p = savePct(sects);
+        updateBar(p);
+      });
+    });
+  }
+
+  // Run after DOM ready
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', addButtons);
+  } else {
+    addButtons();
+  }
+})();
+</script>
+
+</body>
+</html>
